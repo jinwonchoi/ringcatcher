@@ -17,7 +17,6 @@ public class JsonFileUploadTest {
 	 * 	upfile: filename
 	json:
 	{"userNum":"010444448888"
-	,"callingId":"2134129p3481"
 	,"callingNum":"01066663333"
 	,"ringFileName":"234.mp3"
 	} 
@@ -41,18 +40,20 @@ public class JsonFileUploadTest {
 	@Test
 	public void testFileUpLoad() {
     	String url =this.url+"/json/invite";
-    	
+    	String tokenId = "AToken_eiD55aUDQeM:APA91bG0AWBahj4df_LFwUpLvB9FegJcrs_NcFVOdjvOepHrVGwOKpHUbg6qeBv8lJzIHaECGA4pHLTqQEREtLmx58j2NoCu8zx0wYcG-S3oHZZgIOcL8Ydif9frkA00d0YES8WFCL7j";
+
     	String body = "	{\"userNum\":\"010444448888\""
-    			+",\"callingId\":\"2134129p3481\""
-    			+",\"callingNum\":\"01066663333\""
+    			+",\"callingId\":\""+tokenId+"\""
+    			+",\"callingNum\":\"01055557777\""
+    			+",\"locale\":\"ko_KR\""//en_US, ko_KR
     			+",\"ringFileName\":\"0004.jpg\"}";
     			
     	JsonFileUpload json = new JsonFileUpload();
     	//String filepath = "/home/jinnon/Music/374-Marion-Parcel.mp3";
-    	String filepath = "/home/jinnon/Pictures/Wallpapers/0004.jpg";
+    	String filepath = "/home/jinnon/Pictures/Wallpapers/vgirlmm-009-039.jpg";
     	json.http(url, body, filepath);
 		
-		fail("Not yet implemented");
+		assert(true);
 	}
 
 }

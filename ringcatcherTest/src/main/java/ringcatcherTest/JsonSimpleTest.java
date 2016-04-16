@@ -46,7 +46,9 @@ public class JsonSimpleTest {
 	public void testRegister() {
     	String url = this.url+"/json/register";
     	
+    	String tokenId = "AToken_eiD55aUDQeM:APA91bG0AWBahj4df_LFwUpLvB9FegJcrs_NcFVOdjvOepHrVGwOKpHUbg6qeBv8lJzIHaECGA4pHLTqQEREtLmx58j2NoCu8zx0wYcG-S3oHZZgIOcL8Ydif9frkA00d0YES8WFCL7j";
     	String body = "{\"userNum\":\"01055557777\""
+    			+",\"userId\":\""+tokenId+"\""
     			+",\"userEmail\":\"jinnonspot@gmail.com\""
     			+",\"recomId\":\"019932342323342\""
     			+",\"overwrite\":\"false\"}";
@@ -83,8 +85,9 @@ public class JsonSimpleTest {
 	@Test
 	public void testRegister2() {
     	String url = this.url+"/json/register";
-    	
+    	String tokenId = "eiD55aUDQeM:APA91bG0AWBahj4df_LFwUpLvB9FegJcrs_NcFVOdjvOepHrVGwOKpHUbg6qeBv8lJzIHaECGA4pHLTqQEREtLmx58j2NoCu8zx0wYcG-S3oHZZgIOcL8Ydif9frkA00d0YES8WFCL7j";
     	String body = "{\"userNum\":\"010444448888\""
+    			+",\"userId\":\""+tokenId+"\""
     			+",\"userEmail\":\"jinnon@naver.com\""
     			+",\"recomId\":\"1459574403591\""
     			+",\"overwrite\":\"false\"}";
@@ -110,9 +113,10 @@ public class JsonSimpleTest {
 	@Test
 	public void testRingUpdate() {
     	String url = this.url+"/json/ringupdate";
-    	
-    	String body = "{\"userId\":\"1459577765121\""
-    			+",\"userNum\":\"010444448878\"}";
+    	String tokenId = "eiD55aUDQeM:APA91bG0AWBahj4df_LFwUpLvB9FegJcrs_NcFVOdjvOepHrVGwOKpHUbg6qeBv8lJzIHaECGA4pHLTqQEREtLmx58j2NoCu8zx0wYcG-S3oHZZgIOcL8Ydif9frkA00d0YES8WFCL7j";
+
+    	String body = "{\"userId\":\""+tokenId+"\""
+    			+",\"userNum\":\"010444448888\"}";
     	JsonSimple json = new JsonSimple();
     	json.http(url, body);    	
 		assert(true);
@@ -136,7 +140,9 @@ public class JsonSimpleTest {
 	public void testRingCheckout() {
     	String url = this.url+"/json/ringcheckout";
     	
-    	String body = "{\"userId\":\"1459577765121\""
+    	String tokenId = "eiD55aUDQeM:APA91bG0AWBahj4df_LFwUpLvB9FegJcrs_NcFVOdjvOepHrVGwOKpHUbg6qeBv8lJzIHaECGA4pHLTqQEREtLmx58j2NoCu8zx0wYcG-S3oHZZgIOcL8Ydif9frkA00d0YES8WFCL7j";
+
+    	String body = "{\"userId\":\""+tokenId+"\""
     			+",\"userNum\":\"010444448888\"}";
     	JsonSimple json = new JsonSimple();
     	json.http(url, body);    	
