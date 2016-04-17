@@ -2,8 +2,12 @@ package ringcatcherTest;
 
 import static org.junit.Assert.*;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.gencode.ringcatcher.obj.InviteResult;
+import com.gencode.ringcatcher.obj.RegisterResult;
 
 public class JsonFileUploadTest {
 	//String url = "http://localhost:8080/ringcatcher/";
@@ -51,8 +55,18 @@ public class JsonFileUploadTest {
     	JsonFileUpload json = new JsonFileUpload();
     	//String filepath = "/home/jinnon/Music/374-Marion-Parcel.mp3";
     	String filepath = "/home/jinnon/Pictures/Wallpapers/vgirlmm-009-039.jpg";
-    	json.http(url, body, filepath);
-		
+    	String strJson = json.http(url, body, filepath);
+    	
+    	InviteResult result = new InviteResult(); 
+    	JSONObject jsonObject = new JSONObject(strJson);
+    	String resultCode = jsonObject.getString("resultCode");
+    	String resultMsg  = jsonObject.getString("resultMsg");
+    	result.setResultCode(resultCode);
+    	result.setResultMsg(resultMsg);
+    	System.out.println("resultCode="+resultCode);
+    	System.out.println("resultMsg="+resultMsg);
+    	System.out.println("result = "+result.toString()); 	
+
 		assert(true);
 	}
 

@@ -24,8 +24,8 @@ public class JsonSimple {
 
     }
 
-    public void http(String url, String body) {
-
+    public String http(String url, String body) {
+    	String resultJson="";
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             HttpPost request = new HttpPost(url);
             StringEntity params = new StringEntity(body, ContentType.APPLICATION_JSON);
@@ -33,31 +33,33 @@ public class JsonSimple {
             request.setEntity(params);
             HttpResponse result = httpClient.execute(request);
 
-            String json = EntityUtils.toString(result.getEntity(), "UTF-8");
-            try {
-                JSONParser parser = new JSONParser();
-                Object resultObject = parser.parse(json);
-
-                if (resultObject instanceof JSONArray) {
-                    JSONArray array=(JSONArray)resultObject;
-                    for (Object object : array) {
-                        JSONObject obj =(JSONObject)object;
-                        
-                        System.out.println(obj);
-                    }
-
-                }else if (resultObject instanceof JSONObject) {
-                    JSONObject obj =(JSONObject)resultObject;
-                    System.out.println(obj);
-                }
-
-            } catch (Exception e) {
-            	e.printStackTrace();
-            }
+            resultJson = EntityUtils.toString(result.getEntity(), "UTF-8");
+            System.out.println(resultJson);
+//            try {
+//                JSONParser parser = new JSONParser();
+//                Object resultObject = parser.parse(json);
+//
+//                if (resultObject instanceof JSONArray) {
+//                    JSONArray array=(JSONArray)resultObject;
+//                    for (Object object : array) {
+//                        JSONObject obj =(JSONObject)object;
+//                        
+//                        System.out.println(obj);
+//                    }
+//
+//                }else if (resultObject instanceof JSONObject) {
+//                    JSONObject obj =(JSONObject)resultObject;
+//                    System.out.println(obj);
+//                }
+//
+//            } catch (Exception e) {
+//            	e.printStackTrace();
+//            }
 
         } catch (IOException ex) {
         	ex.printStackTrace();
         }
+        return resultJson;
     }
     
 }

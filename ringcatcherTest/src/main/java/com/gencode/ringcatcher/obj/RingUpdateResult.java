@@ -1,14 +1,19 @@
 package com.gencode.ringcatcher.obj;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONObject;
 
 public class RingUpdateResult implements Serializable {
 
+	private static final long serialVersionUID = -242858495909118917L;
+
+	final public String CALLING_NUM = "callingNum";
+	final public String FILE_PATH = "filePath";
 	String resultCode;
 	String resultMsg;
-	Map<String, String> updateMap = new HashMap<String, String>();//callingNum, filePath
+	ArrayList<String> updateList = new ArrayList<String>();//callingNum, filePath
 	public RingUpdateResult() {
 		// TODO Auto-generated constructor stub
 	}
@@ -29,24 +34,34 @@ public class RingUpdateResult implements Serializable {
 		this.resultMsg = resultMsg;
 	}
 	
-
-	public Map<String, String> getUpdateMap() {
-		return updateMap;
+	public List<String> getUpdateList() {
+		return updateList;
+	}
+	
+	public void setUpdateItem(String callingNum, String filePath) {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(CALLING_NUM, callingNum);
+		jsonObject.put(FILE_PATH, filePath);
+		updateList.add(jsonObject.toString());
 	}
 
-	public void setUpdateMap(Map<String, String> updateMap) {
-		this.updateMap = updateMap;
+	public void setUpdateList(ArrayList<String> updateList) {
+		this.updateList = updateList;
 	}
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		
 		sb.append(String.format("[%s][%s]", resultCode, resultMsg));
-		for (String key : updateMap.keySet()) {
-			String val = updateMap.get(key);
-			sb.append(String.format("[%s][%s]", key, val));
+		for (String item : updateList) {
+			JSONObject jobject = new JSONObject(item);
+			String callingNum = jobject.getString(CALLING_NUM);
+			String filePath   = jobject.getString(FILE_PATH);
+			sb.append(String.format("{[%s]:[%s],[%s]:[%s]}", CALLING_NUM, callingNum, FILE_PATH, filePath));
+			
 		}
 
 		return sb.toString();
 	}
+
 }
