@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">RingCatcher</string>
+    <string name="action_settings">Settings</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="title_activity_notification_check">Notification check</string>
+    <string name="title_activity_main_menu">My Ringtone Service</string>
+
+    <!--Ring Catcher -->
+    <string name="title_activity_register">subscribe(phone.no, phone.nick, token Id)</string>
+    <string name="title_activity_invite"><![CDATA[Invite & Upload]]></string>
+    <string name="title_activity_update">update friend\'s ringtone</string>
+    <string name="edit_my_number">My P.Number</string>
+    <string name="edit_my_phone_nick">My P.Name</string>
+    <string name="edit_the_other_number">Friend\'s Number</string>
+    <string name="edit_the_other_phone_nick">Friend\'s Name</string>
+    <string name="edit_my_ring">My ringtone</string>
+
+    <string-array name="menu_array">
+        <item>서비스등록(폰번호, 폰닉네임, token Id)</item>
+        <item>친구에게 내 벨소리 등록</item>
+        <item>친구가 설정한 벨소리 다운로드</item>
+        <item>모든 설정 벨소리 다운로드</item>
+    </string-array>
+    <string name="title_activity_list_ring_info">Listup uploaded media</string>
+    <string name="button_pick">Pick Media</string>
+    <string name="title_activity_checkout">Download All Ringtones</string>
+</resources>

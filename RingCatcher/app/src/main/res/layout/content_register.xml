@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_register">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="내 번호"
+                android:layout_weight="1"/>
+            <EditText android:id="@+id/edit_my_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_my_number"
+                android:layout_weight="1"/>
+            <EditText android:id="@+id/edit_my_phone_nick"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_my_phone_nick"
+                android:layout_weight="1"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_send"
+                android:onClick="sendMessage"/>
+        </LinearLayout>>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout_recient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="상대방번호"
+            android:layout_weight="1"/>
+        <EditText android:id="@+id/edit_the_other_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_my_number"
+            android:layout_weight="1"/>
+        <EditText android:id="@+id/edit_the_other_phone_nick"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_the_other_phone_nick"
+            android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout_media"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/text_media_file"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="파일선택"
+            android:layout_weight="1"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_pick"
+            android:onClick="pickMedia"/>
+    </LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/text_register_result"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>
