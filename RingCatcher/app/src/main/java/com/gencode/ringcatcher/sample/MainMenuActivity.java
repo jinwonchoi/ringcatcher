@@ -57,12 +57,12 @@ public class MainMenuActivity extends GcmActivity /*AppCompatActivity*/ implemen
     /**
      * 노티를 받았을때 처리사항 구현
      */
-    protected void sendRegistrationToServer() {
+    protected void processNotificationMessage() {
         Intent receivingIntent = getIntent();
         String callerNum = receivingIntent.getStringExtra(JsonConstants.callerNum);
         String callerName = receivingIntent.getStringExtra(JsonConstants.callerName);
         String ringSrcUrl = receivingIntent.getStringExtra(JsonConstants.ringSrcUrl);
-        Log.d(TAG,"sendRegistrationToServer callerNum="+callerNum );
+        Log.d(TAG,"processNotificationMessage callerNum="+callerNum );
         if (callerNum != null && !callerNum.equals("")) {
             Intent intent = new Intent(this, NotificationCheckActivity.class);
             intent.putExtra(JsonConstants.callerNum, callerNum);

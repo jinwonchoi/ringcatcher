@@ -33,7 +33,7 @@ abstract public class GcmActivity extends AppCompatActivity {
         String callerNum = intent.getStringExtra(JsonConstants.callerNum);
         Log.d(TAG, "savedInstanceState callerNum="+callerNum);
         if (callerNum != null && !callerNum.equals("")) {
-            sendRegistrationToServer();
+            processNotificationMessage();
         }
     }
 
@@ -90,11 +90,11 @@ abstract public class GcmActivity extends AppCompatActivity {
      * Modify this method to associate the user's GCM registration token with any server-side account
      * maintained by your application.
      */
-    abstract protected void sendRegistrationToServer();
+    abstract protected void processNotificationMessage();
 //    {
 //        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 //        String token = sharedPreferences.getString(QuickstartPreferences.TOKEN_ID_FROM_GCM,"");
-//        Log.d(TAG, "sendRegistrationToServer Token Id="+token);
+//        Log.d(TAG, "processNotificationMessage Token Id="+token);
 //        // TODO: Implement this method to send any registration to your app's servers.
 //        // Add custom implementation, as needed.
 //        // You should store a boolean that indicates whether the generated token has been

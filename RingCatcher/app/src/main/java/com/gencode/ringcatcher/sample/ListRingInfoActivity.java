@@ -22,6 +22,8 @@ import com.gencode.ringcatcher.http.JsonHttpCaller;
 import com.gencode.ringcatcher.obj.JsonConstants;
 import com.gencode.ringcatcher.obj.RingUpdateRequest;
 import com.gencode.ringcatcher.obj.RingUpdateResult;
+import com.gencode.ringcatcher.task.AsyncUpdateRing;
+import com.gencode.ringcatcher.task.IUpdateRingTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +78,26 @@ public class ListRingInfoActivity extends AppCompatActivity {
             }
 
         });
-        new AsyncUpdateRing().execute(message);
+        AsyncUpdateRing asyncUpdateRing =new AsyncUpdateRing(new IUpdateRingTask() {
+            @Override
+            public void OnTaskCompleted(RingUpdateResult result) {
+                List<String> updateList =  result.getUpdateList();
+                Log.d(TAG, "OnTaskCompleted result:"+result);
+                try {
+                    for (String item : updateList) {
+                        JSONObject jsonObject = null;
+                        jsonObject = new JSONObject(item);
+                        String callingNum = jsonObject.optString(JsonConstants.callingNum);
+                        String filePath  = jsonObject.optString(JsonConstants.filePath);
+                        list.add(callingNum+":"+filePath);
+                        adapter.notifyDataSetChanged();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        asyncUpdateRing.execute(message);
     }
 
     @Override
@@ -130,45 +151,4 @@ public class ListRingInfoActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * http로 서버에 친구에게 음원등록
-     */
-    class AsyncUpdateRing extends AsyncTask<String, Void, RingUpdateResult> {
-        @Override
-        protected RingUpdateResult doInBackground(String... args) {
-            RingUpdateRequest ringUpdateRequest = new RingUpdateRequest();
-            ringUpdateRequest.setUserid(RingBearer.getInstance().getTokenId());
-            ringUpdateRequest.setUserNum(RingBearer.getInstance().getMyPhoneNumber());
-            RingUpdateResult inviteResult= null;
-
-            try {
-                JsonHttpCaller caller = new JsonHttpCaller();
-                if (QuickstartPreferences.MENU_UPDATE_RING_INFO.equals(args[0])) {
-                    inviteResult = caller.updateRing(ringUpdateRequest);
-                } else {
-                    inviteResult = caller.checkoutRing(ringUpdateRequest);
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Calling Asynch InviteAndUpload",e);
-            }
-            return inviteResult;
-        }
-
-        @Override
-        protected void onPostExecute(RingUpdateResult strResult) {
-            super.onPostExecute(strResult);
-            List<String> updateList =  strResult.getUpdateList();
-            try {
-                for (String item : updateList) {
-                    JSONObject jsonObject = null;
-                    jsonObject = new JSONObject(item);
-                    String callingNum = jsonObject.optString(JsonConstants.callingNum);
-                    String filePath  = jsonObject.optString(JsonConstants.filePath);
-                    list.add(callingNum+":"+filePath);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

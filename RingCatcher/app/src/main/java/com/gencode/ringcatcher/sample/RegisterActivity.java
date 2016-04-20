@@ -28,6 +28,10 @@ import com.gencode.ringcatcher.obj.InviteResult;
 import com.gencode.ringcatcher.obj.InviteUploadRequest;
 import com.gencode.ringcatcher.obj.RegisterRequest;
 import com.gencode.ringcatcher.obj.RegisterResult;
+import com.gencode.ringcatcher.task.AsyncInviteMate;
+import com.gencode.ringcatcher.task.AsyncRegisterUser;
+import com.gencode.ringcatcher.task.IInvteMateTask;
+import com.gencode.ringcatcher.task.IRegisterTask;
 
 import java.io.File;
 import java.util.Locale;
@@ -101,7 +105,28 @@ public class RegisterActivity extends AppCompatActivity {
         RingBearer.getInstance().setMyPhoneNumber(eMyNumber.getText().toString());
         RingBearer.getInstance().setMyPhoneNick(eMyPhoneNick.getText().toString());
         if (isRegistration) {
-            new AsyncRegisterUser().execute();
+            AsyncRegisterUser asyncRegisterUser = new AsyncRegisterUser(new IRegisterTask() {
+                @Override
+                public void OnTaskCompleted(RegisterResult registerResult) {
+                    TextView textView = (TextView)findViewById(R.id.text_register_result);
+                    String tokenId = RingBearer.getInstance().getTokenId();
+                    String myPhoneNumer = RingBearer.getInstance().getMyPhoneNumber();
+                    String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
+                    if (registerResult != null && !registerResult.equals("")) {
+                        //Toast.makeText(this, R.string.gcm_send_message, Toast.LENGTH_LONG).show();
+                        textView.setText(String.format("Register: result[%s:%s]\n my tokenId[%s]\nmynumber[%s]\nmynick[%s]\noverwrite[%s]"
+                                ,registerResult.getResultCode(),registerResult.getResultMsg()
+                                ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, true));
+                    } else {
+                        Toast.makeText(RegisterActivity.this, R.string.token_error_message, Toast.LENGTH_LONG).show();
+                        textView.setText(String.format("RegisterError:result[%s:%s]\n" +
+                                        " my tokenId[%s]\nmynumber[%s]\nmynick[%s]\noverwrite[%s]"
+                                ,registerResult.getResultCode(),registerResult.getResultMsg()
+                                ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, true));
+                    }
+                };
+            });
+            asyncRegisterUser.execute();
         } else {
             EditText eMateNumber = (EditText) findViewById(R.id.edit_the_other_number);
             EditText eMateNick = (EditText) findViewById(R.id.edit_the_other_phone_nick);
@@ -109,7 +134,33 @@ public class RegisterActivity extends AppCompatActivity {
             RingBearer.getInstance().setFriendPhoneNumber(eMateNumber.getText().toString());
             RingBearer.getInstance().setFriendNick(eMateNick.getText().toString());
             RingBearer.getInstance().setMediaUrl(textMedia.getText().toString());
-            new AsyncInviteMate().execute();
+            AsyncInviteMate asyncInviteMate = new AsyncInviteMate(new IInvteMateTask() {
+                @Override
+                public void OnTaskCompleted(InviteResult result) {
+                    TextView textView = (TextView)findViewById(R.id.text_register_result);
+                    String tokenId = RingBearer.getInstance().getTokenId();
+                    String myPhoneNumer = RingBearer.getInstance().getMyPhoneNumber();
+                    String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
+                    String friendNumber = RingBearer.getInstance().getFriendPhoneNumber();
+                    String fileUrl = RingBearer.getInstance().getMediaUrl();
+
+                    if (result != null && !result.equals("")) {
+                        //Toast.makeText(this, R.string.gcm_send_message, Toast.LENGTH_LONG).show();
+                        textView.setText(String.format("Register: result[%s:%s]\n my tokenId[%s]\nmy number[%s]\nmy nick[%s]\nfriend number[%s]\n fileUrl[%s]"
+                                ,result.getResultCode(),result.getResultMsg()
+                                ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, friendNumber, fileUrl));
+                    } else {
+                        Toast.makeText(RegisterActivity.this, R.string.token_error_message, Toast.LENGTH_LONG).show();
+                        textView.setText(String.format("RegisterError:result[%s:%s]\n" +
+                                        " my tokenId[%s]\nmy number[%s]\nmy nick[%s]\n" +
+                                        "friend number[%s]\n" +
+                                        " fileUrl[%s]"
+                                ,result.getResultCode(),result.getResultMsg()
+                                ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, friendNumber, fileUrl));
+                    }
+                }
+            });
+            asyncInviteMate.execute();
         }
     }
 
@@ -175,113 +226,56 @@ public class RegisterActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * http로 서버에 사용자 등록
-     */
-    class AsyncRegisterUser extends AsyncTask<Void, Void, RegisterResult> {
-        @Override
-        protected RegisterResult doInBackground(Void... args) {
-
-            String matePhoneNumer = RingBearer.getInstance().getFriendPhoneNumber();
-            String matePhoneNick = RingBearer.getInstance().getFriendNick();
-            String mediaUrl = RingBearer.getInstance().getMediaUrl();
-
-            String tokenId = RingBearer.getInstance().getTokenId();
-            RegisterRequest registerRequest = new RegisterRequest();
-            registerRequest.setTokenId(tokenId);
-            registerRequest.setUserPhoneNum(RingBearer.getInstance().getMyPhoneNumber());
-            registerRequest.setUserNick(RingBearer.getInstance().getMyPhoneNick());
-            registerRequest.setOverwrite(true);
-            RegisterResult registerResult = null;
-            if (tokenId == null || tokenId.equals("")) {
-                Log.e(TAG, "Calling Asynch RegisterUser tokenId=null");
-                return null;
-            }
-
-            try {
-                JsonHttpCaller caller = new JsonHttpCaller();
-                registerResult = caller.registerUser(registerRequest);
-            } catch (Exception e) {
-                Log.e(TAG, "Calling Asynch RegisterUser",e);
-            }
-            return registerResult;
-        }
-
-        @Override
-        protected void onPostExecute(RegisterResult strResult) {
-            super.onPostExecute(strResult);
-            TextView textView = (TextView)findViewById(R.id.text_register_result);
-            String tokenId = RingBearer.getInstance().getTokenId();
-            String myPhoneNumer = RingBearer.getInstance().getMyPhoneNumber();
-            String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
-            if (strResult != null && !strResult.equals("")) {
-                //Toast.makeText(this, R.string.gcm_send_message, Toast.LENGTH_LONG).show();
-                textView.setText(String.format("Register: result[%s:%s]\n my tokenId[%s]\nmynumber[%s]\nmynick[%s]\noverwrite[%s]"
-                        ,strResult.getResultCode(),strResult.getResultMsg()
-                        ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, true));
-            } else {
-                Toast.makeText(RegisterActivity.this, R.string.token_error_message, Toast.LENGTH_LONG).show();
-                textView.setText(String.format("RegisterError:result[%s:%s]\n" +
-                                " my tokenId[%s]\nmynumber[%s]\nmynick[%s]\noverwrite[%s]"
-                        ,strResult.getResultCode(),strResult.getResultMsg()
-                        ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, true));
-            }
-        }
-    }
-//test-token-id 0244445555 It's me!
-    /**
-     * http로 서버에 친구에게 음원등록
-     */
-    class AsyncInviteMate extends AsyncTask<Void, Void, InviteResult> {
-        @Override
-        protected InviteResult doInBackground(Void... args) {
-            InviteUploadRequest inviteUploadRequest= new InviteUploadRequest();
-            inviteUploadRequest.setTokenId("test-token-id");
-            inviteUploadRequest.setFriendPhoneNum(RingBearer.getInstance().getFriendPhoneNumber());
-            inviteUploadRequest.setCallingPhoneNum("0244445555");
-            inviteUploadRequest.setCallingNickName("It's me!");
-            inviteUploadRequest.setLocale(Locale.KOREA.toString()); //ko_KR | en_US
-            inviteUploadRequest.setFilePath(RingBearer.getInstance().getMediaUrl());
-            InviteResult inviteResult= null;
+//    class AsyncRegisterUser extends AsyncTask<Void, Void, RegisterResult> {
+//        @Override
+//        protected RegisterResult doInBackground(Void... args) {
+//            this.
+//            String matePhoneNumer = RingBearer.getInstance().getFriendPhoneNumber();
+//            String matePhoneNick = RingBearer.getInstance().getFriendNick();
+//            String mediaUrl = RingBearer.getInstance().getMediaUrl();
+//
+//            String tokenId = RingBearer.getInstance().getTokenId();
+//            RegisterRequest registerRequest = new RegisterRequest();
+//            registerRequest.setTokenId(tokenId);
+//            registerRequest.setUserPhoneNum(RingBearer.getInstance().getMyPhoneNumber());
+//            registerRequest.setUserNick(RingBearer.getInstance().getMyPhoneNick());
+//            registerRequest.setOverwrite(true);
+//            RegisterResult registerResult = null;
 //            if (tokenId == null || tokenId.equals("")) {
 //                Log.e(TAG, "Calling Asynch RegisterUser tokenId=null");
 //                return null;
 //            }
+//
+//            try {
+//                JsonHttpCaller caller = new JsonHttpCaller();
+//                registerResult = caller.registerUser(registerRequest);
+//            } catch (Exception e) {
+//                Log.e(TAG, "Calling Asynch RegisterUser",e);
+//            }
+//            return registerResult;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(RegisterResult strResult) {
+//            super.onPostExecute(strResult);
+//            TextView textView = (TextView)findViewById(R.id.text_register_result);
+//            String tokenId = RingBearer.getInstance().getTokenId();
+//            String myPhoneNumer = RingBearer.getInstance().getMyPhoneNumber();
+//            String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
+//            if (strResult != null && !strResult.equals("")) {
+//                //Toast.makeText(this, R.string.gcm_send_message, Toast.LENGTH_LONG).show();
+//                textView.setText(String.format("Register: result[%s:%s]\n my tokenId[%s]\nmynumber[%s]\nmynick[%s]\noverwrite[%s]"
+//                        ,strResult.getResultCode(),strResult.getResultMsg()
+//                        ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, true));
+//            } else {
+//                Toast.makeText(RegisterActivity.this, R.string.token_error_message, Toast.LENGTH_LONG).show();
+//                textView.setText(String.format("RegisterError:result[%s:%s]\n" +
+//                                " my tokenId[%s]\nmynumber[%s]\nmynick[%s]\noverwrite[%s]"
+//                        ,strResult.getResultCode(),strResult.getResultMsg()
+//                        ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, true));
+//            }
+//        }
+//    }
+//test-token-id 0244445555 It's me!
 
-            try {
-                JsonHttpCaller caller = new JsonHttpCaller();
-                inviteResult = caller.inviteUploadMedia(inviteUploadRequest);
-            } catch (Exception e) {
-                Log.e(TAG, "Calling Asynch InviteAndUpload",e);
-            }
-            return inviteResult;
-        }
-
-        @Override
-        protected void onPostExecute(InviteResult strResult) {
-            super.onPostExecute(strResult);
-            TextView textView = (TextView)findViewById(R.id.text_register_result);
-            String tokenId = RingBearer.getInstance().getTokenId();
-            String myPhoneNumer = RingBearer.getInstance().getMyPhoneNumber();
-            String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
-            String friendNumber = RingBearer.getInstance().getFriendPhoneNumber();
-            String fileUrl = RingBearer.getInstance().getMediaUrl();
-
-            if (strResult != null && !strResult.equals("")) {
-                //Toast.makeText(this, R.string.gcm_send_message, Toast.LENGTH_LONG).show();
-                textView.setText(String.format("Register: result[%s:%s]\n my tokenId[%s]\nmy number[%s]\nmy nick[%s]\nfriend number[%s]\n fileUrl[%s]"
-                        ,strResult.getResultCode(),strResult.getResultMsg()
-                        ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, friendNumber, fileUrl));
-            } else {
-                Toast.makeText(RegisterActivity.this, R.string.token_error_message, Toast.LENGTH_LONG).show();
-                textView.setText(String.format("RegisterError:result[%s:%s]\n" +
-                                " my tokenId[%s]\nmy number[%s]\nmy nick[%s]\n" +
-                                "friend number[%s]\n" +
-                                " fileUrl[%s]"
-                        ,strResult.getResultCode(),strResult.getResultMsg()
-                        ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, friendNumber, fileUrl));
-            }
-
-        }
-    }
 }
