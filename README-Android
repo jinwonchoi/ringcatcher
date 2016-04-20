@@ -13,6 +13,9 @@ notification기능은 구글의 GCM(google cloud messsaging 서비스)를 연동
 https://dl.dropboxusercontent.com/u/27647045/ringcatcher/app-debug.apk
 https://dl.dropboxusercontent.com/u/27647045/ringcatcher/app-debug-unaligned.apk
 
+샘플 소스 :
+https://github.com/jinwonchoi/ringcatcher/tree/master/RingCatcher
+
 샘플앱 사용법
 ----------------
 기능확인은 다음과 같은 순서로 한다. 실제 테스트는 2개의 폰으로 해야 하지만, 
@@ -46,3 +49,6 @@ send버튼을 누르면 등록이 되고, 등록된 결과가 아래에 출력�
 옵션기능으로 데이터를 다시 받아야 할 필요가 있는경우 내 친구들의 벨소리로 설정된 모든 내역을 서버에서 내려받는다.
 (select * )
 
+
+추신> 
+샘플앱이라서 여러 명칭이나 도메인은 임의로 지었으므로 나중에 변경되면 소스에 반영하도록 한다.
