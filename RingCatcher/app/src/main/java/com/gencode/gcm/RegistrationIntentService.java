@@ -60,12 +60,14 @@ public class RegistrationIntentService extends IntentService {
             // Subscribe to topic channels
             subscribeTopics(token);
             sharedPreferences.edit().putString(QuickstartPreferences.TOKEN_ID_FROM_GCM, token).apply();
+            sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, true).apply(); // google 코드..
 
             // [END register_for_gcm]
         } catch (Exception e) {
             Log.d(TAG, "Failed to complete token refresh", e);
             // If an exception happens while fetching the new token or updating our registration data
             // on a third-party server, this ensures that we'll attempt the update at a later time.
+            sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false).apply();
         }
         // Notify UI that registration has completed, so the progress indicator can be hidden.
         Intent registrationComplete = new Intent(QuickstartPreferences.TOKEN_ID_RECEIVED);
