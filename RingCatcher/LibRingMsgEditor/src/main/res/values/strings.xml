@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">RingMsgEditor</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_add">Add</string>
+    <string name="action_preview">Preview</string>
+    <string name="action_send">Send</string>
+    <string name="add_message">Add message</string>
+    <string name="add_photo">Add photo</string>
+    <string name="add_contact">Send this message to..</string>
+    <string name="message_photo_select_canceled">Choosing a photo canceled.</string>
+    <string name="message_recepient_select_canceled">Choosing a recepient canceled.</string>
+    <string name="message_no_phone_number_avail">No phone number found.</string>
+    <string name="test_my_phone_number">01044445555</string>
+</resources>

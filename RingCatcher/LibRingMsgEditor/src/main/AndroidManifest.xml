@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gencode.ringmsgeditor">
+
+    <permission-group
+        android:name="com.gencode.provider.permissions"
+        android:label="com.gencode.provider.permissionsr" />
+
+    <permission
+        android:name="com.gencode.provider.permission.ACCESS_DATA"
+        android:label="com.gencode.provider.permission.ACCESS_DATA"
+        android:permissionGroup="com.gencode.provider.permissions" />
+    <permission
+        android:name="com.gencode.provider.permission.WRITE_DATA"
+        android:label="com.gencode.provider.permission.WRITE_DATA"
+        android:permissionGroup="com.gencode.provider.permissions" />
+
+    <uses-permission android:name="com.gencode.provider.permission.ACCESS_DATA" />
+    <uses-permission android:name="com.gencode.provider.permission.WRITE_DATA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <application
+        android:name=".Common"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MsgEditorActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+            <intent-filter>
+                <action android:name="com.gencode.ringmsgeditor.MESSAGE_VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+
+        <provider
+            android:name=".MsgContentProvider"
+            android:authorities="com.gencode.ringmsgeditor"
+            android:enabled="true"
+            android:exported="true"
+            android:readPermission="com.gencode.provider.permission.ACCESS_DATA"
+            android:writePermission="com.gencode.provider.permission.WRITE_DATA" />
+
+        <service
+            android:name=".NotificationIntentService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.gencode.ringmsgeditor.MESSAGE_REGISTER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>
