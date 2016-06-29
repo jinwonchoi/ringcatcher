@@ -24,11 +24,12 @@ public class AsyncInsertMessage extends AsyncTask<Map<String,String>, Void, Bool
     }
 
     /**
-     * http로 서버에 친구에게 음원등록
+     * 친구에게 음원등록
      */
     @Override
     protected Boolean doInBackground(Map<String,String>... args) {
         try {
+            mContentResolverHelper.checkQuery();
             if (!mContentResolverHelper.doInsert(mMessageFrom,mMessageTo, args[0]))
                 throw new Exception(String.format("insert fail message from[%s] message to[%s]", mMessageFrom,mMessageTo));
             //ServerUtilities.send(txt, profileEmail);

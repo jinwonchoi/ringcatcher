@@ -3,9 +3,11 @@ package com.gencode.ringcatcher.http;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.gencode.ringcatcher.gcm.QuickstartPreferences;
 import com.gencode.ringcatcher.obj.JsonConstants;
 import com.gencode.ringcatcher.obj.RegisterMessageRequest;
 import com.gencode.ringcatcher.obj.RegisterResult;
@@ -107,23 +109,26 @@ public class HttpIntentService extends IntentService {
                 uploadImageRequest.setCallingPhoneNum(callingNum);
                 uploadImageRequest.setCallingNickName(callingName);
                 uploadImageRequest.setLocale(Locale.KOREA.toString()); //ko_KR | en_US
-                uploadImageRequest.setImageFileName(imageUrl);
+                String imagePath = Utils.getRealPathFromURI(this, Uri.parse(imageUrl));
+                uploadImageRequest.setImageFileName(imagePath);
                 UploadImageResult uploadImageResult = new UploadImageResult();
-
+Log.d(TAG, "caller.uploadMessageImage uploadImageRequest:"+uploadImageRequest.toString());
                 uploadImageResult = caller.uploadMessageImage(uploadImageRequest);
-                if (ReturnCode.SUCCESS.equals(uploadImageResult.getResultCode())
-                    ||ReturnCode.UPDATE_OK.equals(uploadImageResult.getResultCode())) {
+                if (ReturnCode.SUCCESS.get().equals(uploadImageResult.getResultCode())
+                    ||ReturnCode.UPDATE_OK.get().equals(uploadImageResult.getResultCode())) {
                     if (scaleX.equals("")) {
-                        resultImageUrl= uploadImageResult.getFileUrl();
+                        resultImageUrl = String.format("%s%s", HttpConstants.RING_CATCHER_MEDIA_HOME,uploadImageResult.getFileUrl());
                     } else {
-                        resultImageUrl = String.format("%s;%s;%s", uploadImageResult.getFileUrl(), scaleX, scaleY);
+                        resultImageUrl = String.format("%s%s;%s;%s", HttpConstants.RING_CATCHER_MEDIA_HOME,uploadImageResult.getFileUrl(), scaleX, scaleY);
                     }
                     entry.setValue(resultImageUrl);
                 } else {
                     throw new Exception("Image file upload failed:"+imageUrl);
                 }
             }
-
+            for (Map.Entry<String, String> entry : messageMap.entrySet()) {
+                Log.d(TAG, "caller.uploadMessageImage uploadImageRequest:"+entry.getKey()+":"+entry.getValue());
+            }
             messageWrapper = new MessageWrapper(callingNum, userNum, messageMap);
             RegisterMessageRequest registerMessageRequest = new RegisterMessageRequest();
             registerMessageRequest.setTokenId(tokenId);
@@ -133,7 +138,7 @@ public class HttpIntentService extends IntentService {
             registerMessageRequest.setLocale(Locale.KOREA.toString()); //ko_KR | en_US
             registerMessageRequest.setJsonMessage(messageWrapper.toEncodedString());
             RegisterResult registerResult = null;
-
+            Log.d(TAG, "caller.registerMessage:"+registerMessageRequest);
             registerResult = caller.registerMessage(registerMessageRequest);
             intentResult.putExtra(JsonConstants.resultCode, registerResult.getResultCode());
             intentResult.putExtra(JsonConstants.resultMsg, registerResult.getResultMsg());

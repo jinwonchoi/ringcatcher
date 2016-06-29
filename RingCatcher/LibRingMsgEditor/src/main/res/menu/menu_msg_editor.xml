@@ -3,39 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.gencode.ringmsgeditor.MsgEditorActivity"
     android:id="@+id/menu_main">
-    <group android:id="@+id/menu_message">
+    <group android:id="@+id/menu_init">
+        <item
+            android:id="@+id/action_back_from_preview"
+            android:orderInCategory="100"
+            android:title="@string/action_back"
+            app:showAsAction="ifRoom" />
         <item
             android:id="@+id/action_preview"
             android:orderInCategory="100"
             android:title="@string/action_preview"
             app:showAsAction="ifRoom"
             android:visible="false"/>
+    </group>
+    <group android:id="@+id/menu_preview">
+        <item
+            android:id="@+id/action_back_from_send"
+            android:orderInCategory="100"
+            android:title="@string/action_back"
+            app:showAsAction="ifRoom" />
         <item
             android:id="@+id/action_send"
             android:orderInCategory="100"
             android:title="@string/action_send"
             app:showAsAction="ifRoom" />
     </group>
-    <group android:id="@+id/menu_imgview">
-        <!--<item-->
-            <!--android:id="@+id/action_edit"-->
-            <!--android:orderInCategory="100"-->
-            <!--android:title="@string/action_edit"-->
-            <!--app:showAsAction="ifRoom" />-->
+    <group android:id="@+id/menu_edit">
         <item
             android:id="@+id/action_delete"
             android:orderInCategory="100"
             android:title="@string/action_delete"
             app:showAsAction="ifRoom" />
-        <!--<item-->
-            <!--android:id="@+id/action_add"-->
-            <!--android:orderInCategory="100"-->
-            <!--android:title="@string/action_add"-->
-            <!--app:showAsAction="ifRoom" />-->
     </group>
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="collapseActionView" />
+    <!--<item-->
+        <!--android:id="@+id/action_settings"-->
+        <!--android:orderInCategory="100"-->
+        <!--android:title="@string/action_settings"-->
+        <!--app:showAsAction="collapseActionView" />-->
 </menu>

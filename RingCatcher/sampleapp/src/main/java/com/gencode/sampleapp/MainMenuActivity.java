@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gencode.ringcatcher.common.RingBearer;
 import com.gencode.ringmsgeditor.MsgEditorActivity;
 import com.gencode.sampleapp.R;
 import com.gencode.ringcatcher.gcm.GcmActivity;
@@ -94,9 +95,21 @@ public class MainMenuActivity extends GcmActivity /*AppCompatActivity*/ implemen
             intent.putExtra(QuickstartPreferences.MENU_KEY, QuickstartPreferences.MENU_CHECKOUT_RING_INFO);
             Log.d(TAG, "id="+id+" menu_key="+QuickstartPreferences.MENU_CHECKOUT_RING_INFO);
             startActivity(intent);
-        } else if (id == 4) {//메시지 에디터 열기
+        } else if (id == 4) {//메시지 에디터 열기 0244445555 => 나 01055557777=> 받는사람
+            RingBearer.getInstance().setMyPhoneNumber(getResources().getString(R.string.test_my_phone_number));
+            RingBearer.getInstance().setMyPhoneNick(getResources().getString(R.string.test_my_phone_nick));
+            RingBearer.getInstance().setTokenId(getResources().getString(R.string.test_my_token_id));
             Intent intent = new Intent(this, MsgEditorActivity.class);
             //intent.putExtra(QuickstartPreferences.MENU_KEY, QuickstartPreferences.MENU_CHECKOUT_RING_INFO);
+            Log.d(TAG, "id="+id+" menu_key="+QuickstartPreferences.MENU_MESSAGE_EDITOR);
+            startActivity(intent);
+        } else if (id == 5) {//메시지 띄우기 01055557777 => 나 0244445555=> 보낸사람
+            RingBearer.getInstance().setMyPhoneNumber(getResources().getString(R.string.test_my_phone_number2));
+            RingBearer.getInstance().setMyPhoneNick(getResources().getString(R.string.test_my_phone_nick2));
+            //RingBearer.getInstance().setTokenId(getResources().getString(R.string.test_my_token_id));
+            Intent intent = new Intent(this, MsgEditorActivity.class);
+            intent.setAction(com.gencode.ringcatcher.gcm.QuickstartPreferences.ACTION_MESSAGE_VIEW);
+            intent.putExtra(com.gencode.ringmsgeditor.JsonConstants.callingNum, getResources().getString(R.string.test_my_phone_number));
             Log.d(TAG, "id="+id+" menu_key="+QuickstartPreferences.MENU_MESSAGE_EDITOR);
             startActivity(intent);
         }

@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -18,10 +19,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.gencode.ringmsgeditor.task.AsyncGetBitmapDrawableFromUrl;
+import com.gencode.ringmsgeditor.task.IGetBitmapDrawableTask;
+
 /**
  * Created by Administrator on 2016-06-06.
  */
-public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListener {
+public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListener, IGetBitmapDrawableTask {
     final String TAG = this.getClass().getName();
     int deviceWidth;
     int mWidthMeasureSpec;
@@ -105,19 +109,15 @@ public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListen
             String[] uriArr = uriStr.split(";");
             if (uriArr.length == 3) {
                 Uri uri = Uri.parse(uriArr[0]);
-                if (uriArr[0].startsWith("http"))
-                    mDrawable = Utils.drawableFromUrl(this.getContext(), uriArr[0]);
-                else
-                    mDrawable = Utils.drawableFromUri(this.getContext(), uriArr[0]);
+                AsyncGetBitmapDrawableFromUrl asyncGet = new AsyncGetBitmapDrawableFromUrl(this, this.getContext());
+                asyncGet.execute(uriArr[0]);
                 float fx = Float.parseFloat(uriArr[1]);
                 float fy = Float.parseFloat(uriArr[2]);
                 matrix.postScale(fx,fy, 0,0);
                 isPreview = true;
             } else {
-                if (uriArr[0].startsWith("http"))
-                    mDrawable = Utils.drawableFromUrl(this.getContext(), uriStr);
-                else
-                    mDrawable = Utils.drawableFromUri(this.getContext(), uriStr);
+                AsyncGetBitmapDrawableFromUrl asyncGet = new AsyncGetBitmapDrawableFromUrl(this, this.getContext());
+                asyncGet.execute(uriArr[0]);
             }
         } catch (Exception e) {
             Log.e(TAG, "wrong Url info(url;xscale;yscale)",e);
@@ -191,9 +191,9 @@ public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListen
         if (imgView == null) {
             imgView = new ImageView(getContext());
             Log.d("CHOI_DEBUG", "ImageView created");
-            if (mDrawable == null)
-                imgView.setImageResource(R.drawable.kagi);
-            else
+            if (mDrawable == null) {
+                imgView.setImageResource(android.R.color.transparent);
+            } else
                 imgView.setImageDrawable(mDrawable);
 
             imgView.setScaleType(ImageView.ScaleType.MATRIX);
@@ -303,6 +303,8 @@ public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListen
     public String getUri() {
         float[] f = new float[9];
         matrix.getValues(f);
+        if (f[Matrix.MSCALE_X] == 1f) f[Matrix.MSCALE_X]= 0.99f;
+        if (f[Matrix.MSCALE_Y] == 1f) f[Matrix.MSCALE_Y]= 0.99f;
         return String.format("%s;%f;%f",this.getTag(),f[Matrix.MSCALE_X],f[Matrix.MSCALE_Y]);
     }
 
@@ -337,4 +339,12 @@ public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListen
         return (float) Math.toDegrees(radians);
     }
 
+    @Override
+    public void onTaskCompleted(Drawable drawable) {
+        if (drawable == null) return;
+        Log.d(TAG, "onTaskCompleted x:"+drawable.getIntrinsicWidth()+" y:"+drawable.getIntrinsicHeight());
+        mDrawable = drawable;
+        imgView.setImageDrawable(mDrawable);
+        resizeLayout(imgView);
+    }
 }

@@ -22,6 +22,7 @@
         <item>친구가 설정한 벨소리 다운로드</item>
         <item>모든 설정 벨소리 다운로드</item>
         <item>메시지 보내기</item>
+        <item>메시지 띄우기</item>
     </string-array>
     <string name="title_activity_list_ring_info">Listup uploaded media</string>
     <string name="button_pick">Pick Media</string>

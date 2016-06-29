@@ -1,11 +1,13 @@
 package com.gencode.ringmsgeditor;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
@@ -64,7 +66,7 @@ public class Utils {
     public static Drawable drawableFromUrl(Context context, String url) {
         try {
             Bitmap x;
-
+            Log.d(TAG, "drawableFromUrl:"+url);
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.connect();
             InputStream input = connection.getInputStream();
@@ -81,8 +83,8 @@ public class Utils {
     public static String getMyPhoneNumber(Context context) {
         TelephonyManager tMgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
         String myNumber = tMgr.getLine1Number();
-        if (myNumber==null || myNumber.equals("")) {
-            myNumber = context.getString(R.string.test_my_phone_number);
+        if (myNumber == null || myNumber.trim().equals("")) {
+            myNumber = context.getResources().getString(R.string.test_my_phone_number);
         }
         return myNumber;
     }
@@ -95,7 +97,23 @@ public class Utils {
 
     public static String getBase64StringFromJSONObject(JSONObject jsonObject) {
         byte[] bytesEncoded = Base64.encode(jsonObject.toString().getBytes(),Base64.DEFAULT);
-        System.out.println("Encoded value: "+new String(bytesEncoded));
-        return new String(bytesEncoded);
+        String encodedStr = new String(bytesEncoded).replaceAll("(?:\\r\\n|\\n\\r|\\n|\\r)", "");
+        System.out.println("Encoded value: "+encodedStr);
+        return encodedStr;
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 }

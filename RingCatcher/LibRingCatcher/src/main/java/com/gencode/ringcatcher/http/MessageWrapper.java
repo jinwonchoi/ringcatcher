@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -28,12 +29,13 @@ public class MessageWrapper {
     String mMessageFrom;
     String mMessageTo;
     Map<String, String> mMessageList = new HashMap<String, String>();
-    JSONObject mJsonObject;
+    JSONObject mJsonObject = new JSONObject();
 
     public MessageWrapper(String messageFrom, String messageTo, Map<String, String> messageList) throws JSONException{
         this.mMessageFrom = messageFrom;
         this.mMessageTo = messageTo;
         this.mMessageList = messageList;
+
         mJsonObject.put("message_from", messageFrom);
         mJsonObject.put("message_to", messageTo);
         JSONObject jsonObject = new JSONObject();
@@ -49,6 +51,14 @@ public class MessageWrapper {
             mJsonObject = Utils.getJSONObjectFromBase64(strJson);
         } else {
             mJsonObject = new JSONObject(strJson);
+        }
+        this.mMessageFrom = mJsonObject.getString("message_from");
+        this.mMessageTo = mJsonObject.getString("message_to");
+        JSONObject jsonMap =  mJsonObject.getJSONObject("ring_message");
+        Iterator<String> keys = jsonMap.keys();
+        while(keys.hasNext()) {
+            String key = (String)keys.next();
+            mMessageList.put(key, (String)jsonMap.get(key));
         }
     }
 

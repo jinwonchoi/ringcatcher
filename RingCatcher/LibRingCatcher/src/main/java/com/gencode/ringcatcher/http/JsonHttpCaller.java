@@ -143,6 +143,7 @@ public class JsonHttpCaller {
         try {
             Uri fileUri = Uri.parse(request.getImageFileName());
             String fileName = new File(fileUri.getPath()).getName();
+
             String url = HttpConstants.RING_CATCHER_HOME+"/json/uploadImage";
             String body = "	{\"userNum\":\""+request.getFriendPhoneNum()+"\""
                     +",\"callingId\":\""+request.getTokenId()+"\""
@@ -204,14 +205,16 @@ public class JsonHttpCaller {
 
         try {
             String url = HttpConstants.RING_CATCHER_HOME+"/json/registerMessage";
-            String body = "	{\"userNum\":\""+request.getFriendPhoneNum()+"\""
+            String body = "{\"userNum\":\""+request.getFriendPhoneNum()+"\""
                     +",\"callingId\":\""+request.getTokenId()+"\""
                     +",\"callingNum\":\""+request.getCallingPhoneNum()+"\""
-                    +",\"callingName\":\""+request.getCallingNickName()+"\""
+                    +",\"callingName\":\"It\'s me!\""//\""+request.getCallingNickName()+"\""
                     +",\"locale\":\""+request.getLocale()+"\""//en_US, ko_KR
                     +",\"jsonMessage\":\""+request.getJsonMessage()+"\"}";
-
+            //+",\"jsonMessage\":\"eyJtZXNzYWdlX3RvIjoiMDEwNTU1N/Tc3NzciLCJyaW5nX21lc3NhZ2UiOnsiMDppbWciOiJcL3JpbmdtZWRpYVwvMjAxNjA2MjhcLzAyNDQ0NDU1NTVfMDEwNTU1NTc3NzcuanBnOzEuMDAwMDAwOzEuMDAwMDAwIn0sIm1lc3NhZ2VfZnJvbSI6IjAyNDQ0NDU1NTUifQ==\"}";
+            Log.d(TAG, "registerMessage body="+body);
             String json = http(url, body);
+            Log.d(TAG, "registerMessage json="+json);
             JSONObject jsonRootObject = new JSONObject(json);
 
             //Get the instance of JSONArray that contains JSONObjects

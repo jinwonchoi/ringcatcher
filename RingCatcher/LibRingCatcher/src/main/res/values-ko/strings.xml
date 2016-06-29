@@ -18,4 +18,6 @@
     <string name="noti_body_ring">%1$s(%2$s)님이 벨소리 변경을 요청하셨습니다.</string>
     <string name="noti_title_message">Ringcatcher에서 확인하세요.</string>
     <string name="noti_body_message">%1$s(%2$s)님의 메시지가 도착하였습니다.</string>
+    <string name="phone_number_not_selected">수신자를 선택하세요.</string>
+    <string name="message_empty">메시지가 비었습니다.</string>
 </resources>

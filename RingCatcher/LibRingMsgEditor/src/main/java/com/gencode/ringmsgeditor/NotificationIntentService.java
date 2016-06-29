@@ -70,7 +70,10 @@ public class NotificationIntentService extends IntentService {
      */
     private void handleActionMessageRegister(String callingNum,String callingName,String jsonMessage) {
         try {
-            final String myPhoneNumber = Utils.getMyPhoneNumber(this);
+            String myPhoneNumber = Utils.getMyPhoneNumber(this);
+            //테스트용 : 0244445555/01055557777 2개번호를 번갈아 사용.
+            if (getResources().getString(R.string.test_my_phone_number).equals(callingNum))
+                myPhoneNumber =getResources().getString(R.string.test_my_phone_number2);
             MessageWrapper messageWrapper = new MessageWrapper(jsonMessage, true);
             Map<String, String> messageMap = messageWrapper.getMessageList();
 
@@ -79,7 +82,7 @@ public class NotificationIntentService extends IntentService {
                 public void onTaskCompleted(boolean result) {
                     Log.d(TAG, "AsyncInsertMessage.onTaskCompleted result="+result);
                 }
-            }, new ContentResolverHelper(this), myPhoneNumber, callingNum).execute(messageMap);
+            }, new ContentResolverHelper(this), callingNum, myPhoneNumber).execute(messageMap);
         } catch (JSONException e) {
             Log.e(TAG, "handleActionMessageRegister",e);
         }
