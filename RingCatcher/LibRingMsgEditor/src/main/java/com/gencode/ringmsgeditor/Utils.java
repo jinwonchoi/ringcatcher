@@ -1,6 +1,7 @@
 package com.gencode.ringmsgeditor;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
@@ -102,7 +104,7 @@ public class Utils {
         return encodedStr;
     }
 
-    public String getRealPathFromURI(Context context, Uri contentUri) {
+    public static String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
@@ -115,5 +117,27 @@ public class Utils {
                 cursor.close();
             }
         }
+    }
+
+    public static void showWarningDialog(Context context, int titleId, int messageId) {
+        showWarningDialog(context, context.getResources().getString(titleId), context.getResources().getString(messageId));
+    }
+
+    public static void showWarningDialog(Context context, String title, String message) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                    }
+                })
+//                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        // do nothing
+//                    }
+//                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }

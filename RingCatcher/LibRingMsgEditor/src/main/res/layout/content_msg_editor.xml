@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.gencode.ringmsgeditor.MsgEditorActivity"
+    android:id="@+id/content_msg_nestedscrl_view"
     tools:showIn="@layout/activity_msg_editor">
     <RelativeLayout
         android:layout_width="wrap_content"

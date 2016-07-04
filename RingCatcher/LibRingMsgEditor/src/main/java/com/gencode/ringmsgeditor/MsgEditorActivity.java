@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -14,6 +15,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,10 +23,12 @@ import android.view.Display;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +37,8 @@ import com.gencode.ringcatcher.gcm.QuickstartPreferences;
 import com.gencode.ringcatcher.http.HttpConstants;
 import com.gencode.ringcatcher.http.HttpIntentService;
 import com.gencode.ringcatcher.http.MessageWrapper;
+import com.gencode.ringcatcher.http.ReturnCode;
+import com.gencode.ringcatcher.obj.RegisterResult;
 import com.gencode.ringmsgeditor.task.AsyncInsertMessage;
 import com.gencode.ringmsgeditor.task.IInsertMessageTask;
 
@@ -64,21 +70,16 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
     private ActionHandler actionHandler;
     private ContentResolverHelper contentResolverHelper;
     private BroadcastReceiver httpResponseReceiver;
-    private Map<Integer, View> mMsgMap = new HashMap<Integer, View>();
+    //private Map<Integer, View> mMsgMap = new HashMap<Integer, View>();
     private int mSelectedViewId = -1;
-    private int mLastViewId = -1;
+    //private int mLastViewId = -1;
 
-    private EditText msgEdit;
-    private Button sendBtn;
-    private Button photoBtn;
-    private String profileId;
-    private String profileName;
-    private String profileEmail;
+    //private EditText msgEdit;
 
     LinearLayout mUpperEditLayout;
     LinearLayout mBottomEditLayout;
     AppBarLayout mAppBar;
-
+    Button mBtnContact;
     int idIntentID = 999;//앨범사진추가용
 
     @Override
@@ -86,26 +87,26 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_msg_editor);
 
-        profileId = getIntent().getStringExtra(Common.PROFILE_ID);
-        msgEdit = (EditText) findViewById(R.id.msg_edit);
-        sendBtn = (Button) findViewById(R.id.add_btn);
-        photoBtn = (Button) findViewById(R.id.photo_btn);
+//        profileId = getIntent().getStringExtra(Common.PROFILE_ID);
+//        msgEdit = (EditText) findViewById(R.id.msg_edit);
+//        sendBtn = (Button) findViewById(R.id.add_btn);
+//        photoBtn = (Button) findViewById(R.id.photo_btn);
 
         mUpperEditLayout = (LinearLayout)findViewById(R.id.layout_upper_edit);
         mBottomEditLayout = (LinearLayout)findViewById(R.id.layout_bottom_edit);
         mAppBar = (AppBarLayout)findViewById(R.id.appbar);
-
+        mBtnContact = (Button)findViewById(R.id.btn_add_contact);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
 /* todo
                 intent.putExtra(JsonConstants.callingNum,jsonRootObject.optString(JsonConstants.callingNum));
@@ -129,12 +130,12 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
             Point size = new Point();
             display.getSize(size);
             int width = size.x;
-            EditText et = (EditText) findViewById(R.id.msg_edit);
-            et.setWidth(width);
+//            EditText et = (EditText) findViewById(R.id.msg_edit);
+//            et.setWidth(width);
         }
         registerReceiver();
         //contentResolverHelper.checkQuery();
-        Log.d(TAG, "mMsgMap.size:"+mMsgMap.size());
+        Log.d(TAG, "mMsgMap.size:"+actionHandler.getMsgMap().size());
     }
 
     private void displayOnlyPreviewMode() {
@@ -159,6 +160,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         mBottomEditLayout.setVisibility(View.GONE);
 
         actionMode = ACTION_PREVIEW;
+        completeEditText();
         invalidateOptionsMenu();
     }
 
@@ -167,6 +169,11 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         mUpperEditLayout.setVisibility(View.VISIBLE);
         mBottomEditLayout.setVisibility(View.VISIBLE);
         actionMode = ACTION_NONE;
+        prepareEditText();
+        EditText editText = (EditText)findViewById(actionHandler.getLastViewId());
+        if(editText.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
         invalidateOptionsMenu();
     }
 
@@ -226,18 +233,19 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         }
     }
 
-    private void clearMessagesOnEdit() {
-        Log.d(TAG, "clearMessagesOnEdit");
-        for (Map.Entry<Integer, View> entry : mMsgMap.entrySet())
-        {
-            if (entry.getValue() instanceof TextView) {
-                actionHandler.doDeleteTextView(R.id.content_msg_layout, entry.getKey());
-            } else {
-                actionHandler.doDeleteImageView(R.id.content_msg_layout, entry.getKey());
-            }
-        }
-        mMsgMap.clear();
-    }
+//    private void clearMessagesOnEdit() {
+//        Log.d(TAG, "clearMessagesOnEdit");
+//        for (Map.Entry<Integer, View> entry : mMsgMap.entrySet()) {
+//            if (entry.getValue() instanceof TextView) {
+//                actionHandler.doDeleteTextView(R.id.content_msg_layout, entry.getKey());
+//            } else if (entry.getValue() instanceof EditText) {
+//                actionHandler.doDeleteEditText(R.id.content_msg_layout, entry.getKey());
+//            }else {
+//                actionHandler.doDeleteImageView(R.id.content_msg_layout, entry.getKey());
+//            }
+//        }
+//        mMsgMap.clear();
+//    }
 
     private void registerReceiver() {
         // The filter's action is BROADCAST_ACTION
@@ -248,9 +256,15 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         httpResponseReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                boolean result = getIntent().getBooleanExtra("result", false);
-                Toast.makeText(MsgEditorActivity.this, "message delivered! result:"+result, Toast.LENGTH_LONG);
-                Log.d(TAG, "message delivered! result:"+result);
+                //RegisterResult registerResult = null;
+                //intentResult.putExtra(com.gencode.ringcatcher.obj.JsonConstants.resultCode, registerResult.getResultCode());
+                String resultCode = intent.getStringExtra(com.gencode.ringcatcher.obj.JsonConstants.resultCode);
+                if (ReturnCode.SUCCESS.get().equals(resultCode)||ReturnCode.UPDATE_OK.get().equals(resultCode)) {
+                    Utils.showWarningDialog(MsgEditorActivity.this, R.string.title_send_message_ok,R.string.send_message_ok);
+                } else {
+                    Utils.showWarningDialog(MsgEditorActivity.this, R.string.title_send_message_fail,R.string.send_message_fail);
+                }
+                Log.d(TAG, "message delivered! result:"+resultCode);
             }
         };
         // Registers the DownloadStateReceiver and its intent filters
@@ -282,28 +296,28 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_delete) {
             if (actionMode == ACTION_TEXT_EDIT) {
-                if (actionHandler.doDeleteTextView(R.id.content_msg_layout, mSelectedViewId))
-                    mMsgMap.remove(mSelectedViewId);
+                actionHandler.doDeleteEditText(R.id.content_msg_layout, mSelectedViewId);
             } else if (actionMode == ACTION_IMAGE_EDIT) {
-                if (actionHandler.doDeleteImageView(R.id.content_msg_layout, mSelectedViewId))
-                    mMsgMap.remove(mSelectedViewId);
+                actionHandler.doDeleteImageView(R.id.content_msg_layout, mSelectedViewId);
             }
             actionMode = ACTION_NONE;
             invalidateOptionsMenu();
         } else if (item.getItemId() == R.id.action_preview) {
-            if (mMsgMap.size() == 0)
-                Toast.makeText(this,R.string.message_empty, Toast.LENGTH_LONG );
-            else {
+            if (actionHandler.isLayoutEmpty()) {
+                Utils.showWarningDialog(this, R.string.title_message_empty, R.string.message_empty);
+                return false;
+            } else {
                 actionMode = ACTION_PREVIEW;
                 displayPreviewModeOnEdit();
             }
         } else if (item.getItemId() == R.id.action_send) {
-            if (mMsgMap.size() == 0)
-                Toast.makeText(this,R.string.message_empty, Toast.LENGTH_LONG );
-            else {
-                sendMessage();
+            if (actionHandler.isLayoutEmpty()) {
+                Utils.showWarningDialog(this, R.string.title_message_empty, R.string.message_empty);
+                return false;
+            } else {
+                if (!sendMessage()) return false;
                 actionMode = ACTION_NONE;
-                clearMessagesOnEdit();
+                actionHandler.clearMessagesOnEdit();
                 displayEditMode();
             }
         } else if (item.getItemId() == R.id.action_back_from_preview || item.getItemId() == R.id.action_back_from_send) {
@@ -352,15 +366,15 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
 
     @Override
     public void OnModeSwitchChange(View view) {
-        for (Map.Entry<Integer, View> entry : mMsgMap.entrySet())
+        for (Map.Entry<Integer, View> entry : actionHandler.getMsgMap().entrySet())
         {
-            if (entry.getValue() instanceof TextView && !entry.getValue().equals(view)) {
-                ((TextView)entry.getValue()).setBackground(null);
+            if (entry.getValue() instanceof EditText && !entry.getValue().equals(view)) {
+                ((EditText)entry.getValue()).setBackgroundResource(android.R.color.transparent);
             }
         }
 
-        TextView tView = (TextView) view;
-        if (tView.getBackground() ==null) {
+        EditText tView = (EditText) view;
+        if (((ColorDrawable)tView.getBackground()).getColor() == getResources().getColor(android.R.color.transparent)) {
             actionMode = ACTION_TEXT_EDIT;
             mSelectedViewId = view.getId();
             Log.d("CHOI_DEBUG","OnModeSwitchChange text id"+view.getId());
@@ -369,7 +383,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
             actionMode = ACTION_NONE;
             mSelectedViewId = -1;
             Log.d("CHOI_DEBUG","OnModeSwitchChange none");
-            tView.setBackground(null);
+            tView.setBackgroundResource(android.R.color.transparent);
         }
 
         invalidateOptionsMenu();
@@ -385,35 +399,62 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
     }
 
     public void onClick(View v) {
-        if (v.getId() == R.id.add_btn){
-            addTextViewWithString(msgEdit.getText().toString());
-        } else if (v.getId() == R.id.photo_btn) {
-            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-            photoPickerIntent.setType("image/*");
-            startActivityForResult(photoPickerIntent, idIntentID);
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, idIntentID);
+    }
+
+    //preview 용
+    public void addTextViewWithString(String message) {
+        TextView textView = (TextView)actionHandler.doAddTextView(R.id.content_msg_layout
+                ,message, this);
+        Log.d(TAG, "Add textView id:"+textView.getId());
+        Log.d(TAG, "Add textView lastId="+actionHandler.getLastViewId());
+    }
+
+    //최초 또는 사진첨부후 편집모드 클릭 후 수행
+    public void prepareEditText() {
+        if (actionMode == ACTION_ONLEY_PREVIEW) return;
+        EditText editText= (EditText)actionHandler.doAddEditText(R.id.content_msg_layout,this);
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+
+        RelativeLayout mContentMessageLayout = (RelativeLayout)findViewById(R.id.content_msg_layout);
+        ViewGroup.LayoutParams mainLayoutParams = mContentMessageLayout.getLayoutParams();
+        mainLayoutParams.height = mContentMessageLayout.getMeasuredHeight() + editText.getHeight()*3;
+        mContentMessageLayout.setLayoutParams(mainLayoutParams);
+
+//        NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.content_msg_nestedscrl_view);
+//        nestedScrollView.scrollTo(0, 0);
+
+        //editText.setSelection(0);
+        Log.d(TAG, "prepareEditText Add editText id:"+editText.getId());
+    }
+
+    //사진첨부 또는 미리보기 클릭, 보내기 이전 수행
+    public void completeEditText() {
+        View lastView = actionHandler.getMsgMap().get(actionHandler.getLastViewId());
+        if (lastView instanceof  EditText) {
+            if (((EditText)lastView).getText().toString().trim().equals("")) {
+                actionHandler.doDeleteEditText(R.id.content_msg_layout, actionHandler.getLastViewId());
+            }
         }
     }
 
-    public void addTextViewWithString(String message) {
-        TextView textView = (TextView)actionHandler.doAddTextView(R.id.content_msg_layout, mLastViewId
-                ,message, this);
-        Log.d(TAG, "Add textView id:"+textView.getId());
-        mMsgMap.put(textView.getId(), textView);
-        mLastViewId = textView.getId();//textView.getId();//
-    }
     /**
      * 메시지 작성완료시 전송 버튼을 누르면 저장하고 이미지파일, JSON파일을 전송한다.
      */
-    private void sendMessage() {
+    private boolean sendMessage() {
         //final String myPhoneNumber = Utils.getMyPhoneNumber(MsgEditorActivity.this);
         final String myPhoneNumber = RingBearer.getInstance().getMyPhoneNumber();
         final String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
         EditText editTextRecipientNumber = (EditText)MsgEditorActivity.this.findViewById(R.id.edit_contact);
         final String recipientNumber = editTextRecipientNumber.getText().toString();
-        final Map<String, String> messageMap = getMapForMessageSave();
+        completeEditText();
+        final Map<String, String> messageMap = actionHandler.getMapForMessageSave();
         if (recipientNumber == null || recipientNumber.trim().equals("")) {
-            Toast.makeText(this,R.string.phone_number_not_selected, Toast.LENGTH_LONG);
-            return;
+            Utils.showWarningDialog(this, R.string.title_phone_number_not_selected,R.string.phone_number_not_selected);
+            return false;
         }
 
         //저장후에 서버로 전송한다.httpResponseReceiver를 통해 결과를 받음
@@ -430,6 +471,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
 //                }
 //            }
 //        }, contentResolverHelper, myPhoneNumber, recipientNumber).execute(messageMap);
+        return true;
     }
 
     private void receiveMessage() {
@@ -437,11 +479,12 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
     }
 
     public void addPhotoViewWithImageUri(String imageUriStr ) {
-        Log.d(TAG, "addPhotoViewWithImageUri:"+imageUriStr);
-        PhotoRelativeLayout photoRelativeLayout = (PhotoRelativeLayout) actionHandler.doAddImageView(R.id.content_msg_layout, mLastViewId
+        Log.d(TAG, "Add Photo addPhotoViewWithImageUri:"+imageUriStr);
+        Log.d(TAG, "Add Photo lastId="+actionHandler.getLastViewId());
+        completeEditText();
+        PhotoRelativeLayout photoRelativeLayout = (PhotoRelativeLayout) actionHandler.doAddImageView(R.id.content_msg_layout
                 , imageUriStr);
-        mMsgMap.put(photoRelativeLayout.getId(), photoRelativeLayout);
-        mLastViewId = photoRelativeLayout.getId();//textView.getId();//
+        prepareEditText();
     }
 
     @Override
@@ -467,6 +510,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
             if (resultCode == RESULT_OK) {
                 Cursor cursor = null;
                 String phoneNumber = "";
+                String phoneName = "";
                 try {
                     Uri result = intent.getData();
                     Log.v(TAG, "Got a contact result: "
@@ -480,12 +524,14 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
                             null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?", new String[] { id },
                             null);
 
-                    int phoneIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA);
+                    int phoneNumberIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA);
+                    int phoneNameIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 
                     // let's just get the first email
                     if (cursor.moveToFirst()) {
-                        phoneNumber = cursor.getString(phoneIdx);
-                        Log.v(TAG, "Got phone number: " + phoneNumber);
+                        phoneNumber = cursor.getString(phoneNumberIdx);
+                        phoneName= cursor.getString(phoneNameIdx);
+                        Log.v(TAG, "Got phone number: " + phoneNumber+" Name:"+phoneName);
                     } else {
                         Log.w(TAG, "No results");
                     }
@@ -507,30 +553,6 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
                 Toast.makeText(this,R.string.message_recepient_select_canceled,Toast.LENGTH_LONG);
             }
         }
-    }
-
-    private Map<String, String> getMapForMessageSave() {
-        Map<String, String> messsageMap = new HashMap<String, String>();
-
-        for (Map.Entry<Integer, View> entry : mMsgMap.entrySet())
-        {
-            if (entry.getValue() instanceof PhotoRelativeLayout) {
-                Log.d(TAG, "getMapForMessageSave:"+entry.getKey()+":"+((PhotoRelativeLayout) entry.getValue()).getUri());
-            } else if (entry.getValue() instanceof TextView) {
-                Log.d(TAG, "getMapForMessageSave:"+entry.getKey()+":"+((TextView) entry.getValue()).getText().toString());
-            }
-        }
-        int i = 0;
-        for (Map.Entry<Integer, View> entry : mMsgMap.entrySet())
-        {
-            if (entry.getValue() instanceof PhotoRelativeLayout) {
-                messsageMap.put(String.format("%d:img",i),((PhotoRelativeLayout) entry.getValue()).getUri());
-            } else if (entry.getValue() instanceof TextView) {
-                messsageMap.put(String.format("%d:txt",i),((TextView) entry.getValue()).getText().toString());
-            }
-            i++;
-        }
-        return messsageMap;
     }
 
 }

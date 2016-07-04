@@ -8,6 +8,8 @@
     android:animateLayoutChanges="true"
     tools:context="com.gencode.ringmsgeditor.MsgEditorActivity">
 
+    <include layout="@layout/content_msg_editor" />
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +26,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="#FFE0B2"
             android:id="@+id/layout_upper_edit"
             android:orientation="horizontal"
             android:layout_gravity="top">
@@ -33,11 +35,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
+                android:background="#FFCC80"
                 android:layout_weight="3"
                 />
             <Button
                 android:id="@+id/btn_add_contact"
                 style="?android:attr/buttonStyleSmall"
+                android:focusableInTouchMode="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="doLaunchContactPicker"
@@ -45,7 +49,6 @@
         </LinearLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_msg_editor" />
     <LinearLayout
         android:id="@+id/layout_bottom_edit"
         android:layout_width="match_parent"
@@ -63,7 +66,7 @@
             android:onClick="onClick"
             android:background="@drawable/ic_insert_photo_black_24dp"/>
 
-        <EditText
+<!--        <EditText
             android:id="@+id/msg_edit"
             android:text=""
             android:layout_width="0dp"
@@ -76,14 +79,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClick"
-            android:background="@drawable/ic_add_black_24dp"/>
+            android:background="@drawable/ic_add_black_24dp"/>-->
     </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
+<!--    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="clip_vertical|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+        android:src="@android:drawable/ic_dialog_email" />-->
 
 </android.support.design.widget.CoordinatorLayout>

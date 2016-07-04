@@ -13,11 +13,19 @@
     <string name="message_photo_select_canceled">Choosing a photo canceled.</string>
     <string name="message_recepient_select_canceled">Choosing a recepient canceled.</string>
     <string name="message_no_phone_number_avail">No phone number found.</string>
+    <string name="title_phone_number_not_selected">Invalid phone number.</string>
     <string name="phone_number_not_selected">You need to select a recepient.</string>
-    <string name="message_empty">Empty message. You need to add messages.</string>
+    <string name="title_message_empty">No messages.</string>
+    <string name="message_empty">No messages. You need to add messages.</string>
+    <string name="title_send_message_ok">Message sent.</string>
+    <string name="send_message_ok">Message sent successfully</string>
+    <string name="title_send_message_fail">Message error.</string>
+    <string name="send_message_fail">Message failed to send</string>
     <string name="test_my_phone_number">0244445555</string>
     <string name="test_my_phone_nick">It\'s me!</string>
     <string name="test_my_token_id">test-token-id</string>
     <string name="test_my_phone_number2">01055557777</string>
     <string name="test_my_phone_nick2">나야 나!</string>
+    <string name="edit_text_intro_hint">Write your message here.</string>
+
 </resources>
