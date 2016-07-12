@@ -18,7 +18,7 @@ public class JsonSimple {
     public static void main(String[] args) {
     	String url = "http://localhost:8080/ringcatcher/json/register";
     	
-    	String body = "{\"userId\":\"asdfasdfasdf\",\"userNum\":\"weweweewe\",\"userEmail\":\"jinnonspot@gmail.com\",\"recomId\":\"weweweewe\"}";
+    	String body = "{\"userId\":\"mytoken-id\",\"userNum\":\"01044445555\",\"userEmail\":\"jinnonspot@gmail.com\",\"recomId\":\"hisrecommend\"}";
     	JsonSimple json = new JsonSimple();
     	json.http(url, body);
 

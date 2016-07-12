@@ -18,6 +18,8 @@ public class JsonSimpleTest {
 
 	String url = "http://localhost:8080/ringcatcher/";
 	//String url = "http://52.79.62.98:8080/ringcatcher/";
+	String tokenId = "e4ODJwgWx9E:APA91bHauKGwsdiGLhGJHiOQX5IxMNbju1a2TH7QGKB4_HPd3UspkrsgyE_M54sw6OT3UwAaeNCSQiKzVpT922_qm3LAgH6D-zXipXBodX2rKQ5PAK8FdhNcdzQKeg7N-QHNbS1X-cNm";
+
 	@Before
 	public void setUp() throws Exception {
 		//
@@ -51,12 +53,11 @@ public class JsonSimpleTest {
 	public void testRegister() {
     	String url = this.url+"/json/register";
     	
-    	String tokenId = "AToken_eiD55aUDQeM:APA91bG0AWBahj4df_LFwUpLvB9FegJcrs_NcFVOdjvOepHrVGwOKpHUbg6qeBv8lJzIHaECGA4pHLTqQEREtLmx58j2NoCu8zx0wYcG-S3oHZZgIOcL8Ydif9frkA00d0YES8WFCL7j";
     	String body = "{\"userNum\":\"01055557777\""
     			+",\"userId\":\""+tokenId+"\""
     			+",\"userEmail\":\"jinnonspot@gmail.com\""
-    			+",\"recomId\":\"019932342323342\""
-    			+",\"overwrite\":\"false\"}";
+    			+",\"recomId\":\"his-recommend\""
+    			+",\"overwrite\":\"true\"}";
     	JsonSimple json = new JsonSimple();
     	String strJson = json.http(url, body);
     	
@@ -100,10 +101,23 @@ public class JsonSimpleTest {
 	@Test
 	public void testRegister2() {
     	String url = this.url+"/json/register";
-    	String tokenId = "eiD55aUDQeM:APA91bG0AWBahj4df_LFwUpLvB9FegJcrs_NcFVOdjvOepHrVGwOKpHUbg6qeBv8lJzIHaECGA4pHLTqQEREtLmx58j2NoCu8zx0wYcG-S3oHZZgIOcL8Ydif9frkA00d0YES8WFCL7j";
-    	String body = "{\"userNum\":\"010444448888\""
-    			+",\"userId\":\""+tokenId+"\""
+    	String body = "{\"userNum\":\"0244445555\""
+    			+",\"userId\":\"test-token-id\""
     			+",\"userEmail\":\"jinnon@naver.com\""
+    			+",\"recomId\":\"1459574403591\""
+    			+",\"overwrite\":\"false\"}";
+    	JsonSimple json = new JsonSimple();
+    	json.http(url, body);    	
+		assert(true);
+//		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testRegister3() {
+    	String url = this.url+"/json/register";
+    	String body = "{\"userNum\":\"01066668888\""
+    			+",\"userId\":\"test-token-id2\""
+    			+",\"userEmail\":\"test@naver.com\""
     			+",\"recomId\":\"1459574403591\""
     			+",\"overwrite\":\"false\"}";
     	JsonSimple json = new JsonSimple();
@@ -133,10 +147,10 @@ public class JsonSimpleTest {
 	@Test
 	public void testRingUpdate() {
     	String url = this.url+"/json/ringupdate";
-    	String tokenId = "eiD55aUDQeM:APA91bG0AWBahj4df_LFwUpLvB9FegJcrs_NcFVOdjvOepHrVGwOKpHUbg6qeBv8lJzIHaECGA4pHLTqQEREtLmx58j2NoCu8zx0wYcG-S3oHZZgIOcL8Ydif9frkA00d0YES8WFCL7j";
 
+    	String tokenId = "test-token-id2";
     	String body = "{\"userId\":\""+tokenId+"\""
-    			+",\"userNum\":\"010444448888\"}";
+    			+",\"userNum\":\"01066668888\"}";
     	JsonSimple json = new JsonSimple();
     	String strJson = json.http(url, body);
     	
@@ -190,10 +204,9 @@ public class JsonSimpleTest {
 		try {
     	String url = this.url+"/json/ringcheckout";
     	
-    	String tokenId = "eiD55aUDQeM:APA91bG0AWBahj4df_LFwUpLvB9FegJcrs_NcFVOdjvOepHrVGwOKpHUbg6qeBv8lJzIHaECGA4pHLTqQEREtLmx58j2NoCu8zx0wYcG-S3oHZZgIOcL8Ydif9frkA00d0YES8WFCL7j";
 
     	String body = "{\"userId\":\""+tokenId+"\""
-    			+",\"userNum\":\"010444448888\"}";
+    			+",\"userNum\":\"01055557777\"}";
     	JsonSimple json = new JsonSimple();
     	String strJson = json.http(url, body);
     	
