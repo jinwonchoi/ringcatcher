@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gencode.ringcatcher.http.ReturnCode;
+import com.gencode.ringcatcher.obj.JsonConstants;
 import com.gencode.sampleapp.R;
 import com.gencode.ringcatcher.common.QuickstartPreferences;
 import com.gencode.ringcatcher.common.RingBearer;
@@ -150,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
                         //Toast.makeText(this, R.string.gcm_send_message, Toast.LENGTH_LONG).show();
                         textView.setText(String.format("Register: result[%s:%s]\n my tokenId[%s]\nmy number[%s]\nmy nick[%s]\nfriend number[%s]\n fileUrl[%s]"
                                 ,result.getResultCode(),result.getResultMsg()
-                                ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, friendNumber, fileUrl));
+                                ,tokenId.length()>20?tokenId.substring(0,20):tokenId,myPhoneNumer,myPhoneNick, friendNumber, fileUrl));
                     } else {
                         Toast.makeText(RegisterActivity.this, R.string.token_error_message, Toast.LENGTH_LONG).show();
                         textView.setText(String.format("RegisterError:result[%s:%s]\n" +
@@ -158,12 +159,25 @@ public class RegisterActivity extends AppCompatActivity {
                                         "friend number[%s]\n" +
                                         " fileUrl[%s]"
                                 ,result.getResultCode(),result.getResultMsg()
-                                ,tokenId.substring(0,20),myPhoneNumer,myPhoneNick, friendNumber, fileUrl));
+                                ,tokenId.length()>20?tokenId.substring(0,20):tokenId,myPhoneNumer,myPhoneNick, friendNumber, fileUrl));
                     }
                 }
             });
             //원래는 토큰을 RingBearer의 값을 사용해야 하나 폰이 하나일때 테스트를 해야 하므로 전송자가 다른 사람으로 설정이 필요. 하드코딩함.
-            asyncInviteMate.execute("test-token-id","0244445555","It's me!", getResources().getConfiguration().locale.toString() );//args[0]:tkenid, args[1] callingNum, args[2] callingName, args[3] localStr
+            /**
+             inviteUploadRequest.setTokenId(args[0]);
+             inviteUploadRequest.setFriendPhoneNum(args[1]);
+             inviteUploadRequest.setCallingPhoneNum(args[2]);
+             inviteUploadRequest.setCallingNickName(args[3]);
+             inviteUploadRequest.setLocale(args[4]);//Locale.KOREA.toString()); //ko_KR | en_US
+             inviteUploadRequest.setFilePath(args[5]);
+             inviteUploadRequest.setExpiredDate(args[6]);
+             inviteUploadRequest.setDurationType(args[7]);
+            */
+            asyncInviteMate.execute("test-token-id",RingBearer.getInstance().getFriendPhoneNumber()
+                    , "0244445555"/*RingBearer.getInstance().getMyPhoneNick()*/,"It's me!"/*RingBearer.getInstance().getMyPhoneNick()*/
+                    , getResources().getConfiguration().locale.toString() , RingBearer.getInstance().getMediaUrl()
+                    , "99991231", JsonConstants.DURATION_PERMANENT);//args[0]:tkenid, args[1] callingNum, args[2] callingName, args[3] localStr
             //
         }
     }

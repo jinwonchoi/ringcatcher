@@ -13,6 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gencode.ringcatcher.common.RingBearer;
+import com.gencode.ringcatcher.http.ReturnCode;
+import com.gencode.ringcatcher.obj.MessageResult;
+import com.gencode.ringcatcher.task.AsyncGetMessage;
+import com.gencode.ringcatcher.task.IGetMessageTask;
 import com.gencode.ringmsgeditor.MsgEditorActivity;
 import com.gencode.sampleapp.R;
 import com.gencode.ringcatcher.gcm.GcmActivity;
@@ -54,12 +58,17 @@ public class MainMenuActivity extends GcmActivity /*AppCompatActivity*/ implemen
         String callingNum = receivingIntent.getStringExtra(JsonConstants.callingNum);
         String callingName = receivingIntent.getStringExtra(JsonConstants.callingName);
         String ringSrcUrl = receivingIntent.getStringExtra(JsonConstants.ringSrcUrl);
+        String expiredDate = receivingIntent.getStringExtra(JsonConstants.expiredDate);
+        String durationType = receivingIntent.getStringExtra(JsonConstants.durationType);
+
         Log.d(TAG,"processNotificationMessage callingNum="+callingNum );
         if (callingNum != null && !callingNum.equals("")) {
             Intent intent = new Intent(this, NotificationCheckActivity.class);
             intent.putExtra(JsonConstants.callingNum, callingNum);
             intent.putExtra(JsonConstants.callingName, callingName);
             intent.putExtra(JsonConstants.ringSrcUrl, ringSrcUrl);
+            intent.putExtra(JsonConstants.expiredDate, expiredDate);
+            intent.putExtra(JsonConstants.durationType, durationType);
             startActivity(intent);
         }
     }
@@ -107,11 +116,51 @@ public class MainMenuActivity extends GcmActivity /*AppCompatActivity*/ implemen
             RingBearer.getInstance().setMyPhoneNumber(getResources().getString(R.string.test_my_phone_number2));
             RingBearer.getInstance().setMyPhoneNick(getResources().getString(R.string.test_my_phone_nick2));
             //RingBearer.getInstance().setTokenId(getResources().getString(R.string.test_my_token_id));
-            Intent intent = new Intent(this, MsgEditorActivity.class);
-            intent.setAction(com.gencode.ringcatcher.gcm.QuickstartPreferences.ACTION_MESSAGE_VIEW);
-            intent.putExtra(com.gencode.ringmsgeditor.JsonConstants.callingNum, getResources().getString(R.string.test_my_phone_number));
+
+            AsyncGetMessage  asyncGetMessage = new AsyncGetMessage(new IGetMessageTask() {
+                @Override
+                public void OnTaskCompleted(MessageResult messageResult) {
+                    TextView textView = (TextView)findViewById(R.id.text_register_result);
+                    String tokenId = RingBearer.getInstance().getTokenId();
+                    String myPhoneNumer = RingBearer.getInstance().getMyPhoneNumber();
+                    String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
+                    String callingNum = MainMenuActivity.this.getResources().getString(R.string.test_my_phone_number);
+                    Log.d(TAG, "AsyncGetMessage OnTaskCompleted:"+messageResult.toString());
+                    if (messageResult != null && messageResult.getResultCode().equals(ReturnCode.SUCCESS.get())) {
+                        //디폴트 메시지 보기
+                        if ("".equals(messageResult.getDefaultJsonMessage())) {
+                            String defaultExpiredDate = messageResult.getDefaultExpiredDate();
+                            String defaultDurationType = messageResult.getDefaultDurationType();
+                            String defaultJsonMessage = messageResult.getDefaultJsonMessage();
+                            // defaultExpiredDate (yyyymmdd)를 확인
+                            // defaultDurationType 을 확인 : A- 1회용, T-기간지정, P-계속사용
+                            Intent intent = new Intent(MainMenuActivity.this, MsgEditorActivity.class);
+                            intent.setAction(com.gencode.ringcatcher.gcm.QuickstartPreferences.ACTION_MESSAGE_VIEW);
+                            intent.putExtra(com.gencode.ringmsgeditor.JsonConstants.callingNum, getResources().getString(R.string.test_my_phone_number));
+                            intent.putExtra(com.gencode.ringmsgeditor.JsonConstants.jsonMessage, defaultJsonMessage);
+                            startActivity(intent);
+                        }
+                        //지정 메시지 보기
+                        if ("".equals(messageResult.getJsonMessage())) {
+                            String expiredDate = messageResult.getExpiredDate();
+                            String durationType = messageResult.getDurationType();
+                            String jsonMessage = messageResult.getJsonMessage();
+                            // expiredDate (yyyymmdd)를 확인
+                            // durationType 을 확인 : A- 1회용, T-기간지정, P-계속사용
+                            Intent intent = new Intent(MainMenuActivity.this, MsgEditorActivity.class);
+                            intent.setAction(com.gencode.ringcatcher.gcm.QuickstartPreferences.ACTION_MESSAGE_VIEW);
+                            intent.putExtra(com.gencode.ringmsgeditor.JsonConstants.callingNum, getResources().getString(R.string.test_my_phone_number));
+                            intent.putExtra(com.gencode.ringmsgeditor.JsonConstants.jsonMessage, jsonMessage);
+                            startActivity(intent);
+                        }
+                    } else {
+                        //error
+                    }
+                };
+            });
+            asyncGetMessage.execute();
             Log.d(TAG, "id="+id+" menu_key="+QuickstartPreferences.MENU_MESSAGE_EDITOR);
-            startActivity(intent);
+
         }
     }
 

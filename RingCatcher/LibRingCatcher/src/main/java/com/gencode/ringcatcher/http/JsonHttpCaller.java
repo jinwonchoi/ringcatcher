@@ -1,10 +1,14 @@
 package com.gencode.ringcatcher.http;
 
 import android.net.Uri;
+import android.os.Message;
 import android.util.Log;
 
 import com.gencode.ringcatcher.obj.InviteResult;
 import com.gencode.ringcatcher.obj.InviteUploadRequest;
+import com.gencode.ringcatcher.obj.JsonConstants;
+import com.gencode.ringcatcher.obj.MessageRequest;
+import com.gencode.ringcatcher.obj.MessageResult;
 import com.gencode.ringcatcher.obj.RegisterMessageRequest;
 import com.gencode.ringcatcher.obj.RegisterRequest;
 import com.gencode.ringcatcher.obj.RegisterResult;
@@ -87,6 +91,8 @@ public class JsonHttpCaller {
                     +",\"callingNum\":\""+request.getCallingPhoneNum()+"\""
                     +",\"callingName\":\""+request.getCallingNickName()+"\""
                     +",\"locale\":\""+request.getLocale()+"\""//en_US, ko_KR
+                    +",\"expiredDate\":\""+request.getExpiredDate()+"\""
+                    +",\"durationType\":\""+request.getDurationType()+"\""
                     +",\"ringFileName\":\""+fileName+"\"}";
 
             String json = multipart(url, body, request.getFilePath());
@@ -187,15 +193,50 @@ public class JsonHttpCaller {
                 JSONObject jsonItem = new JSONObject(jsonStr);
                 Log.d(TAG, "jsonItem="+jsonItem);
 
-                String callingNum = jsonItem.optString("callingNum");
+                String callingNum = jsonItem.optString(JsonConstants.callingNum);
                 Log.d(TAG, "callingNum="+callingNum);
-                String filePath = jsonItem.getString("filePath");
+                String filePath = jsonItem.getString(JsonConstants.filePath);
                 Log.d(TAG, "filePath="+filePath);
-                result.setUpdateItem(callingNum, filePath);
+                String expiredDate = jsonItem.getString(JsonConstants.expiredDate);
+                Log.d(TAG, "expiredDate="+expiredDate);
+                String durationType = jsonItem.getString(JsonConstants.durationType);
+                Log.d(TAG, "durationType="+durationType);
+                result.setUpdateItem(callingNum, filePath, expiredDate, durationType);
             }
             Log.d(TAG, "result = "+result);
         } catch (JSONException e) {
             Log.e(TAG, "register error request:"+request, e);
+        }
+        return result;
+    }
+
+    /**
+     * 	3. 대기중인 링정보 체크 및 다운로드
+     */
+    public MessageResult getMessage(MessageRequest request) {
+        MessageResult result = null;
+        String url = HttpConstants.RING_CATCHER_HOME+"/json/getmessage";
+
+        try {
+            String body = "{\"userId\":\""+request.getUserid()+"\""
+                    +",\"userNum\":\""+request.getUserNum()+"\""
+                    +",\"callingNum\":\""+request.getCallingNum()+"\"}";
+            result = new MessageResult();
+            String strJson = http(url, body);
+            Log.d(TAG, "json="+strJson);
+            JSONObject jsonObject = new JSONObject(strJson);
+            result.setResultCode(jsonObject.getString("resultCode"));
+            result.setResultMsg(jsonObject.getString("resultMsg"));
+            result.setDefaultDurationType(jsonObject.getString("defaultDurationType"));
+            result.setDefaultExpiredDate(jsonObject.getString("defaultExpiredDate"));
+            result.setDefaultJsonMessage( jsonObject.getString("defaultJsonMessage"));
+            result.setDurationType(jsonObject.getString("durationType"));
+            result.setJsonMessage(jsonObject.getString("jsonMessage"));
+            result.setExpiredDate(jsonObject.getString("expiredDate"));
+
+            Log.d(TAG, "result = "+result);
+        } catch (JSONException e) {
+            Log.e(TAG, "getMessage error request:"+request, e);
         }
         return result;
     }
@@ -210,6 +251,8 @@ public class JsonHttpCaller {
                     +",\"callingNum\":\""+request.getCallingPhoneNum()+"\""
                     +",\"callingName\":\"It\'s me!\""//\""+request.getCallingNickName()+"\""
                     +",\"locale\":\""+request.getLocale()+"\""//en_US, ko_KR
+                    +",\"expiredDate\":\""+request.getExpiredDate()+"\""
+                    +",\"durationType\":\""+request.getDurationType()+"\""
                     +",\"jsonMessage\":\""+request.getJsonMessage()+"\"}";
             //+",\"jsonMessage\":\"eyJtZXNzYWdlX3RvIjoiMDEwNTU1N/Tc3NzciLCJyaW5nX21lc3NhZ2UiOnsiMDppbWciOiJcL3JpbmdtZWRpYVwvMjAxNjA2MjhcLzAyNDQ0NDU1NTVfMDEwNTU1NTc3NzcuanBnOzEuMDAwMDAwOzEuMDAwMDAwIn0sIm1lc3NhZ2VfZnJvbSI6IjAyNDQ0NDU1NTUifQ==\"}";
             Log.d(TAG, "registerMessage body="+body);

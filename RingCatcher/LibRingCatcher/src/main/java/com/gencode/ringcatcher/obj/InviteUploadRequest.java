@@ -12,6 +12,8 @@ public class InviteUploadRequest implements Serializable {
     String callingNickName;
     String locale;
     String filePath;
+    String expiredDate;
+    String durationType; /* A: 1회용, T: 기간 한정, P:기간무제한 */
 
     public String getTokenId() {
         return tokenId;
@@ -61,6 +63,22 @@ public class InviteUploadRequest implements Serializable {
         this.filePath = filePath;
     }
 
+    public String getDurationType() {
+        return durationType;
+    }
+
+    public void setDurationType(String durationType) {
+        this.durationType = durationType;
+    }
+
+    public String getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(String expiredDate) {
+        this.expiredDate = expiredDate;
+    }
+
     @Override
     public String toString() {
         return "InviteUploadRequest{" +
@@ -68,8 +86,9 @@ public class InviteUploadRequest implements Serializable {
                 ", friendPhoneNum='" + friendPhoneNum + '\'' +
                 ", callingPhoneNum='" + callingPhoneNum + '\'' +
                 ", callingNickName='" + callingNickName + '\'' +
+                ", expiredDate='" + expiredDate + '\'' +
+                ", durationType='" + durationType + '\'' +
                 ", locale='" + locale + '\'' +
-                ", filePath='" + filePath + '\'' +
-                '}';
+                ", filePath='" + filePath + '\'' +                '}';
     }
 }

@@ -5,9 +5,10 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2016-04-17.
  */
-public class RingUpdateRequest implements Serializable {
+public class MessageRequest implements Serializable {
     String userid;
     String userNum;
+    String callingNum;
 
     public String getUserid() {
         return userid;
@@ -25,7 +26,15 @@ public class RingUpdateRequest implements Serializable {
         this.userNum = userNum;
     }
 
+    public String getCallingNum() {
+        return callingNum;
+    }
+
+    public void setCallingNum(String callingNum) {
+        this.callingNum = callingNum;
+    }
+
     public String toString() {
-        return String.format("[%s][%s]", userid, userNum);
+        return String.format("[%s][%s][%s]", userid, userNum, callingNum);
     }
 }

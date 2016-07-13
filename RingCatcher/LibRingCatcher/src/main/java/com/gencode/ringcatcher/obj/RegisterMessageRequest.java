@@ -10,6 +10,8 @@ public class RegisterMessageRequest implements Serializable {
     String callingNickName;
     String locale;
     String jsonMessage;
+    String expiredDate;
+    String durationType;
 
     public String getTokenId() {
         return tokenId;
@@ -59,6 +61,22 @@ public class RegisterMessageRequest implements Serializable {
         this.locale = locale;
     }
 
+    public String getDurationType() {
+        return durationType;
+    }
+
+    public void setDurationType(String durationType) {
+        this.durationType = durationType;
+    }
+
+    public String getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(String expiredDate) {
+        this.expiredDate = expiredDate;
+    }
+
     @Override
     public String toString() {
         return "RegisterMessageRequest{" +
@@ -68,6 +86,8 @@ public class RegisterMessageRequest implements Serializable {
                 ", callingNickName='" + callingNickName + '\'' +
                 ", locale='" + locale + '\'' +
                 ", jsonMessage='" + jsonMessage + '\'' +
+                ", expiredDate='" + expiredDate + '\'' +
+                ", durationType='" + durationType + '\'' +
                 '}';
     }
 }

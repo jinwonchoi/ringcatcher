@@ -86,7 +86,9 @@ public class ListRingInfoActivity extends AppCompatActivity {
                         jsonObject = new JSONObject(item);
                         String callingNum = jsonObject.optString(JsonConstants.callingNum);
                         String filePath  = jsonObject.optString(JsonConstants.filePath);
-                        list.add(callingNum+":"+filePath);
+                        String expiredDate  = jsonObject.optString(JsonConstants.expiredDate);
+                        String durationType  = jsonObject.optString(JsonConstants.durationType);
+                        list.add(callingNum+":"+expiredDate+":"+durationType+":"+filePath);
                         adapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {

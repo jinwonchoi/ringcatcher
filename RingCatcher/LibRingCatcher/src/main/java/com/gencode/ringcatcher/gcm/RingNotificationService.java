@@ -42,12 +42,18 @@ public class RingNotificationService extends IntentService {
             String callingNum = intent.getStringExtra(JsonConstants.callingNum);
             String callingName = intent.getStringExtra(JsonConstants.callingName);
             String ringSrcUrl = intent.getStringExtra(JsonConstants.ringSrcUrl);
+            String expiredDate = intent.getStringExtra(JsonConstants.expiredDate);
+            String durationType = intent.getStringExtra(JsonConstants.durationType);
             Log.d(TAG,"onHandleIntent callingNum="+callingNum );
             if (callingNum != null && !callingNum.equals("")) {
                 Intent notifyingIntent = new Intent(QuickstartPreferences.NOTIFY_RING_REGISTER);
                 notifyingIntent.putExtra(JsonConstants.callingNum, callingNum);
                 notifyingIntent.putExtra(JsonConstants.callingName, callingName);
                 notifyingIntent.putExtra(JsonConstants.ringSrcUrl, ringSrcUrl);
+
+                notifyingIntent.putExtra(JsonConstants.expiredDate, expiredDate);
+                notifyingIntent.putExtra(JsonConstants.durationType, durationType);
+
                 // Notify UI that registration has completed, so the progress indicator can be hidden.
                 Log.d(TAG, QuickstartPreferences.NOTIFY_RING_REGISTER);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(notifyingIntent);

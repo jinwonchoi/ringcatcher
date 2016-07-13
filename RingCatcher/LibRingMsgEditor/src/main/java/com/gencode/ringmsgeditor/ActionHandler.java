@@ -27,6 +27,7 @@ public class ActionHandler {
     final String TAG = this.getClass().getName();
 
     private Map<Integer, View> mMsgMap = new HashMap<Integer, View>();
+    private Map<String, String> mContactMap = new HashMap<String, String>();
     private int mLastViewId = -1;
 
     public ActionHandler(Context context) {
@@ -318,5 +319,37 @@ public class ActionHandler {
         mLastViewId = editText.getId();
 
         return editText;
+    }
+
+    public void addContactToList(EditText editText, String contactNum, String contactName) {
+        editText.setText(editText.getText().toString()
+                +","+String.format("%s(%s)",contactName,contactNum));
+        mContactMap.put(contactNum, contactName);
+    }
+
+    public String getContactNumberList() {
+        StringBuffer sb = new StringBuffer();
+
+        for (Map.Entry<String, String> entry : mContactMap.entrySet())
+        {
+            if (sb.length() > 0) sb.append(",");
+            sb.append(entry.getKey());
+        }
+        return sb.toString();
+    }
+
+    public String toNeatContactString(String editStr) {
+        StringBuffer sb = new StringBuffer();
+        Map<String, String> tempMap = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : mContactMap.entrySet())
+        {
+            if (!entry.getKey().contains(editStr)) continue;
+            if (sb.length() > 0) sb.append(",");
+            sb.append(String.format("%s(%s)", entry.getValue(),entry.getKey()));
+            tempMap.put(entry.getValue(),entry.getKey());
+        }
+        mContactMap.clear();
+        mContactMap.putAll(tempMap);
+        return sb.toString();
     }
 }

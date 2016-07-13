@@ -20,6 +20,12 @@ public class JsonConstants {
     final public static String locale = "locale";
     final public static String filePath = "filePath";
     final public static String imageFileName = "imageFileName";
+    final public static String expiredDate = "expiredDate";
+    final public static String durationType = "durationType";
+    final public static String defaultnum = "defaultnum";
+    final public static String DURATION_ONETIME = "A";
+    final public static String DURATION_TEMPORARY = "T";
+    final public static String DURATION_PERMANENT = "P";
 
 
     final public static String resultCode ="resultCode";

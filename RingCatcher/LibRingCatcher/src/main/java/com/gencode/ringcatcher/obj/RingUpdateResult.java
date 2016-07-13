@@ -14,8 +14,8 @@ public class RingUpdateResult implements Serializable {
 	final public String TAG = RingUpdateResult.class.getSimpleName();
 	private static final long serialVersionUID = -242858495909118917L;
 
-	final public String CALLING_NUM = "callingNum";
-	final public String FILE_PATH = "filePath";
+//	final public String CALLING_NUM = "callingNum";
+//	final public String FILE_PATH = "filePath";
 	String resultCode;
 	String resultMsg;
 	List<String> updateList = new ArrayList<String>();//callingNum, filePath
@@ -43,10 +43,12 @@ public class RingUpdateResult implements Serializable {
 		return updateList;
 	}
 	
-	public void setUpdateItem(String callingNum, String filePath) throws JSONException {
+	public void setUpdateItem(String callingNum, String filePath, String expiredDate, String durationType) throws JSONException {
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put(CALLING_NUM, callingNum);
-		jsonObject.put(FILE_PATH, filePath);
+		jsonObject.put(JsonConstants.callingNum, callingNum);
+		jsonObject.put(JsonConstants.filePath, filePath);
+		jsonObject.put(JsonConstants.expiredDate, expiredDate);
+		jsonObject.put(JsonConstants.durationType, durationType);
 		updateList.add(jsonObject.toString());
 	}
 
@@ -60,9 +62,14 @@ public class RingUpdateResult implements Serializable {
 			sb.append(String.format("[%s][%s]", resultCode, resultMsg));
 			for (String item : updateList) {
 				JSONObject jobject = new JSONObject(item);
-				String callingNum = jobject.getString(CALLING_NUM);
-				String filePath = jobject.getString(FILE_PATH);
-				sb.append(String.format("{[%s]:[%s],[%s]:[%s]}", CALLING_NUM, callingNum, FILE_PATH, filePath));
+				String callingNum = jobject.getString(JsonConstants.callingNum);
+				String filePath = jobject.getString(JsonConstants.filePath);
+				String expiredDate = jobject.getString(JsonConstants.expiredDate);
+				String durationType = jobject.getString(JsonConstants.durationType);
+				sb.append(String.format("{[%s]:[%s],[%s]:[%s],[%s]:[%s],[%s]:[%s]}"
+						, JsonConstants.callingNum, callingNum,JsonConstants.expiredDate, expiredDate
+						, JsonConstants.durationType, durationType
+						, JsonConstants.filePath, filePath));
 
 			}
 		} catch (JSONException je) {

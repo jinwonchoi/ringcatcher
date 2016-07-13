@@ -81,7 +81,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
     AppBarLayout mAppBar;
     Button mBtnContact;
     int idIntentID = 999;//앨범사진추가용
-
+    EditText mEditTextContact;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,9 +96,18 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         mBottomEditLayout = (LinearLayout)findViewById(R.id.layout_bottom_edit);
         mAppBar = (AppBarLayout)findViewById(R.id.appbar);
         mBtnContact = (Button)findViewById(R.id.btn_add_contact);
+        mEditTextContact = (EditText) findViewById(R.id.edit_contact);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mEditTextContact.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    mEditTextContact.setText(actionHandler.toNeatContactString(mEditTextContact.getText().toString()));
+                }
+            }
+        });
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -200,6 +209,9 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         }
     }
 
+    /**
+     *
+     */
     private void loadJsonMessageOnPreview() {
         //메시지보기 뷰로 로딩
         Map<String, String> messageMap = new HashMap<String,String>();
@@ -212,7 +224,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         try {
             if (jsonMessage == null || jsonMessage.trim().equals("")) {
                 messageMap = contentResolverHelper.doQuery(callingNum, RingBearer.getInstance().getMyPhoneNumber());
-            } else {
+            } else {//gcm noti를 받고 클릭했을때 처리. 당분간 gcm 통하는 처리는 없음
                 MessageWrapper messageWrapper = new MessageWrapper(jsonMessage, true);
                 messageMap = messageWrapper.getMessageList();
             }
@@ -320,7 +332,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
                 actionHandler.clearMessagesOnEdit();
                 displayEditMode();
             }
-        } else if (item.getItemId() == R.id.action_back_from_preview || item.getItemId() == R.id.action_back_from_send) {
+        } else if (/*item.getItemId() == R.id.action_back_from_preview || */item.getItemId() == R.id.action_back_from_send) {
             actionMode = ACTION_NONE;
             displayEditMode();
         }
@@ -448,8 +460,9 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         //final String myPhoneNumber = Utils.getMyPhoneNumber(MsgEditorActivity.this);
         final String myPhoneNumber = RingBearer.getInstance().getMyPhoneNumber();
         final String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
-        EditText editTextRecipientNumber = (EditText)MsgEditorActivity.this.findViewById(R.id.edit_contact);
-        final String recipientNumber = editTextRecipientNumber.getText().toString();
+        //EditText editTextRecipientNumber = (EditText)MsgEditorActivity.this.findViewById(R.id.edit_contact);
+        final String recipientNumber = actionHandler.getContactNumberList();
+                //editTextRecipientNumber.getText().toString();
         completeEditText();
         final Map<String, String> messageMap = actionHandler.getMapForMessageSave();
         if (recipientNumber == null || recipientNumber.trim().equals("")) {
@@ -541,8 +554,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
                     if (cursor != null) {
                         cursor.close();
                     }
-                    EditText editTextContact = (EditText) findViewById(R.id.edit_contact);
-                    editTextContact.setText(phoneNumber);
+                    actionHandler.addContactToList(mEditTextContact, phoneNumber,phoneName);
                     if (phoneNumber.length() == 0) {
                         Toast.makeText(this, R.string.message_no_phone_number_avail,
                                 Toast.LENGTH_LONG).show();
