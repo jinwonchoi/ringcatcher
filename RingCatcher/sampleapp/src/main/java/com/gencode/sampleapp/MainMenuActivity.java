@@ -121,10 +121,7 @@ public class MainMenuActivity extends GcmActivity /*AppCompatActivity*/ implemen
                 @Override
                 public void OnTaskCompleted(MessageResult messageResult) {
                     TextView textView = (TextView)findViewById(R.id.text_register_result);
-                    String tokenId = RingBearer.getInstance().getTokenId();
-                    String myPhoneNumer = RingBearer.getInstance().getMyPhoneNumber();
-                    String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
-                    String callingNum = MainMenuActivity.this.getResources().getString(R.string.test_my_phone_number);
+
                     Log.d(TAG, "AsyncGetMessage OnTaskCompleted:"+messageResult.toString());
                     if (messageResult != null && messageResult.getResultCode().equals(ReturnCode.SUCCESS.get())) {
                         //디폴트 메시지 보기
@@ -158,7 +155,11 @@ public class MainMenuActivity extends GcmActivity /*AppCompatActivity*/ implemen
                     }
                 };
             });
-            asyncGetMessage.execute();
+            String tokenId = RingBearer.getInstance().getTokenId();
+            String myPhoneNumer = RingBearer.getInstance().getMyPhoneNumber();
+            String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
+            String callingNum = MainMenuActivity.this.getResources().getString(R.string.test_my_phone_number);
+            asyncGetMessage.execute(tokenId,myPhoneNumer,callingNum);
             Log.d(TAG, "id="+id+" menu_key="+QuickstartPreferences.MENU_MESSAGE_EDITOR);
 
         }
