@@ -179,11 +179,11 @@ public class ActionHandler {
     private View doAddImageView(int parentId, Drawable drawable, int imgId, String imageUriStr) {
         PhotoRelativeLayout relativeLayout;
         if (imgId > 0)
-            relativeLayout = new PhotoRelativeLayout(mContext, (OnModeSwitchListener) mContext, imgId);
+            relativeLayout = new PhotoRelativeLayout(mContext, (OnModeSwitchListener) mContext, (OnImageSizeChangeListener) mContext, imgId);
         else if (drawable != null)
-            relativeLayout = new PhotoRelativeLayout(mContext, (OnModeSwitchListener) mContext, drawable);
+            relativeLayout = new PhotoRelativeLayout(mContext, (OnModeSwitchListener) mContext, (OnImageSizeChangeListener) mContext, drawable);
         else //if (!imageUriStr.equals(""))
-            relativeLayout = new PhotoRelativeLayout(mContext, (OnModeSwitchListener) mContext, imageUriStr);
+            relativeLayout = new PhotoRelativeLayout(mContext, (OnModeSwitchListener) mContext, (OnImageSizeChangeListener) mContext, imageUriStr);
 
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -322,8 +322,12 @@ public class ActionHandler {
     }
 
     public void addContactToList(EditText editText, String contactNum, String contactName) {
-        editText.setText(editText.getText().toString()
-                +","+String.format("%s(%s)",contactName,contactNum));
+        if (editText.getText().toString().trim().equals("")) {
+            editText.setText(String.format("%s(%s)",contactName,contactNum));
+        } else {
+            editText.setText(editText.getText().toString().trim()
+                    +","+String.format("%s(%s)",contactName,contactNum));
+        }
         mContactMap.put(contactNum, contactName);
     }
 
@@ -332,7 +336,7 @@ public class ActionHandler {
 
         for (Map.Entry<String, String> entry : mContactMap.entrySet())
         {
-            if (sb.length() > 0) sb.append(",");
+            if (sb.toString().length() > 0) sb.append(",");
             sb.append(entry.getKey());
         }
         return sb.toString();

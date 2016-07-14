@@ -136,6 +136,8 @@ Log.d(TAG, "caller.uploadMessageImage uploadImageRequest:"+uploadImageRequest.to
             registerMessageRequest.setCallingPhoneNum(callingNum);
             registerMessageRequest.setCallingNickName(callingName);
             registerMessageRequest.setLocale(Locale.KOREA.toString()); //ko_KR | en_US
+            Log.d(TAG, "caller.registerMessage: jsonMessage="+messageWrapper.toString());
+
             registerMessageRequest.setJsonMessage(messageWrapper.toEncodedString());
             RegisterResult registerResult = null;
             Log.d(TAG, "caller.registerMessage:"+registerMessageRequest);

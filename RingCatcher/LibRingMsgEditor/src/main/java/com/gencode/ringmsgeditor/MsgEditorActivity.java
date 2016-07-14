@@ -49,7 +49,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitchListener {
+public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitchListener, OnImageSizeChangeListener {
     final String TAG = this.getClass().getName();
 
     // we can be in one of these 3 states
@@ -76,6 +76,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
 
     //private EditText msgEdit;
 
+    RelativeLayout mContentMainLayout;
     LinearLayout mUpperEditLayout;
     LinearLayout mBottomEditLayout;
     AppBarLayout mAppBar;
@@ -97,6 +98,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         mAppBar = (AppBarLayout)findViewById(R.id.appbar);
         mBtnContact = (Button)findViewById(R.id.btn_add_contact);
         mEditTextContact = (EditText) findViewById(R.id.edit_contact);
+        mContentMainLayout = (RelativeLayout)findViewById(R.id.content_msg_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -461,7 +463,9 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         final String myPhoneNumber = RingBearer.getInstance().getMyPhoneNumber();
         final String myPhoneNick = RingBearer.getInstance().getMyPhoneNick();
         //EditText editTextRecipientNumber = (EditText)MsgEditorActivity.this.findViewById(R.id.edit_contact);
-        final String recipientNumber = actionHandler.getContactNumberList();
+        Log.d(TAG, "sendMessage recipientNumber="+actionHandler.getContactNumberList());
+        //테스트용으로 대치함
+        final String recipientNumber = "01055557777";//actionHandler.getContactNumberList();
                 //editTextRecipientNumber.getText().toString();
         completeEditText();
         final Map<String, String> messageMap = actionHandler.getMapForMessageSave();
@@ -567,4 +571,10 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
         }
     }
 
+    @Override
+    public void OnImageSizeChanged(View v) {
+        Log.d(TAG, "OnImageSizeChanged mContentMainLayout width="+mContentMainLayout.getWidth() +" height="+mContentMainLayout.getHeight());
+        mContentMainLayout.invalidate();
+        Log.d(TAG, "invalidate         mContentMainLayout width="+mContentMainLayout.getWidth() +" height="+mContentMainLayout.getHeight());
+    }
 }

@@ -52,6 +52,7 @@ public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListen
     private int mImgRes;
 
     private OnModeSwitchListener mOnModeSwitcherListener;
+    private OnImageSizeChangeListener mOnImageSizeChangeListener;
 
     ImageView imgView;
     Button btnClose;
@@ -60,25 +61,26 @@ public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListen
         super(context);
     }
 
-    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener) {
+    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, OnImageSizeChangeListener imageSizeChangeListener) {
         super(context);
         mOnModeSwitcherListener = onModeSwitchListener;
+        mOnImageSizeChangeListener = imageSizeChangeListener;
     }
 
-    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, int imgRes) {
-        this(context,onModeSwitchListener);
+    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, OnImageSizeChangeListener imageSizeChangeListener, int imgRes) {
+        this(context,onModeSwitchListener, imageSizeChangeListener);
         mImgRes = imgRes;
     }
 
-    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, Drawable imgDrawable) {
-        this(context,onModeSwitchListener);
+    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, OnImageSizeChangeListener imageSizeChangeListener, Drawable imgDrawable) {
+        this(context,onModeSwitchListener, imageSizeChangeListener);
         mDrawable = imgDrawable;
     }
     /**
      * uriStr : uri;xscale;yscale  ex: android.resource://my_app_package/drawable/drawable_name;.2;0,45
      */
-    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, String uriStr) {
-        this(context,onModeSwitchListener);
+    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, OnImageSizeChangeListener imageSizeChangeListener, String uriStr) {
+        this(context,onModeSwitchListener, imageSizeChangeListener);
         parseUri(uriStr);
         this.setTag(uriStr);
     }
@@ -86,8 +88,8 @@ public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListen
     /**
      * uriStr : uri;xscale;yscale  ex: android.resource://my_app_package/drawable/drawable_name;.2;0,45
      */
-    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, String uriStr, float xScale, float yScale) {
-        this(context,onModeSwitchListener);
+    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, OnImageSizeChangeListener imageSizeChangeListener, String uriStr, float xScale, float yScale) {
+        this(context,onModeSwitchListener, imageSizeChangeListener);
         parseUri(uriStr);
         this.setTag(uriStr);
         matrix.postScale(xScale,yScale, 0,0);
@@ -97,8 +99,8 @@ public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListen
     /**
      * uriStr : uri;xscale;yscale  ex: android.resource://my_app_package/drawable/drawable_name;.2;0,45
      */
-    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, int imgRes, float xScale, float yScale) {
-        this(context,onModeSwitchListener);
+    public PhotoRelativeLayout(Context context, OnModeSwitchListener onModeSwitchListener, OnImageSizeChangeListener imageSizeChangeListener, int imgRes, float xScale, float yScale) {
+        this(context,onModeSwitchListener, imageSizeChangeListener);
         mImgRes = imgRes;
         matrix.postScale(xScale,yScale, 0,0);
         isPreview = true;
@@ -272,8 +274,10 @@ public class PhotoRelativeLayout extends ViewGroup implements View.OnTouchListen
                 resizeLayout(view);
                 view.requestLayout();
                 requestLayout();
+                mOnImageSizeChangeListener.OnImageSizeChanged(this);
             }
             invalidate();
+
             Log.d("CHOI_DEBUG", "invalidate");
         } catch (Exception e) {
             Log.e(TAG, "OnTouch Error",e);
