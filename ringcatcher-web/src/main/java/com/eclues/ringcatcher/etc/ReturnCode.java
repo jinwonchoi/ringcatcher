@@ -5,6 +5,7 @@ public enum ReturnCode {
 	UPDATE_OK("0002"),
 	USER_NOT_FOUND("1001"),
 	USER_EXISTS("1002"),
+	USER_NOT_ALL_FOUND("1003"),
 	RING_NO_UPDATE("1005"),
 	ERROR_UNKNOWN("4001"),
 	ERROR_FILEUP("4002"),
@@ -14,12 +15,11 @@ public enum ReturnCode {
 	STR_UPDATE_OK("Update OK"),
 	STR_USER_NOT_FOUND("User Not Found"),
 	STR_USER_EXISTS("User Exists"),
+	STR_USER_NOT_ALL_FOUND("User Not All Found"),
 	STR_RING_NO_UPDATE("No Ring Update"),
 	STR_ERROR_UNKNOWN("Unknown Error"),
 	STR_ERROR_FILEUP("Error in File upload"),
 	STR_ERROR_INVALID_USER("Invalid User Error"),
-	
-	
 	;
 	private ReturnCode(String str) {
 		value = str;
