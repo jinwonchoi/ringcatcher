@@ -78,6 +78,12 @@ public class JSONController {
 	@Autowired
 	private GcmSender gcmSender;
 
+	/**
+	 * 미사용
+	 * @param userInfo
+	 * @param multipartFile
+	 * @return
+	 */
 	@RequestMapping(value="/ringfileup", method=RequestMethod.POST, consumes={"multipart/form-data"})
 	public @ResponseBody RegisterResult getRingFileUp(@RequestPart("json") ReqUserInfo userInfo,@RequestPart("upfile") MultipartFile multipartFile) {
 		//ReqUserInfo userInfo = new ReqUserInfo();
@@ -245,61 +251,77 @@ public class JSONController {
 			if (userInfo == null || !userInfo.getUserId().equals(reqRingInfo.getCallingId())) {
 				result.setResultCode(ReturnCode.ERROR_INVALID_USER.get());
 				result.setResultMsg(ReturnCode.STR_ERROR_INVALID_USER.get());
-				logger.info("inviteUser:"+reqRingInfo+":"+result);
+				logger.error("inviteUser:"+reqRingInfo+":"+result);
 				return result;
 			}
-
+			String[] userList = reqRingInfo.getUserNum().split(",");
 			// save file
 			RingInfo ringInfo = new RingInfo();
-			ringInfo.setUserNum(reqRingInfo.getUserNum());
+			//ringInfo.setUserNum(reqRingInfo.getUserNum());
 			ringInfo.setCallingNum(reqRingInfo.getCallingNum());
 			ringInfo.setCallingName(reqRingInfo.getCallingName());
 			String yyyymmdd = fileService.getYYYYMMDDPath();
-			String savedFilePath = fileService.getSaveFilePath(multipartFile,yyyymmdd, 
-					reqRingInfo.getCallingNum(), reqRingInfo.getUserNum());
-			String savedFileUrl = fileService.getSaveFileUrl(multipartFile,yyyymmdd, 
-					reqRingInfo.getCallingNum(), reqRingInfo.getUserNum());
+			String uploadFileName = fileService.getSaveFileName(multipartFile, reqRingInfo.getCallingNum(), userList[0]);
+			String savedFilePath = fileService.getSaveFilePath(yyyymmdd,uploadFileName);
+			String savedFileUrl = fileService.getSaveFileUrl(yyyymmdd,uploadFileName);
 			ringInfo.setRingFileName(savedFileUrl);
+			ringInfo.setExpiredDate(reqRingInfo.getExpiredDate());
+			ringInfo.setDurationType(reqRingInfo.getDurationType());
 			ringInfo.setRegisterDate(yyyymmdd);
+			
+			if (!fileService.saveFile(multipartFile,yyyymmdd,savedFilePath)) {
+				result.setResultCode(ReturnCode.ERROR_FILEUP.get());
+				result.setResultMsg(ReturnCode.STR_ERROR_FILEUP.get());
+				logger.error("inviteUser:"+reqRingInfo+":"+result);
+				return result;
+			}			
+
 			//ReqUserInfo userInfo = new ReqUserInfo();
 			long fileSize = multipartFile.getSize();
 			String fileName = multipartFile.getOriginalFilename();
 			System.out.println("ringfileup:fileName="+fileName);
 			System.out.println("ringfileup:fileSize="+fileSize);
-
-			RingInfo checkRingInfo = ringInfoDAO.get(reqRingInfo.getUserNum(), reqRingInfo.getCallingNum());
+			
 			txStatus =transactionManager.getTransaction(txDef);
-			if (checkRingInfo != null) {
-				ringInfoDAO.update(ringInfo);
-				result.setResultCode(ReturnCode.UPDATE_OK.get());
-				result.setResultMsg(ReturnCode.STR_UPDATE_OK.get()+":"+savedFileUrl);
+			//수신자가 다수인지 확인
+			userList = reqRingInfo.getUserNum().split(",");
+			String resultUnRegUsers = null;
+			InviteResult tempResult =  null;
+			if (userList.length == 1) {
+				result = doInviteUser(reqRingInfo.getUserNum(), ringInfo, reqRingInfo.getLocale());
 			} else {
-				ringInfoDAO.create(ringInfo);
-				result.setResultCode(ReturnCode.SUCCESS.get());
-				result.setResultMsg(ReturnCode.STR_SUCCESS.get()+":"+savedFileUrl);
-			}
-			if (!fileService.saveFile(multipartFile,yyyymmdd,savedFilePath)) {
-				result.setResultCode(ReturnCode.ERROR_FILEUP.get());
-				result.setResultMsg(ReturnCode.STR_ERROR_FILEUP.get());
-				transactionManager.rollback(txStatus);
-				logger.info("inviteUser:"+reqRingInfo+":"+result);
-				return result;
-			}			
-			//find user by user num
-			// set returnCode
-			UserInfo reqUserInfo = userInfoDAO.get(reqRingInfo.getUserNum());
-			if (reqUserInfo == null) {
-				result.setResultCode(ReturnCode.USER_NOT_FOUND.get());
-				result.setResultMsg(ReturnCode.STR_USER_NOT_FOUND.get());
-			} else {
-	            JSONObject jData = new JSONObject();
-	            jData.put("actType", "ring");
-	            jData.put("userNum", reqRingInfo.getUserNum());
-	            jData.put("ringSrcUrl", savedFileUrl);
-	            jData.put("callingNum", reqRingInfo.getCallingNum());
-	            jData.put("callingName", reqRingInfo.getCallingName());
-	            jData.put("locale", reqRingInfo.getLocale());
-				gcmSender.call(jData, reqUserInfo.getUserId(), reqRingInfo.getCallingNum(),reqRingInfo.getCallingName(), reqRingInfo.getLocale());
+				result = null;
+				for (String userItem : userList) {
+					tempResult = doInviteUser(userItem, ringInfo, reqRingInfo.getLocale());
+					if (ReturnCode.USER_NOT_FOUND.get().equals(tempResult.getResultCode())) {
+						if (resultUnRegUsers == null)
+							resultUnRegUsers = userItem;
+						else
+							resultUnRegUsers += ","+userItem;
+					} else if (ReturnCode.SUCCESS.get().equals(tempResult.getResultCode())) {
+						if (result==null) {
+							result = tempResult;
+						}
+					} else if (ReturnCode.UPDATE_OK.get().equals(tempResult.getResultCode())) {
+						result = tempResult;
+					}
+				} 
+				if (result == null) {
+					transactionManager.rollback(txStatus);
+					
+					result=new InviteResult();
+					result.setResultCode(ReturnCode.USER_NOT_FOUND.get());
+					result.setResultMsg(ReturnCode.STR_USER_NOT_FOUND.get());
+					logger.error("inviteUser:"+reqRingInfo+":"+result);
+					return result;
+				} else {
+					if (resultUnRegUsers != null){
+						result=new InviteResult();
+						result.setResultCode(ReturnCode.USER_NOT_ALL_FOUND.get());
+						result.setResultMsg(resultUnRegUsers);
+					}
+				}
+				
 			}
 			transactionManager.commit(txStatus);
 
@@ -313,6 +335,42 @@ public class JSONController {
 		return result;
 	}
 
+	InviteResult doInviteUser(String userNum, RingInfo ringInfo, String locale) throws Exception {
+		InviteResult result = new InviteResult();
+		UserInfo reqUserInfo = userInfoDAO.get(userNum);
+		if (reqUserInfo == null) {
+			result.setResultCode(ReturnCode.USER_NOT_FOUND.get());
+			result.setResultMsg(ReturnCode.STR_USER_NOT_FOUND.get());
+			logger.error("doInviteUser:"+ringInfo+":"+result);
+			return result;
+		}
+		ringInfo.setUserNum(userNum);
+		RingInfo checkRingInfo = ringInfoDAO.get(ringInfo.getUserNum(), ringInfo.getCallingNum());
+		if (checkRingInfo != null) {
+			ringInfoDAO.update(ringInfo);
+			result.setResultCode(ReturnCode.UPDATE_OK.get());
+			result.setResultMsg(ReturnCode.STR_UPDATE_OK.get()+":"+ringInfo.getRingFileName());
+		} else {
+			ringInfoDAO.create(ringInfo); 
+			result.setResultCode(ReturnCode.SUCCESS.get());
+			result.setResultMsg(ReturnCode.STR_SUCCESS.get()+":"+ringInfo.getRingFileName());
+		}
+        
+		JSONObject jData = new JSONObject();
+        jData.put("actType", "ring");
+        jData.put("userNum", ringInfo.getUserNum());
+        jData.put("ringSrcUrl", ringInfo.getRingFileName());
+        jData.put("callingNum", ringInfo.getCallingNum());
+        jData.put("callingName", ringInfo.getCallingName());
+        jData.put("locale", locale);
+        jData.put("expiredDate", ringInfo.getExpiredDate());
+        jData.put("durationType", ringInfo.getDurationType());
+		gcmSender.call(jData, reqUserInfo.getUserId(), ringInfo.getCallingNum(),ringInfo.getCallingName(), locale);
+
+		logger.info("doInviteUser:"+ringInfo+":"+result);
+		return result;
+	}
+	
 	/**
 	4. 대기중인 링정보 체크 및 다운로드
 	 path : ringupdate
@@ -337,13 +395,14 @@ public class JSONController {
 		TransactionStatus txStatus = null; 
 		
 		try {
+			
 			//find ring info by user num.
 			//set returnCode.
 			UserInfo userInfo = userInfoDAO.get(ringUpdate.getUserNum());
 			if (userInfo == null || !userInfo.getUserId().equals(ringUpdate.getUserId())) {
 				result.setResultCode(ReturnCode.ERROR_INVALID_USER.get());
 				result.setResultMsg(ReturnCode.STR_ERROR_INVALID_USER.get());
-				logger.info("ringupdate:"+ringUpdate+":"+result);
+				logger.error("ringupdate:"+ringUpdate+":"+result);
 				return result;
 			}
 			
@@ -359,11 +418,11 @@ public class JSONController {
 				//delete ring info.
 				//insert ring info to history.
 				for(RingInfo item : listRingInfo) {
-					result.setUpdateItem(item.getCallingNum(), item.getRingFileName());
+					result.setUpdateItem(item.getCallingNum(), item.getRingFileName(), item.getExpiredDate(), item.getDurationType());
 					item.setDownload_cnt(item.getDownload_cnt()+1);
 					ringInfoDAO.update(item);
 					RingHistory ringHistory = new RingHistory(ringUpdate.getUserNum(),item.getCallingNum()
-							,item.getCallingName(),item.getRegisterDate(), ringUpdate.getUserId(), item.getRingFileName());
+							,item.getCallingName(),item.getRegisterDate(), item.getExpiredDate(), ringUpdate.getUserId(), item.getRingFileName(), item.getDurationType());
 					ringHistoryDAO.create(ringHistory);
 				}
 				transactionManager.commit(txStatus);
@@ -397,7 +456,7 @@ public class JSONController {
 			if (userInfo == null || !userInfo.getUserId().equals(ringUpdate.getUserId())) {
 				result.setResultCode(ReturnCode.ERROR_INVALID_USER.get());
 				result.setResultMsg(ReturnCode.STR_ERROR_INVALID_USER.get());
-				logger.info("ringcheckout:"+ringUpdate+":"+result);
+				logger.error("ringcheckout:"+ringUpdate+":"+result);
 				return result;
 			}
 			
@@ -409,7 +468,7 @@ public class JSONController {
 				result.setResultMsg(ReturnCode.STR_SUCCESS.get());
 
 				for(RingInfo item : listRingInfo) {
-					result.setUpdateItem(item.getCallingNum(), item.getRingFileName());
+					result.setUpdateItem(item.getCallingNum(), item.getRingFileName(), item.getExpiredDate(), item.getDurationType());
 				}
 			}
 //			Map<String, String> ringMap = new HashMap<String, String>();

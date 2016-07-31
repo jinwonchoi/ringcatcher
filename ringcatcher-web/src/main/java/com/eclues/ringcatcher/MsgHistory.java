@@ -8,21 +8,25 @@ public class MsgHistory implements Serializable{
 	String callingNum;
 	String callingName;
 	String registerDate;
+	String expiredDate;
 	String userId;
 	String jsonMsg;
+	String durationType;
 	String updateDate;
 	String createDate;
 	
 	public MsgHistory() {	}
 	
-	public MsgHistory(String userNum, String callingNum, String callingName, String registerDate
-			, String userId, String jsonMsg) {
+	public MsgHistory(String userNum, String callingNum, String callingName, String registerDate, String expiredDate
+			, String userId, String jsonMsg, String durationType) {
 		this.userNum = userNum;
 		this.callingNum = callingNum;
 		this.callingName = callingName;
 		this.registerDate = registerDate;
+		this.expiredDate = expiredDate;
 		this.userId = userId;
 		this.jsonMsg = jsonMsg;
+		this.durationType = durationType;
 	}
 
 	
@@ -67,12 +71,28 @@ public class MsgHistory implements Serializable{
 		this.registerDate = registerDate;
 	}
 
+	public String getExpiredDate() {
+		return expiredDate;
+	}
+
+	public void setExpiredDate(String expiredDate) {
+		this.expiredDate = expiredDate;
+	}
+
 	public String getJsonMsg() {
 		return jsonMsg;
 	}
 
 	public void setJsonMsg(String jsonMsg) {
 		this.jsonMsg = jsonMsg;
+	}
+
+	public String getDurationType() {
+		return durationType;
+	}
+
+	public void setDurationType(String durationType) {
+		this.durationType = durationType;
 	}
 
 	public String getUpdateDate() {
@@ -92,6 +112,6 @@ public class MsgHistory implements Serializable{
 	}
 
 	public String toString() {
-		return String.format("%s:%s:%s:%s:%s:%s:%s", userNum, callingNum, callingName, registerDate, userId, jsonMsg, createDate);
+		return String.format("%s:%s:%s:%s:%s:%s:%s:%s:%s", userNum, callingNum, callingName, registerDate,expiredDate, userId, jsonMsg, durationType, createDate);
 	}
 }

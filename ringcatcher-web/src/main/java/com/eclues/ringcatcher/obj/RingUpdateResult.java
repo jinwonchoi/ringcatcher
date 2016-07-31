@@ -6,15 +6,15 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.eclues.ringcatcher.etc.Constant;
+
 public class RingUpdateResult implements Serializable {
 
 	private static final long serialVersionUID = -242858495909118917L;
 
-	final public String CALLING_NUM = "callingNum";
-	final public String FILE_PATH = "filePath";
 	String resultCode;
 	String resultMsg;
-	ArrayList<String> updateList = new ArrayList<String>();//callingNum, filePath
+	ArrayList<String> updateList = new ArrayList<String>();//callingNum, filePath, expired_date, duration_type
 	public RingUpdateResult() {
 		// TODO Auto-generated constructor stub
 	}
@@ -39,10 +39,13 @@ public class RingUpdateResult implements Serializable {
 		return updateList;
 	}
 	
-	public void setUpdateItem(String callingNum, String filePath) {
+	public void setUpdateItem(String callingNum, String filePath, String expiredDate, String durationType) {
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put(CALLING_NUM, callingNum);
-		jsonObject.put(FILE_PATH, filePath);
+		jsonObject.put(Constant.CALLING_NUM.get(), callingNum);
+		jsonObject.put(Constant.FILE_PATH.get(), filePath);
+		jsonObject.put(Constant.EXPIRED_DATE.get(), expiredDate);
+		jsonObject.put(Constant.DURATION_TYPE.get(), durationType);
+		
 		updateList.add(jsonObject.toString());
 	}
 
@@ -56,9 +59,11 @@ public class RingUpdateResult implements Serializable {
 		sb.append(String.format("[%s][%s]", resultCode, resultMsg));
 		for (String item : updateList) {
 			JSONObject jobject = new JSONObject(item);
-			String callingNum = jobject.getString(CALLING_NUM);
-			String filePath   = jobject.getString(FILE_PATH);
-			sb.append(String.format("{[%s]:[%s],[%s]:[%s]}", CALLING_NUM, callingNum, FILE_PATH, filePath));
+			String callingNum = jobject.getString(Constant.CALLING_NUM.get());
+			String filePath   = jobject.getString(Constant.FILE_PATH.get());
+			String expiredDate   = jobject.getString(Constant.EXPIRED_DATE.get());
+			String durationType   = jobject.getString(Constant.DURATION_TYPE.get());
+			sb.append(String.format("{[%s]:[%s],[%s]:[%s]}", callingNum, filePath,expiredDate, durationType));
 			
 		}
 

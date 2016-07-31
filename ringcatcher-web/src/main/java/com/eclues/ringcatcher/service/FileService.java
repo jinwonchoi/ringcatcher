@@ -19,7 +19,7 @@ public class FileService {
 	
 	public static final String SAVE_LOCATION = System.getProperty("work.path")+"/file_repo/";
 	public static final String FILE_URL = //"http://%s:%s/ringcatcher/filerepo/%s/%s_%s.%s";
-			"/ringmedia/%s/%s_%s.%s";
+			"/ringmedia/%s/%s";
 	
 	public boolean saveFile(MultipartFile multipartFile) {
 		String saveFileName = multipartFile.getOriginalFilename();
@@ -30,20 +30,20 @@ public class FileService {
 		return new java.text.SimpleDateFormat("yyyyMMdd").format(new Date());
 	}
 
-	public String getSaveFileUrl(MultipartFile multipartFile, String yyyymmdd, String callingNum, String calledNum) {
+	public String getSaveFileName(MultipartFile multipartFile, String callingNum, String calledNum) {
 		int dotPos = multipartFile.getOriginalFilename().lastIndexOf('.');
 		String extension = multipartFile.getOriginalFilename().substring(dotPos+1);
+		return String.format("%s_%s_%s.%s", callingNum, calledNum, RandomStringUtils.randomAlphanumeric(8), extension);
+	}
+	
+	public String getSaveFileUrl(String yyyymmdd, String fileName) {
 		return String.format(FILE_URL /*,environmentBean.getDomainName()
 				,environmentBean.getPort()*/
-				, yyyymmdd, callingNum, calledNum, extension);
+				, yyyymmdd, fileName);
 	}
 
-	public String getSaveFilePath(MultipartFile multipartFile, String yyyymmdd, String callingNum, String calledNum) {
-		int dotPos = multipartFile.getOriginalFilename().lastIndexOf('.');
-		String extension = multipartFile.getOriginalFilename().substring(dotPos+1);
-		//File dir = new File("/home/pregzt");
-		String name = String.format("%s.%s", RandomStringUtils.randomAlphanumeric(8), extension);
-		return String.format("%s/%s/%s_%s_%s",SAVE_LOCATION, yyyymmdd, callingNum, calledNum, name);
+	public String getSaveFilePath(String yyyymmdd, String fileName) {
+		return String.format("%s/%s/%s",SAVE_LOCATION, yyyymmdd, fileName);
 	}
 	
 	public boolean saveFile(MultipartFile multipartFile,String pathYYYYMMDD, String saveFileName) {

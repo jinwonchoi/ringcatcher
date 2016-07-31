@@ -8,21 +8,25 @@ public class RingHistory implements Serializable{
 	String callingNum;
 	String callingName;
 	String registerDate;
+	String expiredDate;
 	String userId;
+	String durationType;
 	String ringFileName;
 	String updateDate;
 	String createDate;
 	
 	public RingHistory() {	}
 	
-	public RingHistory(String userNum, String callingNum, String callingName, String registerDate
-			, String userId, String ringFileName) {
+	public RingHistory(String userNum, String callingNum, String callingName, String registerDate, String expiredDate
+			, String userId, String ringFileName, String durationType) {
 		this.userNum = userNum;
 		this.callingNum = callingNum;
 		this.callingName = callingName;
 		this.registerDate = registerDate;
+		this.expiredDate = expiredDate;
 		this.userId = userId;
 		this.ringFileName = ringFileName;
+		this.durationType = durationType;
 	}
 
 	
@@ -66,6 +70,14 @@ public class RingHistory implements Serializable{
 	public void setRegisterDate(String registerDate) {
 		this.registerDate = registerDate;
 	}
+	
+	public String getExpiredDate() {
+		return expiredDate;
+	}
+
+	public void setExpiredDate(String expiredDate) {
+		this.expiredDate = expiredDate;
+	}
 
 	public String getRingFileName() {
 		return ringFileName;
@@ -73,6 +85,14 @@ public class RingHistory implements Serializable{
 
 	public void setRingFileName(String ringFileName) {
 		this.ringFileName = ringFileName;
+	}
+
+	public String getDurationType() {
+		return durationType;
+	}
+
+	public void setDurationType(String durationType) {
+		this.durationType = durationType;
 	}
 
 	public String getUpdateDate() {
@@ -92,6 +112,6 @@ public class RingHistory implements Serializable{
 	}
 
 	public String toString() {
-		return String.format("%s:%s:%s:%s:%s:%s:%s", userNum, callingNum, callingName, registerDate, userId, ringFileName, createDate);
+		return String.format("%s:%s:%s:%s:%s:%s:%s:%s:%s", userNum, callingNum, callingName, registerDate, registerDate, userId, ringFileName, durationType, createDate);
 	}
 }

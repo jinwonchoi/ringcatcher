@@ -8,7 +8,9 @@ public class MsgInfo implements Serializable {
 	String callingNum;
 	String callingName;
 	String registerDate;
+	String expiredDate;
 	String jsonMsg;
+	String durationType;
 	int download_cnt;
 	String updateDate;
 	String createDate;
@@ -52,12 +54,28 @@ public class MsgInfo implements Serializable {
 		this.registerDate = registerDate;
 	}
 
+	public String getExpiredDate() {
+		return expiredDate;
+	}
+
+	public void setExpiredDate(String expiredDate) {
+		this.expiredDate = expiredDate;
+	}
+
 	public String getJsonMsg() {
 		return jsonMsg;
 	}
 
 	public void setJsonMsg(String jsonMsg) {
 		this.jsonMsg = jsonMsg;
+	}
+
+	public String getDurationType() {
+		return durationType;
+	}
+
+	public void setDurationType(String durationType) {
+		this.durationType = durationType;
 	}
 
 	public int getDownload_cnt() {
@@ -85,6 +103,6 @@ public class MsgInfo implements Serializable {
 	}
 
 	public String toString() {
-		return String.format("%s:%s:%s:%s:%d:%s:%s", userNum, callingNum, callingName, registerDate, download_cnt, jsonMsg, createDate);
+		return String.format("%s:%s:%s:%s:%d:%s:%s:%s:%s", userNum, callingNum, callingName, registerDate, expiredDate, download_cnt, jsonMsg, durationType, createDate);
 	}
 }

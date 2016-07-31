@@ -10,14 +10,18 @@ public class ReqRingInfo implements Serializable {
 	String callingName;
 	String locale;
 	String ringFileName;
-	
+	String expiredDate;
+	String durationType; /* A:1회용, T:기간지정, P:영속*/
+
 	public ReqRingInfo() {	}
 	
-	public ReqRingInfo(String userNum, String callingId, String callingNum, String callingName) {
+	public ReqRingInfo(String userNum, String callingId, String callingNum, String callingName, String expiredDate, String durationType) {
 		this.userNum = userNum;
 		this.callingId = callingId;
 		this.callingNum = callingNum;
 		this.callingName = callingName;
+		this.expiredDate = expiredDate;
+		this.durationType = durationType;
 	}
 	
 	public String getCallingId() {
@@ -60,6 +64,22 @@ public class ReqRingInfo implements Serializable {
 		this.ringFileName = ringFileName;
 	}
 	
+	public String getExpiredDate() {
+		return expiredDate;
+	}
+
+	public void setExpiredDate(String expiredDate) {
+		this.expiredDate = expiredDate;
+	}
+
+	public String getDurationType() {
+		return durationType;
+	}
+
+	public void setDurationType(String durationType) {
+		this.durationType = durationType;
+	}
+
 	public String getLocale() {
 		return locale;
 	}
@@ -69,6 +89,6 @@ public class ReqRingInfo implements Serializable {
 	}
 
 	public String toString() {
-		return String.format("%s:%s:%s:%s:%s:%s", userNum, callingId, callingNum, callingName, ringFileName, locale);
+		return String.format("%s:%s:%s:%s:%s:%s:%s", userNum, callingId, callingNum, callingName, ringFileName,durationType, locale);
 	}
 }

@@ -9,4 +9,5 @@ public interface UserInfoDAO {
 	public void update(UserInfo userInfo) throws Exception ;
 	public void delete(String userNum) throws Exception ;
 	public UserInfo get(String userNum) throws Exception ;
+	public List<UserInfo> getList(List<String> userNum) throws Exception ;
 }

@@ -14,6 +14,8 @@ public class ReqRegisterMessage implements Serializable {
 	String callingName;
 	String locale;
 	String jsonMessage;
+	String expiredDate;
+	String durationType;
 	
 	public ReqRegisterMessage() {	}
 	
@@ -72,7 +74,23 @@ public class ReqRegisterMessage implements Serializable {
 		this.locale = locale;
 	}
 
+	public String getExpiredDate() {
+		return expiredDate;
+	}
+
+	public void setExpiredDate(String expiredDate) {
+		this.expiredDate = expiredDate;
+	}
+
+	public String getDurationType() {
+		return durationType;
+	}
+
+	public void setDurationType(String durationType) {
+		this.durationType = durationType;
+	}
+
 	public String toString() {
-		return String.format("%s:%s:%s:%s:%s:%s", userNum, callingId, callingNum, callingName, jsonMessage, locale);
+		return String.format("%s:%s:%s:%s:%s:%s:%s:%s", userNum, callingId, callingNum, callingName, jsonMessage, locale, expiredDate, durationType);
 	}
 }

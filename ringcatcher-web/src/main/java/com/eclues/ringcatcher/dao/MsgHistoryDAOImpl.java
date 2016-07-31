@@ -17,6 +17,25 @@ import com.eclues.ringcatcher.MsgHistory;
 
 public class MsgHistoryDAOImpl implements MsgHistoryDAO {
 
+	@Override
+	public void create(List<String> userNum, MsgHistory msgHistory) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(List<String> userNum, MsgHistory msgHistory) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(List<String> userNum, String callingNum) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	private JdbcTemplate jdbcTemplate;
 	
 	public MsgHistoryDAOImpl(DataSource dataSource) {
@@ -31,11 +50,11 @@ public class MsgHistoryDAOImpl implements MsgHistoryDAO {
 				&&!msgHistory.getRegisterDate().equals("")
 				&&!msgHistory.getJsonMsg().equals("")) {
 			//insert
-			String sql = "INSERT INTO msg_history(user_num,calling_num, calling_name, register_date, user_id, json_msg, update_date,create_date)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, now(), now())";
+			String sql = "INSERT INTO msg_history(user_num,calling_num, calling_name, register_date, expired_date, user_id, json_msg, duration_type, update_date,create_date)"
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now())";
 			jdbcTemplate.update(sql, msgHistory.getUserNum()
-					, msgHistory.getCallingNum(), msgHistory.getCallingName(), msgHistory.getRegisterDate()
-					, msgHistory.getUserId(), msgHistory.getJsonMsg());	
+					, msgHistory.getCallingNum(), msgHistory.getCallingName(), msgHistory.getRegisterDate(), msgHistory.getExpiredDate()
+					, msgHistory.getUserId(), msgHistory.getJsonMsg(), msgHistory.getDurationType());	
 		} else {
 			throw new Exception(String.format("No key value [%s][%s][%s]", msgHistory.getUserNum()
 					,msgHistory.getCallingNum()
@@ -49,11 +68,13 @@ public class MsgHistoryDAOImpl implements MsgHistoryDAO {
 				&&!msgHistory.getCreateDate().equals("")) {
 			//update
 			String sql = "UPDATE msg_history SET register_date = ? "
+					+ " , expired_date = ?"
 					+ " , json_msg = ?"
+					+ " , duration_type = ?"
 					+ " , update_date = now()"
 					+ "where user_Num = ? and calling_num = ? and create_date = str_to_date('?',\"%Y%m%d%H%i%s\")";
-			jdbcTemplate.update(sql, msgHistory.getRegisterDate(), msgHistory.getJsonMsg()
-					, msgHistory.getUserNum(), msgHistory.getCallingNum());
+			jdbcTemplate.update(sql, msgHistory.getRegisterDate(), msgHistory.getExpiredDate(), msgHistory.getJsonMsg(), msgHistory.getDurationType()
+					, msgHistory.getUserNum(), msgHistory.getCallingNum(), msgHistory.getCreateDate());
 		} else {
 			throw new Exception(String.format("No key value [%s][%s][%s]", msgHistory.getUserNum()
 					,msgHistory.getCallingNum()
@@ -69,7 +90,7 @@ public class MsgHistoryDAOImpl implements MsgHistoryDAO {
 
 	@Override
 	public MsgHistory get(String userNum, String callingNum, String createDate) {
-		String sql = "SELECT user_Num, user_num,calling_num,calling_name, register_date, user_id, json_msg "
+		String sql = "SELECT user_Num, user_num,calling_num,calling_name, register_date, expired_date, user_id, json_msg, duration_type "
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
 				+" FROM msg_history where user_Num = '"+userNum+"' and  calling_num = '"+callingNum+"' and create_date = str_to_date('"+createDate+"',\"%Y%m%d%H%i%s\")";
@@ -83,8 +104,10 @@ public class MsgHistoryDAOImpl implements MsgHistoryDAO {
 					msgHistory.setCallingNum(rs.getString("calling_num"));
 					msgHistory.setCallingName(rs.getString("calling_name"));
 					msgHistory.setRegisterDate(rs.getString("register_date"));
+					msgHistory.setExpiredDate(rs.getString("expired_date"));
 					msgHistory.setUserId(rs.getString("user_id"));
 					msgHistory.setJsonMsg(rs.getString("json_msg"));
+					msgHistory.setDurationType(rs.getString("duration_type"));
 					msgHistory.setUpdateDate(rs.getString("update_date"));
 					msgHistory.setCreateDate(rs.getString("create_date"));
 					return msgHistory;
@@ -99,7 +122,7 @@ public class MsgHistoryDAOImpl implements MsgHistoryDAO {
 	
 	@Override
 	public List<MsgHistory> getByUserNum(String userNum) throws Exception {
-		String sql = "SELECT user_num,calling_num,calling_name, register_date, user_id, json_msg "
+		String sql = "SELECT user_num,calling_num,calling_name, register_date, expired_date, user_id, json_msg, duration_type "
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
 				+" FROM msg_history where user_num = '"+userNum+"'";
@@ -111,8 +134,10 @@ public class MsgHistoryDAOImpl implements MsgHistoryDAO {
 				msgHistory.setCallingNum(rs.getString("calling_num"));
 				msgHistory.setCallingName(rs.getString("calling_name"));
 				msgHistory.setRegisterDate(rs.getString("register_date"));
+				msgHistory.setExpiredDate(rs.getString("expired_date"));
 				msgHistory.setUserId(rs.getString("user_id"));
 				msgHistory.setJsonMsg(rs.getString("json_msg"));
+				msgHistory.setDurationType(rs.getString("duration_type"));
 				msgHistory.setUpdateDate(rs.getString("update_date"));
 				msgHistory.setCreateDate(rs.getString("create_date"));
 				return msgHistory;
@@ -124,7 +149,7 @@ public class MsgHistoryDAOImpl implements MsgHistoryDAO {
 
 	@Override
 	public List<MsgHistory> list() {
-		String sql = "SELECT user_num,calling_num, calling_name, register_date, user_id, json_msg "
+		String sql = "SELECT user_num,calling_num, calling_name, register_date, expired_date, user_id, json_msg, duration_type "
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
 				+" FROM msg_history";
@@ -136,8 +161,10 @@ public class MsgHistoryDAOImpl implements MsgHistoryDAO {
 				msgHistory.setCallingNum(rs.getString("calling_num"));
 				msgHistory.setCallingName(rs.getString("calling_name"));
 				msgHistory.setRegisterDate(rs.getString("register_date"));
+				msgHistory.setExpiredDate(rs.getString("expired_date"));
 				msgHistory.setUserId(rs.getString("user_id"));
 				msgHistory.setJsonMsg(rs.getString("json_msg"));
+				msgHistory.setDurationType(rs.getString("duration_type"));
 				msgHistory.setUpdateDate(rs.getString("update_date"));
 				msgHistory.setCreateDate(rs.getString("create_date"));
 				return msgHistory;
