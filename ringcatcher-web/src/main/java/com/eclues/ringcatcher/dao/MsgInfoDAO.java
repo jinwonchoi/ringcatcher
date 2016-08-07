@@ -12,6 +12,9 @@ public interface MsgInfoDAO {
 	public void update(List<String> userNums, MsgInfo msgInfo) throws Exception ;
 	public void delete(List<String> userNums, String callingNum) throws Exception ;
 	public MsgInfo get(String userNum, String callingNum) throws Exception ;
+	public List<MsgInfo> getList(List<String> userNum, String callingNum) throws Exception ;
+	/** 나한테 보낸 메시지나 default로 보낸 메시지를 쿼리*/
+	public List<MsgInfo> getList(List<String> fromNums, String toNum, String updateDate) throws Exception ;
 	public List<MsgInfo> getByUserNum(String userNum, boolean all) throws Exception ;
 	public List<MsgInfo> list() throws Exception ;
 }

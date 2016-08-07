@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.gencode.ringcatcher.obj.ContactListResult;
 import com.gencode.ringcatcher.obj.RegisterResult;
 import com.gencode.ringcatcher.obj.RingUpdateResult;
 
@@ -173,7 +174,12 @@ public class JsonSimpleTest {
         	System.out.println("callingNum="+callingNum);
     		String filePath = jsonItem.getString("filePath");
         	System.out.println("filePath="+filePath);
-    		result.setUpdateItem(callingNum, filePath);
+        	String expiredDate = jsonItem.optString("expiredDate");
+        	System.out.println("expiredDate="+expiredDate);
+    		String durationType = jsonItem.optString("durationType");
+    		System.out.println("durationType="+durationType);
+    				
+    		result.setUpdateItem(callingNum, filePath,expiredDate,durationType);
     	}
 
     	System.out.println("result = "+result.toString());
@@ -229,11 +235,94 @@ public class JsonSimpleTest {
         	System.out.println("callingNum="+callingNum);
     		String filePath = jsonItem.getString("filePath");
         	System.out.println("filePath="+filePath);
-    		result.setUpdateItem(callingNum, filePath);
+        	String expiredDate = jsonItem.optString("expiredDate");
+        	System.out.println("expiredDate="+expiredDate);
+    		String durationType = jsonItem.optString("durationType");
+    		System.out.println("durationType="+durationType);
+    				
+    		result.setUpdateItem(callingNum, filePath,expiredDate,durationType);
     	}
 
     	System.out.println("result = "+result.toString());
 		assert(true);
+//		fail("Not yet implemented");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 	5. 앱에 등록된 고객 폰북명단 찾기
+	 path : findcontacts
+	{ "user_id":"01042047792"
+	, "user_num":"01042047792"
+	, "contactList":"01055557777,01066668888,01066669999"}
+	return OK
+	{"resultCode":"0001"
+	,"resultMsg":"Sucess"
+	,"registeredContactList":"01055557777,01066668888,01066669999"
+	,"unregisteredContactList":"01055557777,01066668888,01066669999"
+	}
+	return No data
+	{"updateMap":{},"resultCode":"1003","resultMsg":"No Ring Update"}
+	return error
+	{"updateMap":{},"resultCode":"4001","resultMsg":"Unknown Error"}
+	 */
+	@Test
+	public void testFindConacts() {
+		try {
+    	String url = this.url+"/json/findcontacts";
+    	
+
+    	String body = "{\"userId\":\""+tokenId+"\""
+    			+",\"userNum\":\"01055557777\""
+    			+",\"lastUpdateDate\":\"20160501235959\""
+    			+",\"contactList\":\"01066668888,01066669999,01033338888,01022227777,0244445555\"}";
+    	System.out.println(body);
+    	JsonSimple json = new JsonSimple();
+    	String strJson = json.http(url, body);
+    	
+    	ContactListResult result = new ContactListResult(); 
+    	JSONObject jsonObject = new JSONObject(strJson);
+    	String resultCode = jsonObject.getString("resultCode");
+    	String resultMsg  = jsonObject.getString("resultMsg");
+    	//String registeredContactList  = jsonObject.getString("registeredContactList");
+    	String unregisteredContactList  = jsonObject.getString("unregisteredContactList");
+    	
+    	result.setResultCode(resultCode);
+    	result.setResultMsg(resultMsg);
+    	result.setUnregisteredContactList(unregisteredContactList);
+    	
+    	JSONArray jsonArray = jsonObject.optJSONArray("registeredContactList");
+    	System.out.println("registeredContactList="+jsonArray.toString());
+    	for (int i= 0;i < jsonArray.length();i++ ) {
+    		System.out.println("i="+i);
+    		String jsonStr =  jsonArray.getString(i);
+    		JSONObject jsonItem = new JSONObject(jsonStr);
+    		System.out.println("jsonItem="+jsonItem);
+    		//userNum,callingNum,callingName,registerDate,expiredDate,jsonMsg,durationType,downloadCnt,updateDate;
+    		
+    		String userNum = jsonItem.optString("userNum");
+        	System.out.println("userNum="+userNum);
+    		String defaultDurationType = jsonItem.optString("defaultDurationType");
+        	System.out.println("defaultDurationType="+defaultDurationType);
+    		String defaultJsonMessage = jsonItem.optString("defaultJsonMessage");
+        	System.out.println("defaultJsonMessage="+defaultJsonMessage);
+    		String defaultExpiredDate = jsonItem.getString("defaultExpiredDate");
+        	System.out.println("defaultExpiredDate="+defaultExpiredDate);
+        	String durationType = jsonItem.optString("durationType");
+        	System.out.println("durationType="+durationType);
+    		String jsonMessage = jsonItem.optString("jsonMessage");
+        	System.out.println("jsonMessage="+jsonMessage);
+    		String expiredDate = jsonItem.optString("expiredDate");
+    		System.out.println("expiredDate="+expiredDate);
+    				
+        	result.setRegisteredContactList(userNum, defaultDurationType,defaultJsonMessage,defaultExpiredDate,durationType,jsonMessage,expiredDate);
+    	}
+
+    	
+    	System.out.println("result="+result);
+    	assert(true);
 //		fail("Not yet implemented");
 		} catch (Exception e) {
 			e.printStackTrace();

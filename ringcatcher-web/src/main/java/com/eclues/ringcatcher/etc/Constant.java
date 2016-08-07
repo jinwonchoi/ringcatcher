@@ -6,7 +6,18 @@ public enum Constant {
 	CALLING_NUM("callingNum"),
 	FILE_PATH("filePath"),
 	EXPIRED_DATE("expiredDate"),
-	DURATION_TYPE("durationType")
+	DURATION_TYPE("durationType"),
+	USER_NUM("userNum"),
+	CALLING_NAME("callingName"),
+	REGISTER_DATE("registerDate"),
+	JSON_MSG("jsonMsg"),
+	DOWNLOAD_CNT("downloadCnt"),
+	UPDATE_DATE("updateDate"),
+	
+	DEFAULT_DURATION_TYPE("defaultDurationType"),
+	DEFAULT_JSON_MESSAGE("defaultJsonMessage"),
+	DEFAULT_EXPIRED_DATE("defaultExpiredDate"),
+	JSON_MESSAGE("jsonMessage"),
 	;
 	private Constant(String str) {
 		value = str;

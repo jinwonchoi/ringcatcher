@@ -1,6 +1,10 @@
 package com.eclues.ringcatcher.ctrl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.eclues.ringcatcher.MsgInfo;
+import com.eclues.ringcatcher.ReqContactList;
 import com.eclues.ringcatcher.ReqMessageInfo;
 import com.eclues.ringcatcher.ReqRegisterMessage;
 import com.eclues.ringcatcher.ReqUploadImage;
@@ -28,6 +33,7 @@ import com.eclues.ringcatcher.dao.MsgInfoDAO;
 import com.eclues.ringcatcher.dao.UserInfoDAO;
 import com.eclues.ringcatcher.etc.Constant;
 import com.eclues.ringcatcher.etc.ReturnCode;
+import com.eclues.ringcatcher.obj.ContactListResult;
 import com.eclues.ringcatcher.obj.MessageResult;
 import com.eclues.ringcatcher.obj.RegisterResult;
 import com.eclues.ringcatcher.obj.UploadImageResult;
@@ -224,27 +230,30 @@ public class RingMsgController {
 			}
 
 			String[] userList = reqRegisterMessage.getUserNum().split(",");
-			String resultUnRegUsers = null;
+			
 			RegisterResult tempResult =  null;
 			if (userList.length == 1) {
 				result = doRegisterOneMessage(reqRegisterMessage.getUserNum(), reqRegisterMessage);
 			} else {
-				for (String userItem : userList) {
-					tempResult = doRegisterOneMessage(userItem, reqRegisterMessage);
-					if (ReturnCode.USER_NOT_FOUND.get().equals(tempResult.getResultCode())) {
-						if (resultUnRegUsers == null)
-							resultUnRegUsers = userItem;
-						else
-							resultUnRegUsers += ","+userItem;
-					} else if (ReturnCode.SUCCESS.get().equals(tempResult.getResultCode())) {
-						if (result==null) {
-							result = tempResult;
-						}
-					} else if (ReturnCode.UPDATE_OK.get().equals(tempResult.getResultCode())) {
-						result = tempResult;
-					}
-				} 
-				if (result == null) {
+				//미등록 리스트 구하기
+				List<String> userNums = new ArrayList<String>(Arrays.asList(userList));
+				List<String> unRegUserList = new ArrayList<String>(Arrays.asList(userList));
+				List<String> regUserList = new ArrayList<String>();
+				List<UserInfo> userInfoList = userInfoDAO.getList(userNums);
+				String resultUnRegUsers = null;
+				for (UserInfo userInfo2 : userInfoList) {
+					logger.debug("suerInfo2:"+userInfo2.getUserNum());
+					unRegUserList.remove(userInfo2.getUserNum());
+					regUserList.add(userInfo2.getUserNum());
+				}
+				for (String userItem : unRegUserList) {
+					if (resultUnRegUsers == null)
+						resultUnRegUsers = userItem;
+					else
+						resultUnRegUsers += ","+userItem;
+				}
+				//메시지 이미 등록된 목록구하기
+				if (regUserList.size() == 0) { //등록된 번호가 전혀 없는 경우
 					transactionManager.rollback(txStatus);
 					
 					result=new RegisterResult();
@@ -252,12 +261,23 @@ public class RingMsgController {
 					result.setResultMsg(ReturnCode.STR_USER_NOT_FOUND.get());
 					logger.info("registerMessage:"+reqRegisterMessage+":"+result);
 					return result;
-				} else {
-					if (resultUnRegUsers != null){
-						result=new RegisterResult();
-						result.setResultCode(ReturnCode.USER_NOT_ALL_FOUND.get());
-						result.setResultMsg(resultUnRegUsers);
-					}
+				}
+				List<MsgInfo> msgInfoList = msgInfoDAO.getList(regUserList, reqRegisterMessage.getCallingNum());
+				List<String> unRegMsgUserList = new ArrayList<String>(regUserList);
+				List<String> regMsgUserList = new ArrayList<String>();
+				for (MsgInfo msgItem: msgInfoList) {
+					unRegMsgUserList.remove(msgItem.getUserNum());
+					regMsgUserList.add(msgItem.getUserNum());
+				}
+				if (unRegMsgUserList.size()>0)
+					result = doRegisterManyMessage(unRegMsgUserList, reqRegisterMessage, true);
+				if (regMsgUserList.size()>0)
+					result = doRegisterManyMessage(regMsgUserList, reqRegisterMessage, false);
+				
+				if (resultUnRegUsers != null){
+					result=new RegisterResult();
+					result.setResultCode(ReturnCode.USER_NOT_ALL_FOUND.get());
+					result.setResultMsg(resultUnRegUsers);
 				}
 				
 			}
@@ -311,20 +331,54 @@ public class RingMsgController {
 		if (Constant.DEFAULT_USER_NUM.get().equals(reqUserInfo.getUserNum())) {
 			//don't send gcm for default message
 		} else {
-			//gcm 처리방식이 추후 결정되면 다시 적용하기로 
-//            JSONObject jData = new JSONObject();
-//            jData.put("actType", "message");
-//            jData.put("userNum", reqRegisterMessage.getUserNum());
-//            jData.put("jsonMessage", reqRegisterMessage.getJsonMessage());
-//            jData.put("callingNum", reqRegisterMessage.getCallingNum());
-//            jData.put("callingName", reqRegisterMessage.getCallingName());
-//            jData.put("locale", reqRegisterMessage.getLocale());
-//			gcmSender.callMessage(jData, reqUserInfo.getUserId(), reqRegisterMessage.getCallingNum()
-//					,reqRegisterMessage.getCallingName(), reqRegisterMessage.getLocale());
+			sendGCM(reqUserInfo.getUserId(), reqRegisterMessage);
 		}
 		
 		return result;
 		
+	}
+
+	private RegisterResult doRegisterManyMessage(List<String> userNumList, ReqRegisterMessage reqRegisterMessage, boolean isInsert) throws Exception {
+		RegisterResult result  =  new RegisterResult();
+		
+		// save info
+		MsgInfo msgInfo = new MsgInfo();
+		msgInfo.setUserNum(userNumList.get(0));
+		msgInfo.setCallingNum(reqRegisterMessage.getCallingNum());
+		msgInfo.setCallingName(reqRegisterMessage.getCallingName());
+		String yyyymmdd = new java.text.SimpleDateFormat("yyyyMMdd").format(new Date());
+		msgInfo.setJsonMsg(reqRegisterMessage.getJsonMessage());
+		msgInfo.setRegisterDate(yyyymmdd);
+		msgInfo.setExpiredDate(reqRegisterMessage.getExpiredDate());
+		
+		if (isInsert) {
+			msgInfoDAO.create(userNumList, msgInfo);
+			result.setResultCode(ReturnCode.SUCCESS.get());
+			result.setResultMsg(ReturnCode.STR_SUCCESS.get());
+		} else {
+			msgInfoDAO.update(userNumList, msgInfo);
+			result.setResultCode(ReturnCode.UPDATE_OK.get());
+			result.setResultMsg(ReturnCode.STR_UPDATE_OK.get());
+		}
+		for (String userItem : userNumList) {
+			sendGCM(userItem, reqRegisterMessage);
+		}
+		
+		return result;
+		
+	}
+
+	private void sendGCM(String userId, ReqRegisterMessage reqRegisterMessage) {
+		//gcm 처리방식이 추후 결정되면 다시 적용하기로 
+        JSONObject jData = new JSONObject();
+        jData.put("actType", "message");
+        jData.put("userNum", reqRegisterMessage.getUserNum());
+        jData.put("jsonMessage", reqRegisterMessage.getJsonMessage());
+        jData.put("callingNum", reqRegisterMessage.getCallingNum());
+        jData.put("callingName", reqRegisterMessage.getCallingName());
+        jData.put("locale", reqRegisterMessage.getLocale());
+		gcmSender.callMessage(jData, userId, reqRegisterMessage.getCallingNum()
+				,reqRegisterMessage.getCallingName(), reqRegisterMessage.getLocale());
 	}
 	
 	@RequestMapping(value="/getmessage", method=RequestMethod.POST, consumes={"application/json"})
@@ -384,4 +438,124 @@ public class RingMsgController {
 		return result;
 	}
 
+	/**
+	 *5. 기존정보 재다운로드
+	*/
+	@RequestMapping(value="/findcontacts", method=RequestMethod.POST, consumes={"application/json"})
+	public @ResponseBody ContactListResult findContacts(@RequestBody ReqContactList reqContactList) {
+		
+		logger.info("findcontacts:"+reqContactList);
+		ContactListResult result =  new ContactListResult();
+		try {
+			//find ring info by user num.
+			//set returnCode.
+			
+			
+			UserInfo userInfo = userInfoDAO.get(reqContactList.getUserNum());
+			if (userInfo == null || !userInfo.getUserId().equals(reqContactList.getUserId())) {
+				result.setResultCode(ReturnCode.ERROR_INVALID_USER.get());
+				result.setResultMsg(ReturnCode.STR_ERROR_INVALID_USER.get());
+				logger.error("findcontacts:"+reqContactList+":"+result);
+				return result;
+			}
+			
+			List<UserInfo> listUserInfo;
+			String[] arUserInfo = reqContactList.getContactList().split(",");
+			if (arUserInfo.length == 0) {
+				result.setResultCode(ReturnCode.ERROR_INVALID_VAlUE.get());
+				result.setResultMsg(ReturnCode.STR_ERROR_INVALID_VAlUE.get());
+				logger.error("findcontacts:"+reqContactList+":"+result);
+				return result;
+			}			
+			List<String> contactList = Arrays.asList(reqContactList.getContactList().split(","));
+					
+			listUserInfo= userInfoDAO.getList(contactList);
+			StringBuffer sbRegisteredList = new StringBuffer();
+			StringBuffer sbUnregisteredList = new StringBuffer();
+			List<String> registeredList = new ArrayList<String>();
+			List<String> unregistered = new ArrayList<String>(contactList);
+			if (listUserInfo != null && listUserInfo.size() > 0) {
+
+				for(UserInfo item : listUserInfo) {
+					unregistered.remove(item.getUserNum());
+					registeredList.add(item.getUserNum());
+					if (sbRegisteredList.toString().equals(""))
+						sbRegisteredList.append(item.getUserNum());
+					else
+						sbRegisteredList.append(",").append(item.getUserNum());
+				}
+			}
+			for(String item: unregistered) {
+				if (sbUnregisteredList.toString().equals(""))
+					sbUnregisteredList.append(item);
+				else
+					sbUnregisteredList.append(",").append(item);
+			}
+			
+			/** 
+			 * 1. fromContactList toMe message 
+			 * 2. fromContactList todefault message
+			 */
+			
+			List<MsgInfo> toMeMsgInfoList = msgInfoDAO.getList(registeredList, reqContactList.getUserNum()
+					,reqContactList.getLastUpdateDate());
+			List<MsgInfo> toDefaultMsgInfoList = msgInfoDAO.getList(registeredList, Constant.DEFAULT_USER_NUM.get()
+					,reqContactList.getLastUpdateDate());
+			HashMap<String, MsgInfo> toMeMsgInfoMap = new HashMap<String, MsgInfo>();
+			for(MsgInfo item : toMeMsgInfoList) {
+				toMeMsgInfoMap.put(item.getCallingNum(), item);
+			}
+			HashMap<String, MsgInfo> toDefaultMsgInfoMap = new HashMap<String, MsgInfo>();
+			for(MsgInfo item : toDefaultMsgInfoList) {
+				toDefaultMsgInfoMap.put(item.getCallingNum(), item);
+			}
+			result.setResultCode(ReturnCode.SUCCESS.get());
+			result.setResultMsg(ReturnCode.STR_SUCCESS.get());
+			for (String userNum : registeredList) {
+				String defaultDurationType;
+				String defaultJsonMessage;
+				String defaultExpiredDate;
+				String durationType;
+				String jsonMessage;
+				String expiredDate;
+
+				MsgInfo toDefaultMsgInfo = toDefaultMsgInfoMap.get(userNum);
+				if (toDefaultMsgInfo != null){
+					defaultDurationType =toDefaultMsgInfo.getDurationType()==null?"":toDefaultMsgInfo.getDurationType();
+					defaultJsonMessage =toDefaultMsgInfo.getJsonMsg()==null?"":toDefaultMsgInfo.getJsonMsg();
+					defaultExpiredDate =toDefaultMsgInfo.getExpiredDate()==null?"":toDefaultMsgInfo.getExpiredDate();
+				} else {
+					defaultDurationType ="";
+					defaultJsonMessage ="";
+					defaultExpiredDate ="";
+				}
+
+				MsgInfo toMeMsgInfo = toMeMsgInfoMap.get(userNum);
+				if (toMeMsgInfo != null){
+					durationType =toMeMsgInfo.getDurationType()==null?"":toMeMsgInfo.getDurationType();
+					jsonMessage =toMeMsgInfo.getJsonMsg()==null?"":toMeMsgInfo.getJsonMsg();
+					expiredDate =toMeMsgInfo.getExpiredDate()==null?"":toMeMsgInfo.getExpiredDate();
+				} else {
+					durationType ="";
+					jsonMessage ="";
+					expiredDate ="";
+				}				
+				result.setRegisteredContactList(userNum, defaultDurationType,defaultJsonMessage,defaultExpiredDate
+						,durationType,jsonMessage,expiredDate);
+			}
+			result.setUnregisteredContactList(sbUnregisteredList.toString());
+			
+//			Map<String, String> ringMap = new HashMap<String, String>();
+//			ringMap.put("0255558888", "http://localhost:8080/ringcatcher/ring/aa.mp3");
+//			result.setResultCode(ReturnCode.SUCESS.get());
+//			result.setResultMsg(ReturnCode.STR_SUCESS.get());
+//			result.setUpdateMap(ringMap);
+		} catch (Exception e) {
+			logger.error("Find Contact List failed.",e);
+			result.setResultCode(ReturnCode.ERROR_UNKNOWN.get());
+			result.setResultMsg(ReturnCode.STR_ERROR_UNKNOWN.get());
+		}
+		logger.info("findcontacts:"+reqContactList+":"+result);
+		return result;	
+	}
 }

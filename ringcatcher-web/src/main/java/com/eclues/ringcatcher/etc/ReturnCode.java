@@ -10,6 +10,8 @@ public enum ReturnCode {
 	ERROR_UNKNOWN("4001"),
 	ERROR_FILEUP("4002"),
 	ERROR_INVALID_USER("4003"),
+	ERROR_INVALID_VAlUE("4004"),
+	
 	
 	STR_SUCCESS("Sucess"),
 	STR_UPDATE_OK("Update OK"),
@@ -20,6 +22,7 @@ public enum ReturnCode {
 	STR_ERROR_UNKNOWN("Unknown Error"),
 	STR_ERROR_FILEUP("Error in File upload"),
 	STR_ERROR_INVALID_USER("Invalid User Error"),
+	STR_ERROR_INVALID_VAlUE("Invalid Value"),
 	;
 	private ReturnCode(String str) {
 		value = str;

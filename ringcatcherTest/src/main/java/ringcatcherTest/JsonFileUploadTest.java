@@ -143,13 +143,14 @@ public class JsonFileUploadTest {
     	 */
     	url = this.url+"/json/registerMessage";
     	
-    	body = "	{\"userNum\":\"defaultnum\""//01055557777,01066668888,01044449999\""
+    	body =  //"	{\"userNum\":\"defaultnum\""//01055557777,01066668888,01044449999\""
+    			"	{\"userNum\":\"01055557777,01066668888,01066669999\""
     			+",\"callingId\":\""+tokenId+"\""
     			+",\"callingNum\":\"0244445555\""
     			+",\"callingName\":\"Mememe\""
     			+",\"locale\":\"ko_KR\""//en_US, ko_KR
-    			+",\"expiredDate\":\"99991231\""
-    			+",\"durationType\":\"\""
+    			+",\"expiredDate\":\"20160806\""
+    			+",\"durationType\":\"T\""
     			+",\"jsonMessage\":\"eyJtZXNzYWdlX2Zyb20iOiIwMTA0NDQ0NTU1NSIsCiJtZXNzYWdlX3RvIjoiMDEwNDQ0NDU1NTUiCiJyaW5nX21lc3NhZ2UiOnsKICIxOnR4dCI6ImZpcnN0TWVzc2FnZSIgCiwiMjppbWciOiJodHRwOi8vdDEuZGF1bWNkbi5uZXQvbmV3cy8yMDE1MDEvMTYvc3BvcnRzY2hvc3VuLzIwMTUwMTE2MDgzOTExOTM5LmpwZWc7LjQ1Oy40NSIKLCIzOnR4dCI6InRoaXJkTWVzc2FnZSIKLCI0OmltZyI6Imh0dHA6Ly9wYWl0YW8zNThnLmNvbS9kYXRhL2ZpbGUveWFib2FyZC8xODg5Nzc4MTA4X0RYWmdvS3pwX2Y0NjNiY2YwZjU3MTUyMDlhYzcwZTU0MTk0ZWFhYmMwYTI1MGQ5NDQucG5nIgosIjU6aW1nIjoiaHR0cDovL2FwcHp6YW5nLmNhL2RhdGEvZmlsZS9ob3QvMzcxODUzNTI3M19OR0tEUUNmbF9KcVdhUUVaLmpwZzswLjk7MC45IgosIjY6dHh0Ijoi7Jes7ISv67KI7Ke4IOuplOyLnOyngCIKfQp9\"}";
     	//body ="{\"userNum\":\"01055557777,01066668888\",\"callingId\":\"test-token-id\",\"callingNum\":\"0244445555\",\"callingName\":\"It's me!\",\"locale\":\"ko_KR\",\"jsonMessage\":\"eyJtZXNzYWdlX3RvIjoiMDEwNTU1NTc3NzciLCJyaW5nX21lc3NhZ2UiOnsiMTppbWciOiJcL3JpbmdtZWRpYVwvMjAxNjA2MjZcLzAyNDQ0NDU1NTVfMDEwNTU1NTc3NzcuanBnOzEuMDAwMDAwOzEuMDAwMDAwIiwiMDp0eHQiOiLjhY7jhYfjhYztjbzrn7/jhY7jhLkifSwibWVzc2FnZV9mcm9tIjoiMDI0NDQ0NTU1NSJ9\"}";
     	JsonSimple jsonSimple = new JsonSimple();

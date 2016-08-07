@@ -3,6 +3,7 @@ package com.eclues.ringcatcher.ctrl;
 import java.util.List;
 import java.util.Locale;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.eclues.ringcatcher.Customer;
+import com.eclues.ringcatcher.ReqContactList;
 import com.eclues.ringcatcher.ReqRingInfo;
 import com.eclues.ringcatcher.ReqRingUpdate;
 import com.eclues.ringcatcher.ReqUserInfo;
@@ -33,10 +35,12 @@ import com.eclues.ringcatcher.RingInfo;
 import com.eclues.ringcatcher.UserInfo;
 import com.eclues.ringcatcher.dao.CustomerDAO;
 import com.eclues.ringcatcher.dao.EnvironmentBean;
+import com.eclues.ringcatcher.dao.MsgInfoDAO;
 import com.eclues.ringcatcher.dao.RingHistoryDAO;
 import com.eclues.ringcatcher.dao.RingInfoDAO;
 import com.eclues.ringcatcher.dao.UserInfoDAO;
 import com.eclues.ringcatcher.etc.ReturnCode;
+import com.eclues.ringcatcher.obj.ContactListResult;
 import com.eclues.ringcatcher.obj.InviteDetail;
 import com.eclues.ringcatcher.obj.InviteResult;
 import com.eclues.ringcatcher.obj.RegisterResult;
@@ -484,4 +488,6 @@ public class JSONController {
 		logger.info("ringcheckout:"+ringUpdate+":"+result);
 		return result;	
 	}
+	
+
 }

@@ -1,4 +1,4 @@
-package com.eclues.ringcatcher;
+package com.gencode.ringcatcher.obj;
 
 import java.io.Serializable;
 

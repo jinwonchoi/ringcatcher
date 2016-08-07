@@ -7,15 +7,20 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
+import com.eclues.ringcatcher.MsgInfo;
 import com.eclues.ringcatcher.UserInfo;
+import com.eclues.ringcatcher.ctrl.RingMsgController;
 import com.eclues.ringcatcher.etc.Constant;
 
 public class UserInfoDAOImpl implements UserInfoDAO {
+	private static final Logger logger = LoggerFactory.getLogger(UserInfoDAOImpl.class);
 
 	private JdbcTemplate jdbcTemplate;
 	
@@ -109,28 +114,24 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
 				+" FROM user_info where user_num in "+userNumStr+"";
-		return jdbcTemplate.query(sql, new ResultSetExtractor<List<UserInfo>>(){
+		logger.debug("getList: sql:"+sql);
+		
+		List<UserInfo> listUserInfo = jdbcTemplate.query(sql, new RowMapper<UserInfo>(){
 			@Override
-			public List<UserInfo> extractData(ResultSet rs) throws SQLException, DataAccessException {
-				List<UserInfo> userList = new ArrayList<UserInfo>();
-				if (rs.next()) {
-					UserInfo userInfo = new UserInfo();
-					userInfo.setUserNum(rs.getString("user_num"));
-					userInfo.setUserId(rs.getString("user_id"));
-					userInfo.setUserName(rs.getString("user_name"));
-					userInfo.setUserEmail(rs.getString("user_email"));
-					userInfo.setRecomId(rs.getString("recom_id"));
-					userInfo.setUpdateDate(rs.getString("update_date"));
-					userInfo.setCreateDate(rs.getString("create_date"));
-					userList.add(userInfo);
-				}
-				if (userList.size() == 0)
-					return null;
-				else 
-					return userList;
+			public UserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+				UserInfo userInfo = new UserInfo();
+				userInfo.setUserNum(rs.getString("user_num"));
+				userInfo.setUserId(rs.getString("user_id"));
+				userInfo.setUserName(rs.getString("user_name"));
+				userInfo.setUserEmail(rs.getString("user_email"));
+				userInfo.setRecomId(rs.getString("recom_id"));
+				userInfo.setUpdateDate(rs.getString("update_date"));
+				userInfo.setCreateDate(rs.getString("create_date"));
+				return userInfo;
 			}
-			
 		});
+		return listUserInfo;
+
 	}
 	
 }
