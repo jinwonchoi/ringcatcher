@@ -103,7 +103,7 @@ public class JsonFileUploadTest {
     	String url =this.url+"/json/uploadImage";
     	//String tokenId = "fNCkmJERubk:APA91bH0sxyEsnHHC59H48JndfRsme0S9eX0L4y9qjkwWgkYvORZyeGm6Fjk4Eywgc4OlJMzx6TqMeBEgMV5aprVw83DA4DhH33FKqBrHUzOdxwGxAfcCo-qD3f4LzG3RSo71IK0YarG";
     	String tokenId = "test-token-id";
-    	String body = "	{\"userNum\":\"01055557777,01066668888\""
+    	String body = "	{\"userNum\":\"01055557777,01066668888,01066669999\""
     			+",\"callingId\":\""+tokenId+"\""
     			+",\"callingNum\":\"0244445555\""
     			+",\"callingName\":\"Mememe\""

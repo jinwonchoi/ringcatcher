@@ -24,11 +24,16 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 			//insert
 			String sql = "INSERT INTO msg_info(user_num, calling_num, calling_name, register_date, expired_date, json_msg, duration_type, update_date, create_date)"
 					+ " VALUES (?, ?, ?, ?, ?, ?, ?, now(),now())";
+			logger.info("sql="+sql);
 			List<Object[]> batchArgs = new ArrayList<Object[]>(); 
 			for (String userNum : userNums) {
 				Object[] arrParam = {userNum, msgInfo.getCallingNum(), msgInfo.getCallingName(), msgInfo.getRegisterDate()
 						,msgInfo.getExpiredDate(), msgInfo.getJsonMsg(), msgInfo.getDurationType()};
 				batchArgs.add(arrParam);
+				logger.info(String.format("arrParam[%s][%s][%s][%s][%s][%s][%s]"
+						,userNum, msgInfo.getCallingNum(), msgInfo.getCallingName(), msgInfo.getRegisterDate()
+						,msgInfo.getExpiredDate(), msgInfo.getJsonMsg(), msgInfo.getDurationType()));
+
 			}
 			jdbcTemplate.batchUpdate(sql, batchArgs);	
 		} else {
@@ -47,14 +52,20 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 					+ " , download_cnt = ?"
 					+ " , update_date = now()"
 					+ "where user_num = ? and calling_num = ?";
+			logger.info("sql="+sql);
 			List<Object[]> batchArgs = new ArrayList<Object[]>(); 
 			for (String userNum : userNums) {
 				Object[] arrParam = {msgInfo.getRegisterDate(), msgInfo.getExpiredDate(), msgInfo.getJsonMsg(), msgInfo.getDurationType()
 						, msgInfo.getDownloadCnt() 
 						, userNum, msgInfo.getCallingNum()};
 				batchArgs.add(arrParam);
+				logger.info(String.format("arrParam[%s][%s][%s][%s][%d][%s][%s]"
+						,msgInfo.getRegisterDate(), msgInfo.getExpiredDate(), msgInfo.getJsonMsg(), msgInfo.getDurationType()
+						, msgInfo.getDownloadCnt() 
+						, userNum, msgInfo.getCallingNum()));
 			}
-			jdbcTemplate.batchUpdate(sql, batchArgs);	
+			int ret[] = jdbcTemplate.batchUpdate(sql, batchArgs);
+			String retStr = "";
 		} else {
 			throw new Exception(String.format("No key value [%s][%s]", msgInfo.getUserNum()
 					,msgInfo.getCallingNum()));
@@ -72,6 +83,8 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 				Object[] arrParam = {userNum, callingNum};
 				batchArgs.add(arrParam);
 			}
+			logger.info("sql="+sql);
+			logger.info("batchArgs="+batchArgs);
 			jdbcTemplate.batchUpdate(sql, batchArgs);	
 		} else {
 			throw new Exception(String.format("No key value [%s][%s]", userNums.get(0)
@@ -93,6 +106,8 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 			//insert
 			String sql = "INSERT INTO msg_info(user_num, calling_num, calling_name, register_date, expired_date, json_msg, duration_type, update_date, create_date)"
 					+ " VALUES (?, ?, ?, ?, ?, ?, ?, now(),now())";
+			logger.info("sql="+sql);
+			logger.info("msgInfo="+msgInfo);
 			jdbcTemplate.update(sql, msgInfo.getUserNum()
 					, msgInfo.getCallingNum(), msgInfo.getCallingName(), msgInfo.getRegisterDate(), msgInfo.getExpiredDate()
 					, msgInfo.getJsonMsg(), msgInfo.getDurationType());	
@@ -112,6 +127,8 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 					+ " , download_cnt = ?"
 					+ " , update_date = now()"
 					+ "where user_num = ? and calling_num = ?";
+			logger.info("sql="+sql);
+			logger.info("msgInfo="+msgInfo);
 			jdbcTemplate.update(sql, msgInfo.getRegisterDate(), msgInfo.getExpiredDate(), msgInfo.getJsonMsg(), msgInfo.getDurationType()
 					, msgInfo.getDownloadCnt() 
 					, msgInfo.getUserNum(), msgInfo.getCallingNum());
@@ -125,6 +142,8 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 	@Override
 	public void delete(String userNum, String callingNum) {
 		String sql = "Delete from msg_info where user_num = ? and calling_num = ?";
+		logger.info("sql="+sql);
+		logger.info(String.format("userNum[%s]callingNum[%s]",userNum, callingNum));
 		jdbcTemplate.update(sql, userNum, callingNum);
 	}
 
@@ -134,6 +153,8 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
 				+" FROM msg_info where user_num = '"+userNum+"' and calling_num = '"+callingNum+"'";
+		logger.info("sql="+sql);
+		logger.info(String.format("userNum[%s]callingNum[%s]",userNum, callingNum));
 		return jdbcTemplate.query(sql, new ResultSetExtractor<MsgInfo>(){
 			@Override
 			public MsgInfo extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -174,6 +195,9 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
 				+" FROM msg_info where user_num in "+userNumStr+" and calling_num = '"+callingNum+"'";
+		logger.info("sql="+sql);
+		logger.info(String.format("userNumStr[%s]callingNum[%s]",userNumStr, callingNum));
+
 		List<MsgInfo> listMsgInfo = jdbcTemplate.query(sql, new RowMapper<MsgInfo>(){
 			@Override
 			public MsgInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -214,6 +238,9 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
 				+" FROM msg_info where calling_num in "+fromNumStr+" and user_num = '"+toNum+"'";
+		logger.info("sql="+sql);
+		logger.info(String.format("fromNumStr[%s]toNum[%s]",fromNumStr, toNum));
+
 		if (updateDate != null && !"".equals(updateDate)) {
 			sql += " and update_date > str_to_date('"+updateDate+"',\"%Y%m%d%H%i%s\")";
 		}
@@ -248,6 +275,9 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 				+" FROM msg_info where user_num = '"+userNum+"'";
 		if (!all)
 			sql	+="  and download_cnt = 0";
+		logger.info("sql="+sql);
+		logger.info(String.format("userNum[%s]",userNum));
+
 		List<MsgInfo> listMsgInfo = jdbcTemplate.query(sql, new RowMapper<MsgInfo>(){
 			@Override
 			public MsgInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -274,6 +304,7 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
 				+" FROM msg_info";
+		logger.info("sql="+sql);
 		List<MsgInfo> listMsgInfo = jdbcTemplate.query(sql, new RowMapper<MsgInfo>(){
 			@Override
 			public MsgInfo mapRow(ResultSet rs, int rowNum) throws SQLException {

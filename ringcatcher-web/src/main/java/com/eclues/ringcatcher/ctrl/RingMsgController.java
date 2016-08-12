@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -238,13 +241,13 @@ public class RingMsgController {
 				//미등록 리스트 구하기
 				List<String> userNums = new ArrayList<String>(Arrays.asList(userList));
 				List<String> unRegUserList = new ArrayList<String>(Arrays.asList(userList));
-				List<String> regUserList = new ArrayList<String>();
+				Map<String, String> regUserMap = new HashMap<String, String>();
 				List<UserInfo> userInfoList = userInfoDAO.getList(userNums);
 				String resultUnRegUsers = null;
 				for (UserInfo userInfo2 : userInfoList) {
 					logger.debug("suerInfo2:"+userInfo2.getUserNum());
 					unRegUserList.remove(userInfo2.getUserNum());
-					regUserList.add(userInfo2.getUserNum());
+					regUserMap.put(userInfo2.getUserNum(), userInfo2.getUserId());
 				}
 				for (String userItem : unRegUserList) {
 					if (resultUnRegUsers == null)
@@ -253,7 +256,7 @@ public class RingMsgController {
 						resultUnRegUsers += ","+userItem;
 				}
 				//메시지 이미 등록된 목록구하기
-				if (regUserList.size() == 0) { //등록된 번호가 전혀 없는 경우
+				if (regUserMap.size() == 0) { //등록된 번호가 전혀 없는 경우
 					transactionManager.rollback(txStatus);
 					
 					result=new RegisterResult();
@@ -262,17 +265,18 @@ public class RingMsgController {
 					logger.info("registerMessage:"+reqRegisterMessage+":"+result);
 					return result;
 				}
-				List<MsgInfo> msgInfoList = msgInfoDAO.getList(regUserList, reqRegisterMessage.getCallingNum());
-				List<String> unRegMsgUserList = new ArrayList<String>(regUserList);
-				List<String> regMsgUserList = new ArrayList<String>();
+				
+				List<MsgInfo> msgInfoList = msgInfoDAO.getList(new ArrayList<String>(regUserMap.keySet()), reqRegisterMessage.getCallingNum());
+				Map<String, String> unRegMsgUserMap = new HashMap<String, String>(regUserMap);
+				Map<String, String> regMsgUserMap= new HashMap<String, String>();
 				for (MsgInfo msgItem: msgInfoList) {
-					unRegMsgUserList.remove(msgItem.getUserNum());
-					regMsgUserList.add(msgItem.getUserNum());
+					unRegMsgUserMap.remove(msgItem.getUserNum());
+					regMsgUserMap.put(msgItem.getUserNum(), regUserMap.get(msgItem.getUserNum()));
 				}
-				if (unRegMsgUserList.size()>0)
-					result = doRegisterManyMessage(unRegMsgUserList, reqRegisterMessage, true);
-				if (regMsgUserList.size()>0)
-					result = doRegisterManyMessage(regMsgUserList, reqRegisterMessage, false);
+				if (unRegMsgUserMap.size()>0)
+					result = doRegisterManyMessage(unRegMsgUserMap, reqRegisterMessage, true);
+				if (regMsgUserMap.size()>0)
+					result = doRegisterManyMessage(regMsgUserMap, reqRegisterMessage, false);
 				
 				if (resultUnRegUsers != null){
 					result=new RegisterResult();
@@ -338,12 +342,15 @@ public class RingMsgController {
 		
 	}
 
-	private RegisterResult doRegisterManyMessage(List<String> userNumList, ReqRegisterMessage reqRegisterMessage, boolean isInsert) throws Exception {
+	private RegisterResult doRegisterManyMessage(Map<String, String> userNumMap, ReqRegisterMessage reqRegisterMessage, boolean isInsert) throws Exception {
 		RegisterResult result  =  new RegisterResult();
+		
+		List<String> userNumList = new ArrayList<String>(userNumMap.keySet());
+		List<String> tokenIdList = new ArrayList<String>(userNumMap.values());
 		
 		// save info
 		MsgInfo msgInfo = new MsgInfo();
-		msgInfo.setUserNum(userNumList.get(0));
+		msgInfo.setUserNum(userNumList.get(0));// 대표번호  설정 
 		msgInfo.setCallingNum(reqRegisterMessage.getCallingNum());
 		msgInfo.setCallingName(reqRegisterMessage.getCallingName());
 		String yyyymmdd = new java.text.SimpleDateFormat("yyyyMMdd").format(new Date());
@@ -360,15 +367,18 @@ public class RingMsgController {
 			result.setResultCode(ReturnCode.UPDATE_OK.get());
 			result.setResultMsg(ReturnCode.STR_UPDATE_OK.get());
 		}
-		for (String userItem : userNumList) {
-			sendGCM(userItem, reqRegisterMessage);
+		for (Entry<String, String> entry :  userNumMap.entrySet()) {
+			String userNum = entry.getKey();
+			String tokenId = entry.getValue();
+			reqRegisterMessage.setUserNum(userNum);
+			sendGCM(tokenId, reqRegisterMessage);
 		}
 		
 		return result;
 		
 	}
 
-	private void sendGCM(String userId, ReqRegisterMessage reqRegisterMessage) {
+	private void sendGCM(String tokenId, ReqRegisterMessage reqRegisterMessage) {
 		//gcm 처리방식이 추후 결정되면 다시 적용하기로 
         JSONObject jData = new JSONObject();
         jData.put("actType", "message");
@@ -377,7 +387,7 @@ public class RingMsgController {
         jData.put("callingNum", reqRegisterMessage.getCallingNum());
         jData.put("callingName", reqRegisterMessage.getCallingName());
         jData.put("locale", reqRegisterMessage.getLocale());
-		gcmSender.callMessage(jData, userId, reqRegisterMessage.getCallingNum()
+		gcmSender.callMessage(jData, tokenId, reqRegisterMessage.getCallingNum()
 				,reqRegisterMessage.getCallingName(), reqRegisterMessage.getLocale());
 	}
 	
