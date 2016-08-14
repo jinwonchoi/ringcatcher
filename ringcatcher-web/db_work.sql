@@ -172,6 +172,7 @@ select * from ring_history;
 select * from msg_info;
 select * from msg_history;
 
+SELECT user_num,calling_num,calling_name, register_date, expired_date, json_msg, duration_type, download_cnt ,DATE_FORMAT(update_date, "%Y%m%d%H%i%s") update_date ,DATE_FORMAT(create_date, "%Y%m%d%H%i%s") create_date FROM msg_info where calling_num in ('01066668888','01066669999','0244445555') and user_num = '01055557777' and update_date > str_to_date('20160501235959',"%Y%m%d%H%i%s");
 SELECT user_num,user_id,user_name,user_email,recom_id ,DATE_FORMAT(update_date, "%Y%m%d%H%i%s") update_date ,DATE_FORMAT(create_date, "%Y%m%d%H%i%s") create_date FROM user_info where user_num in ('01055557777','01066668888','01044449999');
 
 CREATE TABLE test_tbl (

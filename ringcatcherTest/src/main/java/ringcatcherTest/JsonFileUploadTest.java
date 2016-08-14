@@ -17,8 +17,8 @@ import com.gencode.ringcatcher.obj.ReturnCode;
 import com.gencode.ringcatcher.obj.RingUpdateResult;
 
 public class JsonFileUploadTest {
-	String url = "http://localhost:8080/ringcatcher/";
-	//String url = "http://52.79.62.98:8080/ringcatcher/";
+	//String url = "http://localhost:8080/ringcatcher/";
+	String url = "http://52.79.62.98:8080/ringcatcher/";
 
 	@Before
 	public void setUp() throws Exception {
@@ -102,17 +102,21 @@ public class JsonFileUploadTest {
 	public void testRegisterMessage() {
     	String url =this.url+"/json/uploadImage";
     	//String tokenId = "fNCkmJERubk:APA91bH0sxyEsnHHC59H48JndfRsme0S9eX0L4y9qjkwWgkYvORZyeGm6Fjk4Eywgc4OlJMzx6TqMeBEgMV5aprVw83DA4DhH33FKqBrHUzOdxwGxAfcCo-qD3f4LzG3RSo71IK0YarG";
-    	String tokenId = "test-token-id";
-    	String body = "	{\"userNum\":\"01055557777,01066668888,01066669999\""
+    	//String tokenId = "test-token-id";
+    	String tokenId ="eC5cRs5koa4:APA91bHKENSZ98H2-NY0hLzjh-QAdmh0AoPKh80ZudMhZGyL9qF0wABWYQofdXHSKyXVw6_V168Y5kqnLVf05hR2hESl3SeuK3Jb2N2_Kxnwo087bEZagz6JQmQ-z1qKo8TxN5rdnlwr"; 
+
+    	String body = "	{\"userNum\":\"defaultnum\""//01055557777,01066668888,01066669999\""
     			+",\"callingId\":\""+tokenId+"\""
-    			+",\"callingNum\":\"0244445555\""
-    			+",\"callingName\":\"Mememe\""
+    			+",\"callingNum\":\"01094224916\""
+    			+",\"callingName\":\"01094224916_n\""
+//    			+",\"callingNum\":\"0244445555\""
+//    			+",\"callingName\":\"Mememe\""
     			+",\"locale\":\"ko_KR\""//en_US, ko_KR
     			+",\"imageFileName\":\"nofilename\"}";
     			
     	JsonFileUpload json = new JsonFileUpload();
     	//String filepath = "/home/jinnon/Music/374-Marion-Parcel.mp3";
-    	String filepath = "/home/jinnon/Pictures/Wallpapers/vgirlmm-009-039.jpg";
+    	String filepath = "/home/jinnon/Pictures/87999-Matrix_Ubuntu_Wallpape2.jpg";
     	String strJson = json.http(url, body, filepath);
     	System.out.println(strJson);
     	InviteResult result = new InviteResult(); 
@@ -144,15 +148,23 @@ public class JsonFileUploadTest {
     	url = this.url+"/json/registerMessage";
     	
     	body =  //"	{\"userNum\":\"defaultnum\""//01055557777,01066668888,01044449999\""
-    			"	{\"userNum\":\"01055557777,01066668888,01066669999\""
+    			"	{\"userNum\":\"defaultnum\""//01055557777,01066668888,01066669999\""
     			+",\"callingId\":\""+tokenId+"\""
-    			+",\"callingNum\":\"0244445555\""
-    			+",\"callingName\":\"Mememe\""
+    			+",\"callingNum\":\"01094224916\""
+    			+",\"callingName\":\"01094224916_n\""
+    			//+",\"callingNum\":\"0244445555\""
+    			//+",\"callingName\":\"Mememe\""
     			+",\"locale\":\"ko_KR\""//en_US, ko_KR
-    			+",\"expiredDate\":\"20160806\""
+    			+",\"expiredDate\":\"20160819\""
     			+",\"durationType\":\"T\""
     			+",\"jsonMessage\":\"eyJtZXNzYWdlX2Zyb20iOiIwMTA0NDQ0NTU1NSIsCiJtZXNzYWdlX3RvIjoiMDEwNDQ0NDU1NTUiCiJyaW5nX21lc3NhZ2UiOnsKICIxOnR4dCI6ImZpcnN0TWVzc2FnZSIgCiwiMjppbWciOiJodHRwOi8vdDEuZGF1bWNkbi5uZXQvbmV3cy8yMDE1MDEvMTYvc3BvcnRzY2hvc3VuLzIwMTUwMTE2MDgzOTExOTM5LmpwZWc7LjQ1Oy40NSIKLCIzOnR4dCI6InRoaXJkTWVzc2FnZSIKLCI0OmltZyI6Imh0dHA6Ly9wYWl0YW8zNThnLmNvbS9kYXRhL2ZpbGUveWFib2FyZC8xODg5Nzc4MTA4X0RYWmdvS3pwX2Y0NjNiY2YwZjU3MTUyMDlhYzcwZTU0MTk0ZWFhYmMwYTI1MGQ5NDQucG5nIgosIjU6aW1nIjoiaHR0cDovL2FwcHp6YW5nLmNhL2RhdGEvZmlsZS9ob3QvMzcxODUzNTI3M19OR0tEUUNmbF9KcVdhUUVaLmpwZzswLjk7MC45IgosIjY6dHh0Ijoi7Jes7ISv67KI7Ke4IOuplOyLnOyngCIKfQp9\"}";
+		//+",\"jsonMessage\":\"eyJtZXNzYWdlX2Zyb20iOiIwMTA0NDQ0NTU1NSIsCiJtZXNzYWdlX3RvIjoiMDEwNDQ0NDU1NTUiCiJyaW5nX21lc3NhZ2UiOnsKICIxOnR4dCI6ImZpcnN0TWVzc2FnZSIgCiwiMjppbWciOiJodHRwOi8vdDEuZGF1bWNkbi5uZXQvbmV3cy8yMDE1MDEvMTYvc3BvcnRzY2hvc3VuLzIwMTUwMTE2MDgzOTExOTM5LmpwZWc7LjQ1Oy40NSIKLCIzOnR4dCI6InRoaXJkTWVzc2FnZSIKLCI0OmltZyI6Imh0dHA6Ly9wYWl0YW8zNThnLmNvbS9kYXRhL2ZpbGUveWFib2FyZC8xODg5Nzc4MTA4X0RYWmdvS3pwX2Y0NjNiY2YwZjU3MTUyMDlhYzcwZTU0MTk0ZWFhYmMwYTI1MGQ5NDQucG5nIgosIjU6aW1nIjoiaHR0cDovL2FwcHp6YW5nLmNhL2RhdGEvZmlsZS9ob3QvMzcxODUzNTI3M19OR0tEUUNmbF9KcVdhUUVaLmpwZzswLjk7MC45IgosIjY6dHh0Ijoi7Jes7ISv67KI7Ke4IOuplOyLnOyngCIKfQp9\"}";
     	//body ="{\"userNum\":\"01055557777,01066668888\",\"callingId\":\"test-token-id\",\"callingNum\":\"0244445555\",\"callingName\":\"It's me!\",\"locale\":\"ko_KR\",\"jsonMessage\":\"eyJtZXNzYWdlX3RvIjoiMDEwNTU1NTc3NzciLCJyaW5nX21lc3NhZ2UiOnsiMTppbWciOiJcL3JpbmdtZWRpYVwvMjAxNjA2MjZcLzAyNDQ0NDU1NTVfMDEwNTU1NTc3NzcuanBnOzEuMDAwMDAwOzEuMDAwMDAwIiwiMDp0eHQiOiLjhY7jhYfjhYztjbzrn7/jhY7jhLkifSwibWVzc2FnZV9mcm9tIjoiMDI0NDQ0NTU1NSJ9\"}";
+//    	 registerMessage:defaultnum:eC5cRs5koa4:APA91bHKENSZ98H2-NY0hLzjh-QAdmh0AoPKh80ZudMhZGyL9qF0wABWYQofdXHSKyXVw6_V168Y5kqnLVf05hR2hESl3SeuK3Jb2N2_Kxnwo087bEZagz6JQmQ-z1qKo8TxN5rdnlwr:
+//    		 01094224916:01094224916_n:eyJtZXNzYWdlX2Zyb20iOiIwMTA5NDIyNDkxNiIsIm1lc3NhZ2VfdG8iOiJkZWZhdWx0bnVtIiwicmluZ19tZXNzYWdlIjp7IjA6dHh0Ijoi66qo65GQIOuztOyEuOyalCJ9fQ==:
+//    		 ko_KR:20160819:T
+
+    	
     	JsonSimple jsonSimple = new JsonSimple();
     	strJson = jsonSimple.http(url, body);
     	

@@ -103,6 +103,6 @@ public class MsgInfo implements Serializable {
 	}
 
 	public String toString() {
-		return String.format("%s:%s:%s:%s:%d:%s:%s:%s:%s", userNum, callingNum, callingName, registerDate, expiredDate, downloadCnt, jsonMsg, durationType, createDate);
+		return String.format("%s:%s:%s:%s:%s:%d:%s:%s:%s", userNum, callingNum, callingName, registerDate, expiredDate, downloadCnt, jsonMsg, durationType, createDate);
 	}
 }
