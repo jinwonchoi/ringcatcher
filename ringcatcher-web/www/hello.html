@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Insert title here</title>
+	<meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densityDpi=device-dpi"/>
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.css">
+	<script src="http://code.jquery.com/jquery-1.11.3.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
+<!--     <script>
+        $(document).bind("mobileinit", function(){
+            $.mobile.defaultPageTransition = "slide";
+        });            
+    </script> -->
+    <script type="text/javascript">
+    
+    (function($) {
+    	$.ajaxEnvironment = function(settings, block) {
+    		var originalSettings = $.ajaxSetup();
+    		var restoredSettings = {};
+    		
+    		$.each(settings, function(key) {
+    			restoredSettings[key] = originalSettings[key];
+    		});
+    		
+    		$.ajaxSetup(settings);
+    		block();
+    		$.ajaxSetup(restoredSettings);
+    	};
+    	
+    	$.mobile.ajaxUpload = {};
+    	
+    	$.mobile.ajaxUpload.changePage = function(form, options) {
+    		form = $(form);
+    		
+    		$.ajaxEnvironment({
+    			contentType: false,
+    			processData: false,
+    		}, function() {
+    			$.mobile.changePage(form.attr('action'), {
+    				data: new FormData(form[0]),
+    				type: form.attr('method'),
+    			});
+    		});
+    	};
+    })(jQuery);
+    </script>
+	<script type="text/javascript" src="HandlingFileInput.js"></script>
+    <script type="text/javascript" src="ReadFile.js"></script>
+    <script type="text/javascript" src="SendFile.js"></script>
+    <script type="text/javascript" src="ProcessFile.js"></script>
+ </head>
+<body>
+Hello2
+<form action="http://localhost:8080/ringcatcher/json/invite" method="post" enctype="multipart/form-data" id="myForm">
+    <input type="file" name="my_file" id="my_file">
+    
+		  <input type="submit" value="Send" name="submit" class="btn">
+</form>
+
+<script>
+    $('form#myForm').on('submit', function(event) {
+        $.mobile.ajaxUpload.changePage(this);
+        return false; // prevent regular submit
+    });
+</script>
+</body>
+</html>

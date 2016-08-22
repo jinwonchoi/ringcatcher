@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.eclues.ringcatcher.RingInfo;
+import com.eclues.ringcatcher.obj.RingInfo;
 
 public class RingInfoDAOImpl implements RingInfoDAO {
 

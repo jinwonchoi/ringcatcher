@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.eclues.ringcatcher.Customer;
+import com.eclues.ringcatcher.obj.Customer;
 
 public class CustomerDAOImpl implements CustomerDAO {
 

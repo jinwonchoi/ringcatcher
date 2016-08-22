@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.css">
+   <script src="http://code.jquery.com/jquery-1.11.3.js"></script>
+   <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
+   <script type="text/javascript" language="javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+		});       
+		
+ 		//$(document).ready(function() {
+		$(document).on('pagecreate', '#register-page',function(){
+			$(document).on('click', '#driver',function(event){
+			//$("#driver").click(function(e, data) {
+			//$('stage').load('http://52.79.62.98:8080/ringcatcher/json/register');
+			//$( ":mobile-pagecontainer" ).pagecontainer("load","http://192.168.0.101:8080/examples/test.html", { role: "page" } );
+			//$( ":mobile-pagecontainer" ).pagecontainer("load","second.html", { role: "popup" } );
+			$( "#stage" ).pagecontainer({ defaults: true });
+			$( "#stage" ).pagecontainer("load","result.json", { role: "page" } );
+			//alert(e);
+			$("#stage").append("aaaaaaaaaa");
+			});	
+		});
+   </script>
+</head>
+<body>
+<div data-role="page" id="page1">
+   <div data-role="header">
+      <h2>Ringcatcher management</h2>
+   </div>
+
+   <div data-role="main" class="ui-content">
+      <h2>Ringcatcher intro page.</h2>
+      <a href="#register-page" data-prefetch="true" class="ui-btn">register me</a>
+      <a href="#send-ring-page" data-prefetch="true" class="ui-btn">register a mp3 file for ringcatch</a>
+      <a href="#update-page" data-prefetch="true" class="ui-btn">update your ringcatcher</a>
+      <a href="#checkout-page" data-prefetch="true" class="ui-btn">list up your whole ringcatchers</a>
+   </div>
+
+   <div data-role="footer">
+      <h2>Footer</h2>
+   </div>
+</div>
+
+<div data-role="page" data-dialog="true" id="register-page">
+   <div data-role="header">
+      <h2>Header</h2>
+   </div>
+
+   <div data-role="main" class="ui-content">
+      <p>Register yourself
+	  asidea
+	  aad
+	  sfasd
+	  s
+	  </p>
+      <div id = "stage" style = "background-color:#eee;">
+         STAGE
+      </div>
+      <input type = "button" id = "driver" value = "Register" />
+      <p>Click the link to go page one.</p>
+      <a href="#page1" class="ui-btn">Back to Previous Page</a>
+   </div>
+
+   <div data-role="footer">
+      <h2>Footer</h2>
+   </div>
+</div>
+<div data-role="page" data-dialog="false" id="send-ring-page">
+   <div data-role="header">
+      <h2>Header</h2>
+   </div>
+
+   <div data-role="main" class="ui-content">
+      <p>register ringtone.
+		 find a good ringtone 
+		 ..
+		 ..
+		 
+	  </p>
+      <p>Click the link to go page one.</p>
+      <a href="#page1" class="ui-btn">Back to Previous Page</a>
+   </div>
+
+   <div data-role="footer">
+      <h2>Footer</h2>
+   </div>
+</div>
+<div data-role="page" data-dialog="false" id="update-page">
+   <div data-role="header">
+      <h2>Header</h2>
+   </div>
+
+   <div data-role="main" class="ui-content">
+		<ul data-role="listview" data-inset="true" data-filter="true">
+			<li><a href="#">Acura</a></li>
+			<li><a href="#">Audi</a></li>
+			<li><a href="#">BMW</a></li>
+			<li><a href="#">Cadillac</a></li>
+			<li><a href="#">Ferrari</a></li>
+		</ul>
+      <p>Click the link to go page one.</p>
+      <a href="#page1" class="ui-btn">Back to Previous Page</a>
+   </div>
+
+   <div data-role="footer">
+      <h2>Footer</h2>
+   </div>
+</div>
+</body>
+</html>

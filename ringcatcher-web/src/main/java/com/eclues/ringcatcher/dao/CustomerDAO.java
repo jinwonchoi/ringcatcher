@@ -2,7 +2,7 @@ package com.eclues.ringcatcher.dao;
 
 import java.util.List;
 
-import com.eclues.ringcatcher.Customer;
+import com.eclues.ringcatcher.obj.Customer;
 
 public interface CustomerDAO {
 	public void saveOrUpdate(Customer customer);

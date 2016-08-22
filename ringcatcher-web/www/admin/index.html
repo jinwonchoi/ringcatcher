@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html manifest="index.appcache">
+	<head>
+		<title>MyProjects</title>
+		<meta charset='utf-8'/>
+		<meta name='format-detection' content='telephone=no' />
+		<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1, maximum-scale=1'/>
+		<meta name='playstore' content='https://play.google.com/store/apps/details?id=com.b4a.JQMShow'/>
+		<meta name='apple-mobile-web-app-cabable' content='YES'/>
+		<meta name='keywords' content='JQM.Show,JQuery Mobile,JQuery,JavaScript,Google Play Store,Anele Mbanga,Mobile,Hybrid,HTML,CSS,Responsive,HTML5,JSON,Stringify,Parse'/>
+		<meta name='mobile-web-app-capable' content='yes'/>
+		<meta name='apple-mobile-web-app-title' content='MyProjects'/>
+		<meta name='apple-mobile-web-app-status-bar-style' content='black-translucent.'/>
+		<meta name='version' content='1.00' />
+		<meta name='generator' content='JQM.Show 1.01' />
+		<meta name='date' content='2015-03-21 12:41' />
+<!-- 		<meta name='copyright' content='Anele Mbanga ' />
+		<meta name='author' content=' Anele Mbanga' />
+		<meta name='email' content='anele@mbangas.com' />
+		<meta name='website' content='http://www.mbangas.com/jqmshow/myprojects' />
+ -->
+ 		<meta name='description' content='Basic Project Tracker using Php. Available from Android Play Store at https://play.google.com/store/apps/details?id=com.b4a.JQMShow' />
+		<link rel="apple-touch-icon" href="apps.png">
+		<link rel="icon" type="image/png" href="apps.png">
+		<link rel="shortcut icon" type="image/png" href="apps.png">
+		<link rel="apple-touch-icon" sizes="57x57" href="apps57.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="apps72.png">
+		<link rel="apple-touch-icon" sizes="80x80" href="apps80.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="apps114.png">
+		<link rel="apple-touch-icon-precomposed" href="appsIconPreComposed.png">
+		<link rel="apple-touch-startup-image" href="appsIconStartUp320by460.png">
+		<link rel="stylesheet" href="../jquery.mobile-1.4.5.min.css">
+		<link rel="stylesheet" href="../toastr.min.css">
+		<link rel="stylesheet" href="../listview-grid.css">
+		<link rel="stylesheet" href="../jqm-datebox.css">
+		<link rel="stylesheet" href="../animate.css">
+		<xml:namespace ns="urn:schemas-microsoft-com:vml" prefix="v"/>
+		<script src="../jquery.min.js" type="text/javascript"></script>
+		<script src="../navbar.js" type="text/javascript"></script>
+		<script src="../jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+		<script src="../jqm-datebox.core.js" type="text/javascript"></script>
+		<script src="../jqm-datebox.mode.slidebox.js" type="text/javascript"></script>
+		<script src="../jqm-datebox.mode.flipbox.js" type="text/javascript"></script>
+		<script src="../jqm-datebox.mode.datebox.js" type="text/javascript"></script>
+		<script src="../jqm-datebox.mode.customflip.js" type="text/javascript"></script>
+		<script src="../jqm-datebox.mode.custombox.js" type="text/javascript"></script>
+		<script src="../jqm-datebox.mode.calbox.js" type="text/javascript"></script>
+		<script src="../toastr.min.js" type="text/javascript"></script>
+		<script src="../fastclick.js" type="text/javascript"></script>
+		<!--[if IE]>
+			<script src="html5.js" type="text/javascript"></script>
+		<![endif]-->
+		<script src="../stanfordcryptolibrary.js" type="text/javascript"></script>
+		<script src="../excellentexport.min.js" type="text/javascript"></script>
+		<script src="../iscroll.js" type="text/javascript"></script>
+		<script src="../password.js" type="text/javascript"></script>
+		<script src="../d3.min.js" type="text/javascript"></script>
+		<script src="../d3tree.js" type="text/javascript"></script>
+		<script src="../remoteserver.js" type="text/javascript"></script>
+		<script src="appAdmin.js" type="text/javascript"></script>
+		<style>.ui-header .ui-title, .ui-footer .ui-title {margin-right: 0 !important; margin-left: 0 !important; }
+			.marker {max-width: 100%; max-height: 100%; }
+			.tab-content {display:none; }
+			.tab-content:first-child { display: block; }
+			.ui-body-c { border: 1px solid #aaa!important;}
+			caption {font-weight: bold; font-size: 1.1em; }
+			.ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li { display: block !important; padding: 0.9em 75px 0.9em 15px !important; }
+			.node { cursor: pointer; }
+			.overlay{ background-color:#EEE; }
+			.node circle { fill: #fff; stroke: steelblue; stroke-width: 1.5px; }
+			.node text { font-size:10px; font-family:sans-serif; }
+			.link { fill: none; stroke: #ccc; stroke-width: 1.5px; }
+			.templink { fill: none; stroke: red; stroke-width: 3px; }
+			.ghostCircle.show { display:block; }
+			.ghostCircle, .activeDrag .ghostCircle { display: none; }
+		</style>
+	</head>
+	<body>
+		
+ 	<div data-theme="a" id="pgSignIn" data-role="page">
+		<header id="pgSignInHdr" data-role="header" data-position="fixed">
+			<h1>RingCatcher Setting Web</h1>
+		</header>
+		<div id="pgSignIncontent" data-role="content">
+			<h3>Login Page</h3>
+			<form action="#" method="post" id="pgSignInForm" name="pgSignInForm">
+				<p>If you log in for  the  first time, click <Change password> button down below to change your password.<br/> 
+				   If you don't remember your assigned password, please consult your webmaster.</p>
+				<div data-role="fieldcontain">
+					<label for="pgSignInUserId" id="lblpgSignInUserId">Admin Id<span style='color:red;'>*</span></label>
+					<input required title="Enter admin id here." type="text" name="pgSignInUserId" id="pgSignInUserId" 
+					placeholder="Enter admin id here." autocomplete="off" data-clear-btn="true"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgSignInPasswd" id="lblpgSignInPasswd">Password</label>
+	      			<input type="password" name="pgSignInPasswd" id="pgSignInPasswd" placeholder="Password">
+				</div>
+      
+				<div><button type="submit" id="pgSignInIn" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Sign In</button>
+				</div>
+			</form>
+				<p>If it's your first time login</p>
+				<div><button id="pgChangePasswdUp" class="ui-btn ui-corner-all ui-shadow">Change password</button>
+				</div>
+				
+		</div>
+		<footer id="pgSignInFtr" data-role="footer" data-position="fixed">
+			<h1>Powered by JQM.Show © Jinwon Choi 2016</h1>
+		</footer>
+	</div>
+
+	<div data-theme="a" id="pgChangePasswd" data-role="page">
+					
+		<header id="pgChangePasswdHdr" data-role="header" data-position="fixed">
+			<h1>Account Setting</h1>
+		</header>
+		<div id="pgChangePasswdcontent" data-role="content">
+			<h3>Change password</h3>
+		<form action="#" method="post" id="pgChangePasswdForm" name="pgChangePasswdForm">
+			<div data-role="fieldcontain">
+				<label for="pgChangePasswdLogin" id="lblpgChangePasswdLogin">Login Id</label>
+				<input required title="Displayed login id." type="text" name="pgChangePasswdLogin" id="pgChangePasswdLogin" 
+				placeholder="Displayed login id." autocomplete="off" data-clear-btn="true" readonly="readonly"></input>
+			</div>
+<!-- 			<div data-role="fieldcontain">
+			    <fieldset data-role="controlgroup">
+		         	<input type="radio" name="rgSiginInMode" id="rgSiginInEmail" value="rgSiginInEmail" checked="checked" />
+		         	<label for="rgSiginInEmail">email</label>
+		
+		         	<input type="radio" name="rgSiginInMode" id="rgSiginInPhoneNum" value="rgSiginInPhoneNum"  />
+		         	<label for="rgSiginInPhoneNum">phone number</label>
+			    </fieldset>
+			</div>
+			<div id="pgChangePasswdPhoneMode" data-role="fieldcontain">
+				<label for="pgChangePasswdPhoneNum" id="lblpgChangePasswdPhoneNum">Phone Number<span style='color:red;'>*</span></label>
+				<input required title="Enter phone number here." type="tel" name="pgChangePasswdPhoneNum" id="pgChangePasswdPhoneNum" 
+				placeholder="Enter phone number here." autocomplete="off" data-clear-btn="true"></input>
+			</div>
+			<div id="pgChangePasswdEmailMode" data-role="fieldcontain">
+				<label for="pgChangePasswdEmail" id="lblpgChangePasswdEmail">Email<span style='color:red;'>*</span></label>
+				<input title="Enter email here." type="email" name="pgChangePasswdEmail" id="pgChangePasswdEmail" placeholder="Enter email here." data-clear-btn="true"></input>
+			</div> -->
+			<div data-role="fieldcontain">
+				<label for="pgChangePasswdPrevPwd" id="lblpgChangePasswdPrevPwd">Current Password</label>
+				<input required title="Enter current password here." type="password" name="pgChangePasswdPrevPwd" id="pgChangePasswdPrevPwd" 
+				placeholder="Enter current password here." autocomplete="off" data-clear-btn="true"></input>
+			</div>
+			<div data-role="fieldcontain">
+				<label for="pgChangePasswdNewPwd" id="lblpgChangePasswdNewPwd">New Password</label>
+				<input required autocomplete="off" title="Enter new password here." type="password" name="pgChangePasswdNewPwd" id="pgChangePasswdNewPwd" 
+				placeholder="Enter new password here." data-clear-btn="true"></input>
+			</div>
+			<div data-role="fieldcontain">
+				<label for="pgChangePasswdConfirmPwd" id="lblpgChangePasswdConfirmPwd">Confirm Password</label>
+				<input required autocomplete="off" title="Enter confirm password here." type="password" name="pgChangePasswdConfirmPwd" id="pgChangePasswdConfirmPwd" 
+				placeholder="Enter confirm password here." data-clear-btn="true"></input>
+			</div>
+			<div><button type="submit" id="pgChangePasswdIn" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Save</button>
+			</div>
+		</form>
+		</div>
+		<footer id="pgChangePasswdFtr" data-role="footer" data-position="fixed">
+			<h1>Powered by JQM.Show © Jinwon Choi 2016</h1>
+		</footer>		
+	</div>
+	
+	<div data-theme="a" id="pgUser" data-role="page">
+		<div data-position="left" data-display="reveal" data-position-fixed="true" id="pgUserPnl" data-role="panel">
+			<ul data-role="listview" id="pgUserPnlLV">
+				<li ><a data-transition="slide" href="#pgAddUser">New</a></li>
+				<li ><a data-transition="slide" href="#pgMenu">Back</a></li>
+			</ul>
+		</div>
+		
+		<header id="pgUserHdr" data-role="header" data-position="fixed">
+			<h1>MyProjects</h1>
+			<a data-role="button" id="pgUserMenu" href="#pgUserPnl" data-icon="bars" data-transition="slide" class="ui-btn-left">Menu</a>
+			<a data-role="button" id="pgUserNew" data-icon="plus" data-theme="a" class="ui-btn-right">New</a>
+		</header>
+		<div id="pgUsercontent" data-role="content">
+			<h3>Users</h3><ul data-role="listview" data-inset="true" id="pgUserList" data-filter="true" data-filter-placeholder="Search Users" data-filter-reveal="false">
+				<li data-role="list-divider">Your Users</li>
+				<li id="noUser">You have no users</li>
+				
+			</ul>
+		</div>
+		<footer id="pgUserFtr" data-role="footer" data-position="fixed">
+			<h1>Powered by JQM.Show © Jinwon Choi 2016</h1>
+		</footer>		
+	</div>
+	
+	<div data-theme="a" data-url="UserId" id="pgEditUser" data-role="page">
+		<div data-position="left" data-display="reveal" data-position-fixed="true" id="pgEditUserPnl" data-role="panel">
+			<ul data-role="listview" id="pgEditUserPnlLV">
+				<li ><a data-transition="slide" href="#pgAddUser">New</a></li>
+				<li ><a data-transition="slide" href="#pgUser">Back</a></li>
+			</ul>
+		</div>
+		
+		<header id="pgEditUserHdr" data-role="header" data-position="fixed">
+			<h1>MyProjects</h1>
+			<a data-role="button" id="pgEditUserMenu" href="#pgEditUserPnl" data-icon="bars" class="ui-btn-left">Menu</a>
+		</header>
+		<div id="pgEditUsercontent" data-role="content">
+			<h3>Edit User</h3><form action="#" method="post" id="pgEditUserForm" name="pgEditUserForm">
+				<div id="pgEditUserUserId">
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgEditUserUserNum" id="lblpgEditUserUserNum">Uer Phone Number<span style='color:red;'>*</span></label>
+					<input required readonly="readonly" title="Enter user phone num here." type="number" name="pgEditUserUserNum" id="pgEditUserUserNum" placeholder="Enter user phone num here." autocomplete="off" data-clear-btn="true"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgEditUserUserId" id="lblpgEditUserUserId">GCM Token Id<span style='color:red;'>*</span></label>
+					<input required title="Enter token id here." type="text" name="pgEditUserUserId" id="pgEditUserUserId" placeholder="Enter token id here." autocomplete="off" data-clear-btn="true"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgEditUserUserName" id="lblpgEditUserUserName">User Name</label>
+					<input required data-clear-btn="true" autofocus="true" title="Enter user name here." type="text" name="pgEditUserUserName" id="pgEditUserUserName" placeholder="Enter user name here." autocomplete="off"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgEditUserEmail" id="lblpgEditUserEmail">Email Address</label>
+					<input required data-clear-btn="true" autofocus="true" title="Enter email address here." type="email" name="pgEditUserEmail" id="pgEditUserEmail" placeholder="Enter email address here." autocomplete="off"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgEditUserRecomId" id="lblpgEditUserRecomId">Recommended By</label>
+					<input required data-clear-btn="true" autofocus="true" title="Enter recommender id here." type="text" name="pgEditUserRecomId" id="pgEditUserRecomId" placeholder="Enter recommender id here." autocomplete="off"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgEditUserUpdateDate" id="lblpgEditUserUpdateDate">Update date</label>
+					<input required readonly="readonly" data-clear-btn="true" autofocus="true" title="Enter update date here." type="text" name="pgEditUserUpdateDate" id="pgEditUserUpdateDate" placeholder="Enter update date here." autocomplete="off"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgEditUserCreateDate" id="lblpgEditUserCreateDate">Create date</label>
+					<input required readonly="readonly" data-clear-btn="true" autofocus="true" title="Enter create date here." type="text" name="pgEditUserCreateDate" id="pgEditUserCreateDate" placeholder="Enter create date here." autocomplete="off"></input>
+				</div>
+			</form>
+		</div>
+		
+		<footer id="Ftr" data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a id="pgEditUserBack" data-icon="carat-l">Cancel</a>
+					</li>
+					<li><a type="submit" id="pgEditUserUpdate" data-icon="action">Update</a>
+					</li>
+					<li><a id="pgEditUserDelete" data-icon="delete">Delete</a>
+					</li>
+				</ul>
+			</div>
+		</footer>
+	</div>
+						
+	<div data-theme="a" data-url="UserId" id="pgAddUser" data-role="page">
+		<div data-position="left" data-display="reveal" data-position-fixed="true" id="pgAddUserPnl" data-role="panel">
+			<ul data-role="listview" id="pgAddUserPnlLV">
+				<li ><a data-transition="slide" href="#pgUser">Back</a></li>
+			</ul>
+		</div>
+		
+		<header id="pgAddUserHdr" data-role="header" data-position="fixed">
+			<h1>MyProjects</h1>
+			<a data-role="button" id="pgAddUserMenu" href="#pgAddUserPnl" data-icon="bars" class="ui-btn-left">Menu</a>
+		</header>
+		<div id="pgAddUsercontent" data-role="content">
+			<h3>Add User</h3><form action="#" method="post" id="pgAddUserForm" name="pgAddUserForm">
+				<div data-role="fieldcontain">
+					<label for="pgAddUserUserNum" id="lblpgAddUserUserNum">User Phone Number<span style='color:red;'>*</span></label>
+					<input required title="Enter user phone num here." type="number" name="pgAddUserUserNum" id="pgAddUserUserNum" placeholder="Enter user phone num here." autocomplete="off" data-clear-btn="true"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgAddUserUserId" id="lblpgAddUserUserId">GCM Token Id<span style='color:red;'>*</span></label>
+					<input required title="Enter token id here." type="text" name="pgAddUserUserId" id="pgAddUserUserId" placeholder="Enter token id here." autocomplete="off" data-clear-btn="true"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgAddUserUserName" id="lblpgAddUserUserName">User Name</label>
+					<input required data-clear-btn="true" autofocus="true" title="Enter user name here." type="text" name="pgAddUserUserName" id="pgAddUserUserName" placeholder="Enter user name here." autocomplete="off"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgAddUserEmail" id="lblpgAddUserEmail">Email Address</label>
+					<input required data-clear-btn="true" autofocus="true" title="Enter email address here." type="email" name="pgAddUserEmail" id="pgAddUserEmail" placeholder="Enter email address here." autocomplete="off"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgAddUserRecomId" id="lblpgAddUserRecomId">Recommended By</label>
+					<input required data-clear-btn="true" autofocus="true" title="Enter recommender id here." type="text" name="pgAddUserRecomId" id="pgAddUserRecomId" placeholder="Enter recommender id here." autocomplete="off"></input>
+				</div>
+<!-- 				<div data-role="fieldcontain">
+					<label for="pgAddUserUpdateDate" id="lblpgAddUserUpdateDate">Update date</label>
+					<input required readonly="readonly" data-clear-btn="true" autofocus="true" title="Enter update date here." type="text" name="pgAddUserUpdateDate" id="pgAddUserUpdateDate" placeholder="Enter update date here." autocomplete="off"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgAddUserCreateDate" id="lblpgAddUserCreateDate">Create date</label>
+					<input required readonly="readonly" data-clear-btn="true" autofocus="true" title="Enter create date here." type="text" name="pgAddUserCreateDate" id="pgAddUserCreateDate" placeholder="Enter create date here." autocomplete="off"></input>
+				</div>
+ -->
+ 			</form>
+		</div>
+		
+		<footer id="Ftr" data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a id="pgAddUserBack" data-icon="carat-l">Back</a>
+					</li>
+					<li><a type="submit" id="pgAddUserSave" data-icon="action">Register</a>
+					</li>
+				</ul>
+			</div>
+		</footer>
+	</div>
+				
+
+<!-- //Ringmessage -->				
+
+	<div data-theme="a" id="pgRingMessage" data-role="page">
+		<div data-position="left" data-display="reveal" data-position-fixed="true" id="pgRingMessagePnl" data-role="panel">
+			<ul data-role="listview" id="pgRingMessagePnlLV">
+				<li ><a data-transition="slide" href="#pgAddRingMessage">New</a></li>
+				<li ><a data-transition="slide" href="#pgMenu">Back</a></li>
+			</ul>
+		</div>
+		
+		<header id="pgRingMessageHdr" data-role="header" data-position="fixed">
+			<h1>MyRingMessages</h1>
+			<a data-role="button" id="pgRingMessageMenu" href="#pgRingMessagePnl" data-icon="bars" data-transition="slide" class="ui-btn-left">Menu</a>
+			<a data-role="button" id="pgRingMessageNew" data-icon="plus" data-theme="b" class="ui-btn-right">New</a>
+		</header>
+		<div id="pgRingMessagecontent" data-role="content">
+			<h3>RingMessages</h3><ul data-role="listview" data-inset="true" id="pgRingMessageList" data-filter="true" data-filter-placeholder="Search RingMessages" data-filter-reveal="false">
+				<li data-role="list-divider">Your RingMessages</li>
+				<li id="noRingMessage">You have no messages</li>
+				
+			</ul>
+		</div>
+		
+	</div>
+
+	<div data-theme="a" id="pgAddRingMessage" data-role="page">
+		<div data-position="left" data-display="reveal" data-position-fixed="true" id="pgAddRingMessagePnl" data-role="panel">
+			<ul data-role="listview" id="pgAddRingMessagePnlLV">
+				<li ><a data-transition="slide" href="#pgRingMessage">Back</a></li>
+			</ul>
+		</div>
+		
+		<header id="pgAddRingMessageHdr" data-role="header" data-position="fixed">
+			<h1>RingCatcher Admin</h1>
+			<a data-role="button" id="pgAddRingMessageMenu" href="#pgAddRingMessagePnl" data-icon="bars" class="ui-btn-left">Menu</a>
+		</header>
+		<div id="pgAddRingMessagecontent" data-role="content">
+			<h3>Add RingMessage</h3><form action="#" method="post" id="pgAddRingMessageForm" name="pgAddRingMessageForm">
+				<div data-role="fieldcontain">
+					<label for="pgAddRingMessageRingMessageName" id="lblpgAddRingMessageRingMessageName">RingMessage Name<span style='color:red;'>*</span></label>
+					<input required title="Enter project name here." type="text" name="pgAddRingMessageRingMessageName" id="pgAddRingMessageRingMessageName" placeholder="Enter project name here." autocomplete="off" data-clear-btn="true"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<fieldset id="fspgAddRingMessageStatus" data-role="controlgroup" data-type="horizontal" data-mini="true">
+						<legend>Status<span style='color:red;'>*</span></legend>
+						<input type="radio" name="pgAddRingMessageStatus" id="pgAddRingMessageStatusApproved" autocomplete="off" value="Approved"></input>
+						<label for="pgAddRingMessageStatusApproved" id="lblpgAddRingMessageStatusApproved">Approved</label>
+						<input type="radio" name="pgAddRingMessageStatus" id="pgAddRingMessageStatusPending" autocomplete="off" value="Pending"></input>
+						<label for="pgAddRingMessageStatusPending" id="lblpgAddRingMessageStatusPending">Pending</label>
+						<input type="radio" name="pgAddRingMessageStatus" id="pgAddRingMessageStatusStarted" autocomplete="off" value="Started"></input>
+						<label for="pgAddRingMessageStatusStarted" id="lblpgAddRingMessageStatusStarted">Started</label>
+						<input type="radio" name="pgAddRingMessageStatus" id="pgAddRingMessageStatusCancelled" autocomplete="off" value="Cancelled"></input>
+						<label for="pgAddRingMessageStatusCancelled" id="lblpgAddRingMessageStatusCancelled">Cancelled</label>
+						<input type="radio" name="pgAddRingMessageStatus" id="pgAddRingMessageStatusOn hold" autocomplete="off" value="On hold"></input>
+						<label for="pgAddRingMessageStatusOn hold" id="lblpgAddRingMessageStatusOn hold">On hold</label>
+					</fieldset>
+				</div>
+				<div data-role="fieldcontain">
+					<fieldset id="fspgAddRingMessagePriority" data-role="controlgroup" data-type="horizontal" data-mini="true">
+						<legend>Priority<span style='color:red;'>*</span></legend>
+						<input type="radio" name="pgAddRingMessagePriority" id="pgAddRingMessagePriorityLow" autocomplete="off" value="Low"></input>
+						<label for="pgAddRingMessagePriorityLow" id="lblpgAddRingMessagePriorityLow">Low</label>
+						<input type="radio" name="pgAddRingMessagePriority" id="pgAddRingMessagePriorityMedium" autocomplete="off" value="Medium"></input>
+						<label for="pgAddRingMessagePriorityMedium" id="lblpgAddRingMessagePriorityMedium">Medium</label>
+						<input type="radio" name="pgAddRingMessagePriority" id="pgAddRingMessagePriorityHigh" autocomplete="off" value="High"></input>
+						<label for="pgAddRingMessagePriorityHigh" id="lblpgAddRingMessagePriorityHigh">High</label>
+					</fieldset>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgAddRingMessageDueDate" id="lblpgAddRingMessageDueDate">Due Date<span style='color:red;'>*</span></label>
+					<input required data-options='{"mode":"flipbox","dateFormat":"%Y-%m-%d","overrideDateFormat":"%Y-%m-%d"}' title="Enter due date here." type="text" name="pgAddRingMessageDueDate" id="pgAddRingMessageDueDate" placeholder="Enter due date here." autocomplete="off" data-role="datebox"></input>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgAddRingMessagePercentComplete" id="lblpgAddRingMessagePercentComplete">Percent Complete<span style='color:red;'>*</span></label>
+					<input required min="0" max="100" title="" type="range" name="pgAddRingMessagePercentComplete" id="pgAddRingMessagePercentComplete" autocomplete="off"></input>
+				</div>
+				<div dir="ltr" data-role="fieldcontain">
+					<label for="pgAddRingMessageOwner" id="lblpgAddRingMessageOwner">Owner<span style='color:red;'>*</span></label>
+					<select name="pgAddRingMessageOwner" id="pgAddRingMessageOwner" dir="ltr" class="required">
+						<option value="null" data-placeholder="true">Select Owner</option>
+						<option ></option>
+					</select>
+				</div>
+				<div data-role="fieldcontain">
+					<label for="pgAddRingMessageNotes" id="lblpgAddRingMessageNotes">Notes<span style='color:red;'>*</span></label>
+					<textarea name="pgAddRingMessageNotes" id="pgAddRingMessageNotes" placeholder="Enter notes here." class="required"></textarea>
+				</div>
+			</form>
+		</div>
+		
+		<footer id="Ftr" data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a id="pgAddRingMessageBack" data-icon="carat-l">Cancel</a>
+					</li>
+					<li><a type="submit" id="pgAddRingMessageSave" data-icon="action">Save</a>
+					</li>
+				</ul>
+			</div>
+		</footer></div>
+		
+		<div data-theme="a" data-url="RingMessageName" id="pgEditRingMessage" data-role="page">
+			<div data-position="left" data-display="reveal" data-position-fixed="true" id="pgEditRingMessagePnl" data-role="panel">
+				<ul data-role="listview" id="pgEditRingMessagePnlLV">
+					<li ><a data-transition="slide" href="#pgAddRingMessage">New</a></li>
+					<li ><a data-transition="slide" href="#pgRptRingMessage">Report</a></li>
+					<li ><a data-transition="slide" href="#pgRingMessage">Back</a></li>
+				</ul>
+			</div>
+			
+			<header id="pgEditRingMessageHdr" data-role="header" data-position="fixed">
+				<h1>MyRingMessages</h1>
+				<a data-role="button" id="pgEditRingMessageMenu" href="#pgEditRingMessagePnl" data-icon="bars" class="ui-btn-left">Menu</a>
+			</header>
+			<div id="pgEditRingMessagecontent" data-role="content">
+				<h3>Edit RingMessage</h3><form action="#" method="post" id="pgEditRingMessageForm" name="pgEditRingMessageForm">
+					<div data-role="fieldcontain">
+						<label for="pgEditRingMessageRingMessageName" id="lblpgEditRingMessageRingMessageName">RingMessage Name<span style='color:red;'>*</span></label>
+						<input required readonly="readonly" data-clear-btn="true" autofocus="true" title="Enter project name here." type="text" name="pgEditRingMessageRingMessageName" id="pgEditRingMessageRingMessageName" placeholder="Enter project name here." autocomplete="off"></input>
+					</div>
+					<div data-role="fieldcontain">
+						<fieldset id="fspgEditRingMessageStatus" data-role="controlgroup" data-type="horizontal" data-mini="true">
+							<legend>Status<span style='color:red;'>*</span></legend>
+							<input type="radio" name="pgEditRingMessageStatus" id="pgEditRingMessageStatusApproved" autocomplete="off" value="Approved"></input>
+							<label for="pgEditRingMessageStatusApproved" id="lblpgEditRingMessageStatusApproved">Approved</label>
+							<input type="radio" name="pgEditRingMessageStatus" id="pgEditRingMessageStatusPending" autocomplete="off" value="Pending"></input>
+							<label for="pgEditRingMessageStatusPending" id="lblpgEditRingMessageStatusPending">Pending</label>
+							<input type="radio" name="pgEditRingMessageStatus" id="pgEditRingMessageStatusStarted" autocomplete="off" value="Started"></input>
+							<label for="pgEditRingMessageStatusStarted" id="lblpgEditRingMessageStatusStarted">Started</label>
+							<input type="radio" name="pgEditRingMessageStatus" id="pgEditRingMessageStatusCancelled" autocomplete="off" value="Cancelled"></input>
+							<label for="pgEditRingMessageStatusCancelled" id="lblpgEditRingMessageStatusCancelled">Cancelled</label>
+							<input type="radio" name="pgEditRingMessageStatus" id="pgEditRingMessageStatusOn hold" autocomplete="off" value="On hold"></input>
+							<label for="pgEditRingMessageStatusOn hold" id="lblpgEditRingMessageStatusOn hold">On hold</label>
+						</fieldset>
+					</div>
+					<div data-role="fieldcontain">
+						<fieldset id="fspgEditRingMessagePriority" data-role="controlgroup" data-type="horizontal" data-mini="true">
+							<legend>Priority<span style='color:red;'>*</span></legend>
+							<input type="radio" name="pgEditRingMessagePriority" id="pgEditRingMessagePriorityLow" autocomplete="off" value="Low"></input>
+							<label for="pgEditRingMessagePriorityLow" id="lblpgEditRingMessagePriorityLow">Low</label>
+							<input type="radio" name="pgEditRingMessagePriority" id="pgEditRingMessagePriorityMedium" autocomplete="off" value="Medium"></input>
+							<label for="pgEditRingMessagePriorityMedium" id="lblpgEditRingMessagePriorityMedium">Medium</label>
+							<input type="radio" name="pgEditRingMessagePriority" id="pgEditRingMessagePriorityHigh" autocomplete="off" value="High"></input>
+							<label for="pgEditRingMessagePriorityHigh" id="lblpgEditRingMessagePriorityHigh">High</label>
+						</fieldset>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="pgEditRingMessageDueDate" id="lblpgEditRingMessageDueDate">Due Date<span style='color:red;'>*</span></label>
+						<input required data-options='{"mode":"flipbox","dateFormat":"%Y-%m-%d","overrideDateFormat":"%Y-%m-%d"}' title="Enter due date here." type="text" name="pgEditRingMessageDueDate" id="pgEditRingMessageDueDate" placeholder="Enter due date here." autocomplete="off" data-role="datebox"></input>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="pgEditRingMessagePercentComplete" id="lblpgEditRingMessagePercentComplete">Percent Complete<span style='color:red;'>*</span></label>
+						<input required min="0" max="100" title="" type="range" name="pgEditRingMessagePercentComplete" id="pgEditRingMessagePercentComplete" autocomplete="off"></input>
+					</div>
+					<div dir="ltr" data-role="fieldcontain">
+						<label for="pgEditRingMessageOwner" id="lblpgEditRingMessageOwner">Owner<span style='color:red;'>*</span></label>
+						<select name="pgEditRingMessageOwner" id="pgEditRingMessageOwner" dir="ltr" class="required">
+							<option value="null" data-placeholder="true">Select Owner</option>
+							<option ></option>
+						</select>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="pgEditRingMessageNotes" id="lblpgEditRingMessageNotes">Notes<span style='color:red;'>*</span></label>
+						<textarea name="pgEditRingMessageNotes" id="pgEditRingMessageNotes" placeholder="Enter notes here." class="required"></textarea>
+					</div>
+				</form>
+			</div>
+			
+			<footer id="Ftr" data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul>
+						<li><a id="pgEditRingMessageBack" data-icon="carat-l">Cancel</a>
+						</li>
+						<li><a type="submit" id="pgEditRingMessageUpdate" data-icon="action">Update</a>
+						</li>
+						<li><a id="pgEditRingMessageDelete" data-icon="delete">Delete</a>
+						</li>
+					</ul>
+				</div>
+			</footer>
+		</div>										
+<!-- Ringmessage// -->
+
+	<div data-theme="a" style="background-image:url('b1.jpg');background-position:center center;background-repeat:no-repeat;background-size:cover;background-size: 100% 100%;" 
+		id="pgMenu" data-role="page">
+		<header id="pgMenuHdr" data-role="header" data-position="fixed">
+			<h1>Ringcatcher Admin</h1>
+		</header>
+		<div id="pgMenucontent" data-role="content">
+			<div style="width:130px;height:96px;margin:15px 4px 10px 4px;float:left;padding-bottom:35px;text-align:center;">
+				<a style="text-decoration: none; color: #FFFFFF;" id="sbUser" data-transition="slide" href="#pgUser"><img height="96" width="96" title="Users" src="apps80.png" alt="Manage Users"></img>
+				<strong>Users</strong></a>
+			</div>
+			<div style="width:130px;height:96px;margin:15px 4px 10px 4px;float:left;padding-bottom:35px;text-align:center;">
+				<a style="text-decoration: none; color: #FFFFFF;" id="sbRingInfo" data-transition="slide" href="#pgRingInfo"><img height="96" width="96" title="RingInfos" src="apps80.png" alt="Manage RingInfos"></img>
+				<strong>RingInfo</strong></a>
+			</div>
+			<div style="width:130px;height:96px;margin:15px 4px 10px 4px;float:left;padding-bottom:35px;text-align:center;">
+				<a style="text-decoration: none; color: #FFFFFF;" id="sbMessage" data-transition="slide" href="#pgRingMessage"><img height="96" width="96" title="Message" src="apps80.png" alt="Manage Messages"></img>
+				<strong>Message</strong></a>
+			</div>
+			<div style="width:130px;height:96px;margin:15px 4px 10px 4px;float:left;padding-bottom:35px;text-align:center;">
+				<a style="text-decoration: none; color: #FFFFFF;" id="sbDefaultMessage" data-transition="slide" href="#pgDefaultMessage"><img height="96" width="96" title="Default Message" src="apps80.png" alt="Manage Default Message"></img>
+				<strong>Default Message</strong></a>
+			</div>
+			<div style="width:130px;height:96px;margin:15px 4px 10px 4px;float:left;padding-bottom:35px;text-align:center;">
+				<a style="text-decoration: none; color: #FFFFFF;" id="sbLogOff" data-transition="slide" href="#pgSignIn"><img height="96" width="96" title="Sign Out" src="poweroffw.png" alt="Sign Out"></img>
+				<strong>Sign Out</strong></a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Dialog -->
+	<section data-dismissible="false" data-transition="pop" id="msgbox" data-role="dialog">
+		<header id="msgboxHdr" data-role="header" data-position="fixed">
+			<h1>Confirm</h1>
+		</header>
+		<div id="msgboxcontent" data-role="content">
+			<div id="msgboxtitle"></div>
+			<br>
+			<div id="msgboxprompt">
+				<p>Are you sure you want to delete this record?</p>
+			</div>
+			<br>
+			<div style="text-align: center;" id="msgboxbuttons" class="ui-grid-a">
+				<div class="ui-block-a">
+					<a data-method="" data-id="" data-topage="" id="msgboxyes"
+						data-role="button" data-icon="check">Yes</a>
+				</div>
+				<div class="ui-block-b">
+					<a data-method="" data-id="" data-topage="" id="msgboxno"
+						data-role="button" data-icon="delete" data-theme="b">No</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section data-dismissible="false" data-transition="pop" id="alertbox" data-role="dialog">
+		<header id="alertboxHdr" data-role="header" data-position="fixed">
+			<h1>Error</h1>
+		</header>
+		<div id="alertboxcontent" data-role="content">
+			<div id="alertboxtitle"></div>
+			<br>
+			<div id="alertboxprompt">
+				<p>An error has been encountered!</p>
+			</div>
+			<br>
+			<div style="text-align: center;" id="alertboxbuttons" class="ui-grid-solo">
+				<div class="ui-block-a">
+					<a data-method="" data-id="" data-topage="" id="alertboxok"
+						data-role="button" data-icon="check" data-theme="b">Ok</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
@@ -14,7 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.eclues.ringcatcher.MsgInfo;
+import com.eclues.ringcatcher.obj.MsgInfo;
 
 public class MsgInfoDAOImpl implements MsgInfoDAO {
 	private static final Logger logger = LoggerFactory.getLogger(MsgInfoDAOImpl.class);
@@ -299,11 +301,19 @@ public class MsgInfoDAOImpl implements MsgInfoDAO {
 	}
 
 	@Override
-	public List<MsgInfo> list() {
+	public List<MsgInfo> getListByAdmin(Map<String, String> argMap) {
 		String sql = "SELECT user_num,calling_num, calling_name, register_date, expired_date, json_msg, duration_type, download_cnt "
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
-				+" FROM msg_info";
+				+" FROM msg_info"
+				+" where 1 = 1";
+		for (Entry<String, String> entry : argMap.entrySet()) {
+			if (entry.getKey().equals("userNum")) 
+				sql += " and user_num like '%"+entry.getValue()+"%'";
+			if (entry.getKey().equals("callingNum")) 
+				sql += " and calling_num like '%"+entry.getValue()+"%'";
+		}
+		
 		logger.info("sql="+sql);
 		List<MsgInfo> listMsgInfo = jdbcTemplate.query(sql, new RowMapper<MsgInfo>(){
 			@Override

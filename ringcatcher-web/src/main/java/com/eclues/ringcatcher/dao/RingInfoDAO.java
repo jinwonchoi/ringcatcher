@@ -2,7 +2,7 @@ package com.eclues.ringcatcher.dao;
 
 import java.util.List;
 
-import com.eclues.ringcatcher.RingInfo;
+import com.eclues.ringcatcher.obj.RingInfo;
 
 public interface RingInfoDAO {
 	public void create(RingInfo ringInfo) throws Exception ;

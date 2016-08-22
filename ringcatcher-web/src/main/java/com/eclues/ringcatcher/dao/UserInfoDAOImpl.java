@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
@@ -14,10 +16,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.eclues.ringcatcher.MsgInfo;
-import com.eclues.ringcatcher.UserInfo;
 import com.eclues.ringcatcher.ctrl.RingMsgController;
 import com.eclues.ringcatcher.etc.Constant;
+import com.eclues.ringcatcher.obj.MsgInfo;
+import com.eclues.ringcatcher.obj.UserInfo;
 
 public class UserInfoDAOImpl implements UserInfoDAO {
 	private static final Logger logger = LoggerFactory.getLogger(UserInfoDAOImpl.class);
@@ -34,6 +36,7 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 			//insert
 			String sql = "INSERT INTO user_info(user_num,user_id,user_name,user_email,recom_id,update_date,create_date)"
 					+ " VALUES (?, ?, ?, ?, ?,now(),now())";
+			logger.debug(String.format("insert:[%s] sql[%s]", userInfo, sql));
 			jdbcTemplate.update(sql, userInfo.getUserNum(), userInfo.getUserId()
 					, userInfo.getUserName()
 					, userInfo.getUserEmail()
@@ -53,6 +56,7 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 					+ " , recom_id = ?"
 					+ " , update_date = now()"
 					+ "where user_num = ?";
+			logger.debug(String.format("update:[%s] sql[%s]", userInfo, sql));
 			jdbcTemplate.update(sql, userInfo.getUserId(), userInfo.getUserName(), userInfo.getUserEmail()
 					, userInfo.getRecomId(), userInfo.getUserNum());
 		} else {
@@ -62,7 +66,8 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 
 	@Override
 	public void delete(String id) {
-		String sql = "Delete from user_info where user_id = ?";
+		String sql = "Delete from user_info where user_num = ?";
+		logger.debug(String.format("delete:[%s] sql[%s]", id, sql));
 		jdbcTemplate.update(sql, id);
 	}
 
@@ -78,6 +83,7 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
 				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
 				+" FROM user_info where user_num ='"+userNum+"'";
+		logger.debug("get: sql:"+sql);
 		return jdbcTemplate.query(sql, new ResultSetExtractor<UserInfo>(){
 			@Override
 			public UserInfo extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -134,4 +140,37 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 
 	}
 	
+	public List<UserInfo> getListBy(Map<String,String> params) throws Exception {
+		String sql = "SELECT user_num,user_id,user_name,user_email,recom_id "
+				+",DATE_FORMAT(update_date, \"%Y%m%d%H%i%s\") update_date "
+				+",DATE_FORMAT(create_date, \"%Y%m%d%H%i%s\") create_date"
+				+" FROM user_info where 1 = 1";
+
+		for (Entry<String, String> entry : params.entrySet()) {
+			if  ("".equals(entry.getValue())) continue;
+			if (entry.getKey().equals("userNum")) 
+				sql += " and user_num like '%"+entry.getValue()+"%'";
+			if (entry.getKey().equals("userName"))
+				sql += " and user_name like '%"+entry.getValue()+"%'";
+			
+		}
+		logger.debug("getList: sql:"+sql);
+		
+		List<UserInfo> listUserInfo = jdbcTemplate.query(sql, new RowMapper<UserInfo>(){
+			@Override
+			public UserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+				UserInfo userInfo = new UserInfo();
+				userInfo.setUserNum(rs.getString("user_num"));
+				userInfo.setUserId(rs.getString("user_id"));
+				userInfo.setUserName(rs.getString("user_name"));
+				userInfo.setUserEmail(rs.getString("user_email"));
+				userInfo.setRecomId(rs.getString("recom_id"));
+				userInfo.setUpdateDate(rs.getString("update_date"));
+				userInfo.setCreateDate(rs.getString("create_date"));
+				return userInfo;
+			}
+		});
+		return listUserInfo;
+
+	}
 }

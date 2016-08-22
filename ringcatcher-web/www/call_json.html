@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jQM Complex Demo</title>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no; target-densityDpi=device-dpi"/>
+	   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.css">
+	   <script src="http://code.jquery.com/jquery-1.11.3.js"></script>
+	   <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
+        <script>
+            $(document).bind("mobileinit", function(){
+                $.mobile.defaultPageTransition = "slide";
+            });            
+        </script>
+        <script>
+		
+            $(document).on('pagecreate', '#index', function(){ 
+                $( ":mobile-pagecontainer" ).pagecontainer( "load", "second.html", { role: "page" } );
+            });     
+
+			var json = '{"result":true,"count":1}',
+			obj = JSON.parse(json);
+			alert(obj.result);
+			
+			$(document).on('click', '#test-button', function(e, data){      
+				$.ajax({url: "result.json",
+					dataType: "json",
+					async: true,
+					success: function (result) {
+						ajax.parseJSON(result);
+					},
+					error: function (request,error) {
+						alert('Network error has occurred please try again!');
+					}
+				});         
+			});
+
+
+			var ajax = {  
+				parseJSON:function(result){
+					$('#stage').append(result.firstname+":"+result.nick);
+				}
+			}
+		
+        </script>       
+    </head>
+    <body>     
+        <div data-role="page" id="index" data-theme="a" >
+            <div data-role="header">
+                <h3>
+                    First Page
+                </h3>
+				<input type = "button" id = "test-button" value = "Register" />
+      
+                <a href="#second" class="ui-btn-right">Next</a>
+            </div>
+
+            <div data-role="content">
+				<div id = "stage" style = "background-color:#eee;">
+				 STAGE
+				</div>
+            </div>
+
+            <div data-role="footer" data-position="fixed">
+
+            </div>
+        </div>  
+    </body>
+</html> 

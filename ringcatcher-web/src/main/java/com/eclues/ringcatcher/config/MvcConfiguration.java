@@ -13,6 +13,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import com.eclues.ringcatcher.dao.AdminInfoDAO;
+import com.eclues.ringcatcher.dao.AdminInfoDAOImpl;
 import com.eclues.ringcatcher.dao.CustomerDAO;
 import com.eclues.ringcatcher.dao.CustomerDAOImpl;
 import com.eclues.ringcatcher.dao.MsgHistoryDAO;
@@ -94,5 +96,10 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 	@Bean
 	public MsgHistoryDAO getMsgHistoryDAO() {
 		return new MsgHistoryDAOImpl(this.getDataSource());
+	}
+
+	@Bean
+	public AdminInfoDAO getAdminInfoDAO() {
+		return new AdminInfoDAOImpl(this.getDataSource());
 	}
 }

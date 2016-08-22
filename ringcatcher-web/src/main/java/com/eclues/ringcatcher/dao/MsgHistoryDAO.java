@@ -2,7 +2,7 @@ package com.eclues.ringcatcher.dao;
 
 import java.util.List;
 
-import com.eclues.ringcatcher.MsgHistory;
+import com.eclues.ringcatcher.obj.MsgHistory;
 
 public interface MsgHistoryDAO {
 	public void create(MsgHistory msgHistory)  throws Exception ;

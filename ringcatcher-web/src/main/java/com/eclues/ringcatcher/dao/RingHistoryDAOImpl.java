@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.eclues.ringcatcher.RingHistory;
+import com.eclues.ringcatcher.obj.RingHistory;
 
 public class RingHistoryDAOImpl implements RingHistoryDAO {
 

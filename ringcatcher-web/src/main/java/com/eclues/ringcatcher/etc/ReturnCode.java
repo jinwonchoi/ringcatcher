@@ -11,6 +11,7 @@ public enum ReturnCode {
 	ERROR_FILEUP("4002"),
 	ERROR_INVALID_USER("4003"),
 	ERROR_INVALID_VAlUE("4004"),
+	ERROR_WRONG_PASSWD("4005"),
 	
 	
 	STR_SUCCESS("Sucess"),
@@ -23,6 +24,7 @@ public enum ReturnCode {
 	STR_ERROR_FILEUP("Error in File upload"),
 	STR_ERROR_INVALID_USER("Invalid User Error"),
 	STR_ERROR_INVALID_VAlUE("Invalid Value"),
+	STR_ERROR_WRONG_PASSWD("Wrong password"),
 	;
 	private ReturnCode(String str) {
 		value = str;

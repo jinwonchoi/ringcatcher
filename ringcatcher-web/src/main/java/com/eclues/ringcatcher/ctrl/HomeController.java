@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.eclues.ringcatcher.Customer;
 import com.eclues.ringcatcher.dao.CustomerDAO;
 import com.eclues.ringcatcher.dao.EnvironmentBean;
 import com.eclues.ringcatcher.dao.UserInfoDAO;
+import com.eclues.ringcatcher.obj.Customer;
 
 
 /**

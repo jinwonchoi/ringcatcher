@@ -1,8 +1,9 @@
 package com.eclues.ringcatcher.dao;
 
 import java.util.List;
+import java.util.Map;
 
-import com.eclues.ringcatcher.MsgInfo;
+import com.eclues.ringcatcher.obj.MsgInfo;
 
 public interface MsgInfoDAO {
 	public void create(MsgInfo msgInfo) throws Exception ;
@@ -16,5 +17,5 @@ public interface MsgInfoDAO {
 	/** 나한테 보낸 메시지나 default로 보낸 메시지를 쿼리*/
 	public List<MsgInfo> getList(List<String> fromNums, String toNum, String updateDate) throws Exception ;
 	public List<MsgInfo> getByUserNum(String userNum, boolean all) throws Exception ;
-	public List<MsgInfo> list() throws Exception ;
+	public List<MsgInfo> getListByAdmin(Map<String, String> argMap) throws Exception ;
 }
