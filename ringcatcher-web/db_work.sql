@@ -133,6 +133,20 @@ CREATE TABLE msg_history (
   KEY idx_msg_history_01 (user_num,calling_num, create_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=euckr;
 
+DROP TABLE admin_info;
+CREATE TABLE admin_info (
+  user_id varchar(200) NOT NULL,
+  auth_id varchar(200) NOT NULL, /*email: E, phone number : P*/
+  auth_id_type varchar(1) NOT NULL, /*email: E, phone number : P*/
+  user_name varchar(100) DEFAULT NULL,
+  user_passwd varchar(200) NOT NULL,
+  description varchar(200) DEFAULT NULL,
+  update_date timestamp NOT NULL,
+  create_date timestamp NOT NULL,
+  PRIMARY KEY (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=euckr;
+
+
 SELECT unix_timestamp(create_date) FROM user_info;
 
 SELECT DATE_FORMAT(now(), "%Y%m%d%H%i%s");
