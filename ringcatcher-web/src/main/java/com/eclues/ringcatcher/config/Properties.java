@@ -10,7 +10,7 @@ import org.springframework.core.env.Environment;
 import com.eclues.ringcatcher.dao.EnvironmentBean;
 
 @Configuration
-@PropertySource("file:${work.path}/conf/config.properties")
+@PropertySource("classpath:config.properties")
 public class Properties {
 
 //	@Value("$(domain.name)")

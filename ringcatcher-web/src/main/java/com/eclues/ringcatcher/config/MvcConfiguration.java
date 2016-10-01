@@ -2,6 +2,8 @@ package com.eclues.ringcatcher.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +34,9 @@ import com.eclues.ringcatcher.dao.UserInfoDAOImpl;
 @ComponentScan(basePackages="com.eclues.ringcatcher")
 @EnableWebMvc
 public class MvcConfiguration extends WebMvcConfigurerAdapter {
+	@Autowired
+	@Qualifier("dataSource")
+	private org.apache.commons.dbcp.BasicDataSource dataSource;
 	
 	@Bean
 	public ViewResolver getViewResolver() {
@@ -54,52 +59,50 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 	@Bean
 	public DataSourceTransactionManager getTransactionManager() {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-		transactionManager.setDataSource(getDataSource());
+		transactionManager.setDataSource(dataSource);
 		return transactionManager;
 	}
 	
-	@Bean
+/*	@Bean
 	public DataSource getDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUrl("jdbc:mysql://localhost:3306/rc_db");
-		dataSource.setUsername("root");
-		dataSource.setPassword("jessy");
+		dataSource.setUrl(datasourcePro);
+		dataSource.setConnectionProperties(datasourceProperties);
 		return dataSource;
-	}
+	}*/
 	
 	@Bean
 	public CustomerDAO getCustomerDAO() {
-		return new CustomerDAOImpl(this.getDataSource());
+		return new CustomerDAOImpl(dataSource);
 	}
 
 	@Bean
 	public UserInfoDAO getUserInfoDAO() {
-		return new UserInfoDAOImpl(this.getDataSource());
+		return new UserInfoDAOImpl(dataSource);
 	}
 
 	@Bean
 	public RingInfoDAO getRingInfoDAO() {
-		return new RingInfoDAOImpl(this.getDataSource());
+		return new RingInfoDAOImpl(dataSource);
 	}
 
 	@Bean
 	public RingHistoryDAO getRingHistoryDAO() {
-		return new RingHistoryDAOImpl(this.getDataSource());
+		return new RingHistoryDAOImpl(dataSource);
 	}
 
 	@Bean
 	public MsgInfoDAO getMsgInfoDAO() {
-		return new MsgInfoDAOImpl(this.getDataSource());
+		return new MsgInfoDAOImpl(dataSource);
 	}
 
 	@Bean
 	public MsgHistoryDAO getMsgHistoryDAO() {
-		return new MsgHistoryDAOImpl(this.getDataSource());
+		return new MsgHistoryDAOImpl(dataSource);
 	}
 
 	@Bean
 	public AdminInfoDAO getAdminInfoDAO() {
-		return new AdminInfoDAOImpl(this.getDataSource());
+		return new AdminInfoDAOImpl(dataSource);
 	}
 }
