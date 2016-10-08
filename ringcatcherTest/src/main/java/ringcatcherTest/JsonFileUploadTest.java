@@ -17,8 +17,10 @@ import com.gencode.ringcatcher.obj.ReturnCode;
 import com.gencode.ringcatcher.obj.RingUpdateResult;
 
 public class JsonFileUploadTest {
-	//String url = "http://localhost:8080/ringcatcher/";
-	String url = "http://52.79.62.98:8080/ringcatcher/";
+	String url = "http://localhost:8080/ringcatcher/";
+	//String url = "http://52.79.62.98:8080/ringcatcher/";
+	String mainFilePath = "/Users/gencode/Pictures/";
+	String tokenId =  "cTSxdM5k5Iw:APA91bEjmPD31Exhcri9kHIb8sXs40q6EG5CQUiPrsG_Py86eRvjaYns2yydHwd_8ME3a48WFZGo0tYA-HGObBEHGlawWBMmFA-hfEdB0te8ICH8EjyLN1DjyWJe6FvVozrvQCULjtxv";
 
 	@Before
 	public void setUp() throws Exception {
@@ -68,27 +70,31 @@ public class JsonFileUploadTest {
 	public void testFileUpLoad() {
     	String url =this.url+"/json/invite";
     	String tokenId = "test-token-id";
+    	//String tokenId =  "cTSxdM5k5Iw:APA91bEjmPD31Exhcri9kHIb8sXs40q6EG5CQUiPrsG_Py86eRvjaYns2yydHwd_8ME3a48WFZGo0tYA-HGObBEHGlawWBMmFA-hfEdB0te8ICH8EjyLN1DjyWJe6FvVozrvQCULjtxv";
 
-    	String body = "	{\"userNum\":\"01055557777,01064668888,55557777\""
+    	String body = "	{\"userNum\":\"01021985055\""
+    			//String body = "	{\"userNum\":\"01055557777,01064668888,55557777\""
     			+",\"callingId\":\""+tokenId+"\""
     			+",\"callingNum\":\"0244445555\""
     			+",\"callingName\":\"Mememe\""
     			+",\"locale\":\"ko_KR\""//en_US, ko_KR
     			+",\"expiredDate\":\"99991231\""
     			+",\"durationType\":\"\""
-    			+",\"ringFileName\":\"00044.jpg\"}";
+    			+",\"ringFileName\":\"132626e0b5l409qdq2vogn.jpg\"}";
     			
     	JsonFileUpload json = new JsonFileUpload();
     	//String filepath = "/home/jinnon/Music/374-Marion-Parcel.mp3";
-    	String filepath = "/home/jinnon/Pictures/Wallpapers/vgirlmm-009-039.jpg";
+    	String filepath = "/Users/gencode/Pictures/132626e0b5l409qdq2vogn.jpg";
     	String strJson = json.http(url, body, filepath);
-    	System.out.println(strJson);
     	InviteResult result = new InviteResult(); 
     	JSONObject jsonObject = new JSONObject(strJson);
     	String resultCode = jsonObject.getString("resultCode");
     	String resultMsg  = jsonObject.getString("resultMsg");
     	result.setResultCode(resultCode);
     	result.setResultMsg(resultMsg);
+    	System.out.println("url:"+url);
+    	System.out.println("body:"+body);
+    	System.out.println(strJson);
     	System.out.println("resultCode="+resultCode);
     	System.out.println("resultMsg="+resultMsg);
     	System.out.println("result = "+result.toString()); 	
@@ -103,7 +109,7 @@ public class JsonFileUploadTest {
     	String url =this.url+"/json/uploadImage";
     	//String tokenId = "fNCkmJERubk:APA91bH0sxyEsnHHC59H48JndfRsme0S9eX0L4y9qjkwWgkYvORZyeGm6Fjk4Eywgc4OlJMzx6TqMeBEgMV5aprVw83DA4DhH33FKqBrHUzOdxwGxAfcCo-qD3f4LzG3RSo71IK0YarG";
     	//String tokenId = "test-token-id";
-    	String tokenId ="eC5cRs5koa4:APA91bHKENSZ98H2-NY0hLzjh-QAdmh0AoPKh80ZudMhZGyL9qF0wABWYQofdXHSKyXVw6_V168Y5kqnLVf05hR2hESl3SeuK3Jb2N2_Kxnwo087bEZagz6JQmQ-z1qKo8TxN5rdnlwr"; 
+    	String tokenId ="cTSxdM5k5Iw:APA91bEjmPD31Exhcri9kHIb8sXs40q6EG5CQUiPrsG_Py86eRvjaYns2yydHwd_8ME3a48WFZGo0tYA-HGObBEHGlawWBMmFA-hfEdB0te8ICH8EjyLN1DjyWJe6FvVozrvQCULjtxv"; 
 
     	String body = "	{\"userNum\":\"defaultnum\""//01055557777,01066668888,01066669999\""
     			+",\"callingId\":\""+tokenId+"\""
@@ -116,7 +122,7 @@ public class JsonFileUploadTest {
     			
     	JsonFileUpload json = new JsonFileUpload();
     	//String filepath = "/home/jinnon/Music/374-Marion-Parcel.mp3";
-    	String filepath = "/home/jinnon/Pictures/87999-Matrix_Ubuntu_Wallpape2.jpg";
+    	String filepath = mainFilePath+"/BUMmw03CIAAa7vj.jpg";
     	String strJson = json.http(url, body, filepath);
     	System.out.println(strJson);
     	InviteResult result = new InviteResult(); 

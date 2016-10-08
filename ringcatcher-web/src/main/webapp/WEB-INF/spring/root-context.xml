@@ -43,5 +43,6 @@
  -->
  	</bean>
  	<context:property-placeholder location="classpath:datasource.properties" /> 
-
+ 	<!-- <context:property-placeholder location="classpath:log4j.xml" />  -->
+ 	
 </beans>

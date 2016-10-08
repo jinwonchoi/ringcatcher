@@ -151,6 +151,7 @@ public class JSONController {
 	 */
 	@RequestMapping(value="/register", method=RequestMethod.POST, consumes={"application/json"})
 	public @ResponseBody RegisterResult registerUser(@RequestBody ReqUserInfo reqUserInfo) {
+		logger.debug("AAAregisterUser:"+reqUserInfo);
 		
 		logger.info("registerUser:"+reqUserInfo);
 		//1.overwrite여부
