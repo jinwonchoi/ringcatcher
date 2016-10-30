@@ -10,6 +10,7 @@ public class UploadImageRequest implements Serializable {
     String friendPhoneNum;
     String callingPhoneNum;
     String callingNickName;
+    String expiredDate;
     String locale;
     String imageFileName;
 
@@ -29,6 +30,14 @@ public class UploadImageRequest implements Serializable {
 
     public void setFriendPhoneNum(String friendPhoneNum) {
         this.friendPhoneNum = friendPhoneNum;
+    }
+
+    public String getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(String expiredDate) {
+        this.expiredDate = expiredDate;
     }
 
     public String getCallingPhoneNum() {
@@ -69,6 +78,7 @@ public class UploadImageRequest implements Serializable {
                 ", friendPhoneNum='" + friendPhoneNum + '\'' +
                 ", callingPhoneNum='" + callingPhoneNum + '\'' +
                 ", callingNickName='" + callingNickName + '\'' +
+                ", expiredDate='" + expiredDate + '\'' +
                 ", locale='" + locale + '\'' +
                 ", imageFileName='" + imageFileName + '\'' +
                 '}';

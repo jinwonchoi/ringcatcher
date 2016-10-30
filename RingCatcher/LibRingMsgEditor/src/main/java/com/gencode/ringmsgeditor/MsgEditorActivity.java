@@ -476,7 +476,7 @@ public class MsgEditorActivity extends AppCompatActivity implements OnModeSwitch
 
         //저장후에 서버로 전송한다.httpResponseReceiver를 통해 결과를 받음
         HttpIntentService.startActionMessageRegister(MsgEditorActivity.this,recipientNumber, RingBearer.getInstance().getTokenId()
-                , myPhoneNumber,myPhoneNick, (HashMap<String, String>)messageMap);
+                , myPhoneNumber,myPhoneNick,"20161231","T", (HashMap<String, String>)messageMap);
 //
 //        new AsyncInsertMessage(new IInsertMessageTask() {
 //            @Override

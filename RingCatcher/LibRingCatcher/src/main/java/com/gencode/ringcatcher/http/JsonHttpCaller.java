@@ -155,6 +155,7 @@ public class JsonHttpCaller {
                     +",\"callingId\":\""+request.getTokenId()+"\""
                     +",\"callingNum\":\""+request.getCallingPhoneNum()+"\""
                     +",\"callingName\":\""+request.getCallingNickName()+"\""
+                    +",\"expiredDate\":\""+request.getExpiredDate()+"\""
                     +",\"locale\":\""+request.getLocale()+"\""//en_US, ko_KR
                     +",\"imageFileName\":\""+fileName+"\"}";
 
@@ -259,7 +260,6 @@ public class JsonHttpCaller {
             String json = http(url, body);
             Log.d(TAG, "registerMessage json="+json);
             JSONObject jsonRootObject = new JSONObject(json);
-
             //Get the instance of JSONArray that contains JSONObjects
             result.setResultCode(jsonRootObject.optString("resultCode"));
             result.setResultMsg(jsonRootObject.optString("resultMsg"));

@@ -40,13 +40,15 @@ public class HttpIntentService extends IntentService {
      */
     // TODO: Customize helper method
     public static void startActionMessageRegister(Context context, String userNum, String callingId, String callingNum
-            , String callingName, HashMap<String, String> messageMap) {
+            , String callingName, String expiredDate, String durationType, HashMap<String, String> messageMap) {
         Intent intent = new Intent(context, HttpIntentService.class);
         intent.setAction(HttpConstants.ACTION_MESSAGE_REGISTER);
         intent.putExtra(JsonConstants.userNum, userNum);
         intent.putExtra(JsonConstants.callingId, callingId);
         intent.putExtra(JsonConstants.callingNum, callingNum);
         intent.putExtra(JsonConstants.callingName, callingName);
+        intent.putExtra(JsonConstants.expiredDate, expiredDate);
+        intent.putExtra(JsonConstants.durationType, durationType);
         intent.putExtra(JsonConstants.messageMap, messageMap);
 
         context.startService(intent);
@@ -77,6 +79,9 @@ public class HttpIntentService extends IntentService {
         String userNum   = intent.getStringExtra(JsonConstants.userNum);
         String callingNum = intent.getStringExtra(JsonConstants.callingNum);
         String callingName = intent.getStringExtra(JsonConstants.callingName);
+        String expiredDate = intent.getStringExtra(JsonConstants.expiredDate);
+        String durationType = intent.getStringExtra(JsonConstants.durationType);
+
         HashMap<String, String> messageMap = (HashMap<String, String>)intent.getSerializableExtra(JsonConstants.messageMap);
         MessageWrapper messageWrapper;
         Intent intentResult = new Intent(HttpConstants.ACTION_BROADCAST_MESSAGE_REGISTER);
@@ -108,6 +113,7 @@ public class HttpIntentService extends IntentService {
                 uploadImageRequest.setFriendPhoneNum(userNum);
                 uploadImageRequest.setCallingPhoneNum(callingNum);
                 uploadImageRequest.setCallingNickName(callingName);
+                uploadImageRequest.setExpiredDate(expiredDate);
                 uploadImageRequest.setLocale(Locale.KOREA.toString()); //ko_KR | en_US
                 String imagePath = Utils.getRealPathFromURI(this, Uri.parse(imageUrl));
                 uploadImageRequest.setImageFileName(imagePath);
@@ -135,6 +141,8 @@ Log.d(TAG, "caller.uploadMessageImage uploadImageRequest:"+uploadImageRequest.to
             registerMessageRequest.setFriendPhoneNum(userNum);
             registerMessageRequest.setCallingPhoneNum(callingNum);
             registerMessageRequest.setCallingNickName(callingName);
+            registerMessageRequest.setExpiredDate(expiredDate);
+            registerMessageRequest.setDurationType(durationType);
             registerMessageRequest.setLocale(Locale.KOREA.toString()); //ko_KR | en_US
             Log.d(TAG, "caller.registerMessage: jsonMessage="+messageWrapper.toString());
 
